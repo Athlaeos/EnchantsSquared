@@ -1,0 +1,592 @@
+# Level minimum in the enchantment table before custom enchants start appearing
+level_minimum: 30
+
+# The amount of times the enchantment table will attempt to roll for custom enchantments
+# This means that the higher this number, the generally more enchantments will appear on an item
+# This also makes this amount the max amount of custom enchants that can appear on an item at once in an enchantment table
+enchantment_table_rolls: 3
+
+# The maximum amount of enchantments you're allowed to put on a tool
+max_enchants: 5
+
+# The chance for custom enchantments to appear on an item, in %
+custom_enchant_rate: 50
+
+# If true, players require permissions for each individual enchant to be able to obtain them while enchanting.
+# The permission for each of these will be es.enchant.(enchantment name)
+# The enchantment name will be the name as written down in the config. Example: Curse of burdening will be es.enchant.curse_burden
+permission_required: false
+
+enchantment_configuration:
+  excavation:
+    description: '&8> Mines a 3x3x1 area instead of 1x1x1, hold shift to stop this effect.'
+    enchant_name: '&7Excavation' # The lore applied on items, which is also used for determining item enchants
+    enabled: true # If disabled, enchant will not appear in the enchantment table. It will still be functional though
+    weight: 20 # The rarity of the item in weight, lower values mean less common
+    book_only: false # If true, enchant will only appear on books
+    nerf_excavation_speed: true # If true, players will be given mining fatigue when mining with excavation.
+    # This is to prevent the player from instant-mining stone with Haste II and Efficiency V
+    fatigue_amplifier: 0 # The strength of mining fatigue applied to the player if nerf_excavation_speed is true
+    fatigue_duration: 20 # The duration of mining fatigue applied to the player if nerf_excavation_speed is true
+    durability_decay: 0.33 # Chance to consume 1 durability per block broken.
+    # Note: Excavation is severely unbalanced with a durability_decay value of less than 1.
+    # This is because lower values make the tool last significantly longer relatively speaking, being able to break
+    # a lot more blocks a lot faster than it normally would. However, from my experience, players tend to complain their
+    # tools break too fast if this value is set at 1, hence why it's set at 0.33 by default. If you have an economy on your
+    # server it is recommended to keep excavation in mind when balancing it, because players WILL get a LOT of resources.
+    compatible_with: # Limited to AXES, PICKAXES, SHOVELS, and HOES
+      - AXES
+      - PICKAXES
+      - SHOVELS
+      - HOES
+
+  rejuvenation:
+    description: '&8> Slowly regenerates durability while moving'
+    enchant_name: '&7Rejuvenation %lv_roman%'
+    enabled: true
+    weight: 80
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    durability_regeneration_base: 0.01 # Base chance per movement packet to regenerate 1 durability at lv 1
+    durability_regeneration_lv: 0.01 # Additional chance to regenerate 1 durability per level
+    compatible_with:
+      - ALL
+
+  shielding:
+    description: '&8> Has a &e20&8-&e40%&8 chance to deflect projectiles that would normally hit you'
+    enchant_name: '&7Shielding %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    deflect_chance_lv: 0.2 # Chance per level to deflect a projectile
+    compatible_with: # Not limited to armor
+      - CHESTPLATES
+
+  steady:
+    description: '&8> Reduces knockback taken by &e20&8-&e40%'
+    enchant_name: '&7&8 %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    knockback_reduction_lv: 0.2 # Knockback reduced per level
+    compatible_with: # Not limited to armor
+      - LEGGINGS
+
+  illuminated:
+    description: '&8> Right click with a pickaxe on an empty surface to place a torch at the cost of &e3 &8durability'
+    enchant_name: '&7Illuminated'
+    enabled: true
+    weight: 40
+    book_only: false
+    durability_cost: 3 # Durability consumed when a torch is placed
+    use_unbreaking: false # If false, the durability cost will always be deducted. If true, the chance to use durability
+    # is reduced.
+    cooldown: 100 # Cooldown in ticks
+    cooldown_message: '&cCooldown: {cooldown}s' # Message sent to player if torch placement is on cooldown
+
+  kinship:
+    description: '&8> If the pickaxe matches the material of the ore you''re mining, some durability is restored. &estone:0-0-0&8, &eiron:1-2-3&8, &egold:5-10-15&8, &ediamond:10-20-30&8, &enetherite:50-100-150'
+    enchant_name: '&7Kinship %lv_roman%'
+    enabled: true
+    weight: 80
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    durability_regen_netherite: 50 # Durability regenerated when mining netherite ore with a netherite pickaxe per level
+    durability_regen_diamond: 10 # Durability regenerated when mining diamond ore with a diamond pickaxe per level
+    durability_regen_gold: 5 # Durability regenerated when mining gold ore with a gold pickaxe per level
+    durability_regen_iron: 1 # Durability regenerated when mining iron ore with a iron pickaxe per level
+    durability_regen_stone: 0 # Durability regenerated when mining stone with a stone pickaxe per level
+
+  metabolism:
+    description: '&8> Slowly regenerates hunger points while moving'
+    enchant_name: '&7Metabolism %lv_roman%'
+    enabled: true
+    weight: 80
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    saturation_limit: 5 # Maximum amount of saturation points regenerated if player has 10 full hunger bars
+    hunger_regeneration_lv: 0.003 # additional chance to regenerate 1 hunger per level
+    compatible_with: # Not limited to armor
+      - HELMETS
+      - CHESTPLATES
+      - LEGGINGS
+      - BOOTS
+
+  vigorous:
+    description: '&8> Adds &e1&8 per level extra max health to the wearer'
+    enchant_name: '&7Vigorous %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 5
+    max_level_table: 5
+    health_lv: 1 # Extra half-hearts added to the wearer's max health per level
+    compatible_with: # Limited to HELMETS, CHESTPLATES, LEGGINGS, and BOOTS
+      - HELMETS
+      - CHESTPLATES
+      - LEGGINGS
+      - BOOTS
+
+  sunforged:
+    description: '&8> Smelts blocks mined'
+    enchant_name: '&7Sunforged'
+    enabled: true
+    weight: 20
+    book_only: false
+    # Blocks and recipes can be found in smeltblocksrecipes.yml
+    compatible_with: # Limited to AXES, PICKAXES, SHOVELS, and HOES
+      - AXES
+      - PICKAXES
+      - SHOVELS
+      - HOES
+
+  flight:
+    description: '&8> Allows the wearer flight at the cost of durability, unbreaking reduces this'
+    enchant_name: '&7Wings'
+    enabled: true
+    weight: 10
+    book_only: false
+    durability_decay: 0.1 # Chance per movement packet to decay 1 durability
+    compatible_with: # Not limited to armor
+      - BOOTS
+
+  speed_boost:
+    description: '&8> Grants the wearer speed boost &eI&8-&eII&8 while wearing'
+    enchant_name: '&7Fleeting %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    amplifier: 0 # Base strength of speed boost buff (an amplifier of 0 means the effect is applied at level I, 1 is II, etc.)
+    amplifier_lv: 1 # Additional strength of speed buff per level
+    duration: 80 # Duration of speed boost buff granted per movement packet (20 = 1 second)
+    compatible_with: # Not limited to armor
+      - BOOTS
+
+  jump_boost:
+    description: '&8> Grants the wearer jump boost &eI&8-&eII&8 while wearing'
+    enchant_name: '&7Leaping %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    amplifier: 0 # Base strength of jump boost buff (an amplifier of 0 means the effect is applied at level I, 1 is II, etc.)
+    amplifier_lv: 1 # Additional strength of jump buff per level
+    duration: 80 # Duration of jump boost buff granted per movement packet (20 = 1 second)
+    compatible_with: # Not limited to armor
+      - BOOTS
+
+  luck:
+    description: '&8> Grants the player luck &eI&8-&eII&8 while wearing'
+    enchant_name: '&7Blessing %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    amplifier: 0 # Base strength of luck (an amplifier of 0 means the effect is applied at level I, 1 is II, etc.)
+    amplifier_lv: 1 # Additional strength of luck per level
+    duration: 80 # Duration of luck granted per movement packet (20 = 1 second)
+    compatible_with: # Not limited to armor
+      - CHESTPLATES
+
+  night_vision:
+    description: '&8> Grants the player night vision while wearing'
+    enchant_name: '&7Nightvision'
+    enabled: true
+    weight: 20
+    book_only: false
+    duration: 280 # Duration of night vision buff granted per movement packet (20 = 1 second)
+    compatible_with: # Not limited to armor
+      - HELMETS
+
+  water_breathing:
+    description: '&8> Grants the player water breathing while wearing'
+    enchant_name: '&7Gills %lv_roman%'
+    enabled: true
+    weight: 80
+    book_only: false
+    duration: 80 # Duration of water breathing buff granted per movement packet (20 = 1 second)
+    compatible_with: # Not limited to armor
+      - HELMETS
+
+  haste:
+    description: '&8> Grants the player haste &eI&8-&eII&8 while holding'
+    enchant_name: '&7Quickened %lv_roman%'
+    enabled: true
+    weight: 10
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    amplifier: 0 # Base strength of haste buff (an amplifier of 0 means the effect is applied at level I, 1 is II, etc.)
+    amplifier_lv: 1 # Additional strength of haste buff per level
+    duration: 80 # Duration of haste buff granted per movement packet (20 = 1 second)
+    compatible_with: # Not limited to tools
+      - SWORDS
+      - PICKAXES
+      - SHOVELS
+      - AXES
+      - HOES
+
+  strength:
+    description: '&8> Grants the player strength &eI&8-&eII&8 while holding'
+    enchant_name: '&7Barbarian %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    amplifier: 0 # Base strength of strength buff (an amplifier of 0 means the effect is applied at level I, 1 is II, etc.)
+    amplifier_lv: 1 # Additional strength of strength buff per level
+    duration: 80 # Duration of strength buff granted per movement packet (20 = 1 second)
+    compatible_with: # Not limited to tools
+      - AXES
+
+  vitality:
+    description: '&8> Increases the wearer/holder''s healing by &e5%&8 per level, adding up all vitality you have on all pieces of armor up to &e100%.'
+    enchant_name: '&7Vitality %lv_roman%'
+    enabled: true
+    weight: 80
+    book_only: false
+    max_level: 4
+    max_level_table: 4
+    extra_healing_lv: 5 # additional healing in % per level per piece of armor.
+    max_bonus_healing: 100 # the cap for additional healing, no matter how much combined vitality the player has.
+    # Having vitality 3 on 4 pieces of armor grants (3 * 4 * extra_healing_lv) more healing,
+    # or max_bonus_healing if it exceeds its value
+    compatible_with: # Not limited to armor
+      - HELMETS
+      - CHESTPLATES
+      - LEGGINGS
+      - BOOTS
+
+  withering:
+    description: '&8> Has a &e5&8-&e10&8-&e15%&8 chance to inflict the entity you''re damaging with Wither'
+    enchant_name: '&7Withering %lv_roman%'
+    enabled: true
+    weight: 120
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    apply_chance: 0.05 # The base chance the damaged target is inflicted with withering
+    apply_chance_lv: 0.05 # The additional chance per level the damaged target is inflicted with withering
+    amplifier: 0 # Base amplitude of the debuff
+    amplifier_lv: 1 # Additional amplitude debuff strength per level
+    duration: 20 # Base duration of the debuff (20 = 1 second)
+    duration_lv: 20 # Additional duration of the debuff per level
+    compatible_with: # Limited to weapons
+      - SWORDS
+      - BOWS
+      - CROSSBOWS
+
+  poisoning:
+    description: '&8> Has a &e5&8-&e10&8-&e15%&8 chance to inflict the entity you''re damaging with Poison'
+    enchant_name: '&7Poisoning %lv_roman%'
+    enabled: true
+    weight: 120
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    apply_chance: 0.05 # The base chance the damaged target is inflicted with withering
+    apply_chance_lv: 0.05 # The additional chance per level the damaged target is inflicted with withering
+    amplifier: 0 # Base amplitude of the debuff
+    amplifier_lv: 1 # Additional amplitude debuff strength per level
+    duration: 20 # Base duration of the debuff (20 = 1 second)
+    duration_lv: 20 # Additional duration of the debuff per level
+    compatible_with: # Limited to weapons
+      - SWORDS
+      - BOWS
+      - CROSSBOWS
+
+  weakening:
+    description: '&8> Has a &e5&8-&e10%&8 chance to inflict the entity you''re damaging with Weakness'
+    enchant_name: '&7Weakening %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    apply_chance: 0.05 # The base chance the damaged target is inflicted with withering
+    apply_chance_lv: 0.05 # The additional chance per level the damaged target is inflicted with withering
+    amplifier: 0 # Base amplitude of the debuff
+    amplifier_lv: 0 # Additional amplitude debuff strength per level
+    duration: 40 # Base duration of the debuff (20 = 1 second)
+    duration_lv: 20 # Additional duration of the debuff per level
+    compatible_with: # Limited to weapons
+      - SWORDS
+      - BOWS
+      - CROSSBOWS
+
+  stunning:
+    description: '&8> Has a &e2&8-&e4%&8 chance to inflict the entity you''re damaging with a stun'
+    # A stun is a combination of 5 very strong debuffs, mining fatigue, slowness, weakness, blindness, and jump boost (to cancel jumping)
+    enchant_name: '&7Blunt %lv_roman%'
+    enabled: true
+    weight: 20
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    apply_chance: 0.02 # The base chance the damaged target is inflicted with withering
+    apply_chance_lv: 0.02 # The additional chance per level the damaged target is inflicted with withering
+    duration: 20 # Base duration of the debuff (20 = 1 second)
+    duration_lv: 20 # Additional duration of the debuff per level
+    buffed_axe_potency: true # If true, (pick)axes have twice the chance to stun targets over swords or (cross)bows
+    compatible_with: # Limited to weapons
+      - SWORDS
+      - BOWS
+      - CROSSBOWS
+      - AXES
+      - PICKAXES
+
+  slowness:
+    description: '&8> Has a &e4&8-&e8%&8 chance to inflict the entity you''re damaging with Slowness'
+    enchant_name: '&7Crippling %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    apply_chance: 0.04 # The base chance the damaged target is inflicted with withering
+    apply_chance_lv: 0.04 # The additional chance per level the damaged target is inflicted with withering
+    amplifier: 0 # Base amplitude of the debuff
+    amplifier_lv: 1 # Additional amplitude debuff strength per level
+    duration: 40 # Base duration of the debuff (20 = 1 second)
+    duration_lv: 20 # Additional duration of the debuff per level
+    compatible_with: # Limited to weapons
+      - SWORDS
+      - BOWS
+      - CROSSBOWS
+
+  blinding:
+    description: '&8> Has a &e2&8-&e4&8-&e6%&8 chance to inflict the entity you''re damaging with Blindness'
+    enchant_name: '&7Blinding %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    apply_chance: 0.02 # The base chance the damaged target is inflicted with withering
+    apply_chance_lv: 0.02 # The additional chance per level the damaged target is inflicted with withering
+    duration: 20 # Base duration of the debuff (20 = 1 second)
+    duration_lv: 10 # Additional duration of the debuff per level
+    compatible_with: # Limited to weapons
+      - SWORDS
+      - BOWS
+      - CROSSBOWS
+      - AXES
+
+  nausea:
+    description: '&8> Has a &e3&8-&e5% chance to inflict the entity you''re damaging with Nausea'
+    enchant_name: '&7Concussion %lv_roman%'
+    enabled: true
+    weight: 80
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    apply_chance: 0.03 # The base chance the damaged target is inflicted with withering
+    apply_chance_lv: 0.02 # The additional chance per level the damaged target is inflicted with withering
+    duration: 60 # Base duration of the debuff (20 = 1 second)
+    duration_lv: 20 # Additional duration of the debuff per level
+    compatible_with: # Limited to weapons
+      - SWORDS
+      - BOWS
+      - CROSSBOWS
+
+
+  toxic:
+    description: '&8> Hitting an entity reduces its healing received by &e40&8-&e70&8-&e100%'
+    enchant_name: '&7Toxic %lv_roman%'
+    enabled: true
+    weight: 80
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    healing_reduction_base: 0.4 # Base healing reduction at lv 1
+    healing_reduction_lv: 0.3 # Additional healing reduction for each additional level
+    duration_base: 120 # Base duration in ticks
+    duration_lv: 40 # Additional duration per level in ticks
+    compatible_with: # Limited to weapons
+      - CROSSBOWS
+      - BOWS
+      - SWORDS
+
+  crushing:
+    description: '&8> For each piece of diamond/netherite armor the enemy is wearing, you deal &e2.5&8-&e3.75&8-&e5% more damage'
+    enchant_name: '&7Crushing %lv_roman%'
+    enabled: true
+    weight: 20
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    damage_base: 2.5 # Base additional damage dealt per piece of diamond/netherite armor at enchantment level 1
+    damage_lv: 1.25 # Additional damage dealt per piece of diamond/netherite armor per extra level
+    compatible_with:
+      - CROSSBOWS
+      - AXES
+
+  aoe_arrows:
+    description: '&8> Hitting an arrow on an entity deals &e50&8-&e70&8-&e90%&8 of the damage to all enemies in a &e1.5&8-&e2&8-&e2.5&8 block radius around that initial entity'
+    enchant_name: '&7Scattershot %lv_roman%'
+    enabled: true
+    weight: 20
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    aoe_damage_base: 0.5 # Fraction of the damage dealt to the main entity hit that's inflicted on mobs around it
+    aoe_damage_lv: 0.2 # Additional damage per level dealt to mobs around the main mob hit.
+    # Example: level I will deal 50% of the main damage dealt in an AOE, level II will increase this to 70%, III to 90%, etc.
+    radius_base: 1.5 # Base radius of AOE around mob damaged
+    radius_lv: 0.5 # Additional radius per level of AOE around mob damaged
+    explosion: true # Displays and plays the sound of an explosion when the arrow hits a target
+    compatible_with: # Not limited to ranged weapons
+      - CROSSBOWS
+      - BOWS
+
+  sapping:
+    description: '&8> Killing an entity adds a &e40&8-&e60%&8 chance of dropping &e1&8-&e2&8 more EXP'
+    enchant_name: '&7Sapping %lv_roman%'
+    enabled: true
+    weight: 20
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    drop_chance_base: 0.4 # Base chance to drop extra exp
+    drop_chance_lv: 0.2 # Additional chance to drop extra exp
+    exp_base: 1 # Additional exp per mob killed
+    exp_lv: 1 # Additional exp per level per mob killed
+    compatible_with: # Limited to weapons
+      - SWORDS
+      - AXES
+
+  vampiric:
+    description: '&8> Killing en entity heals you for &e2&8-&e4&8 points'
+    enchant_name: '&7Soul Eater %lv_roman%'
+    enabled: true
+    weight: 80
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    healing_base: 2.0 # Base amount healed when killing an entity
+    healing_lv: 2.0 # Additional amount healed when killing an entity
+    compatible_with: # Limited to weapons
+      - SWORDS
+      - AXES
+
+  beheading:
+    description: '&8> Killing an entity adds a &e1&8-&e2%&8 chance of dropping its head. Works with creepers, skeletons, players, etc.'
+    enchant_name: '&7Executioner %lv_roman%'
+    enabled: true
+    weight: 10
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    beheading_base: 1.0 # Base chance for a killed enemy to drop a head
+    beheading_lv: 1.0 # Additional chance per level for a killed enemy to drop a head
+    axe_buff: 2.0 # Chance multiplier if using an axe
+    compatible_with: # Limited to weapons
+      - SWORDS
+      - AXES
+
+  soulbound:
+    description: '&8> Dying with a soulbound item prevents it from being dropped, instead, you respawn with it in your inventory'
+    # Warning: If the player doesn't have enough space in their inventory, their excessive soulbound items are dropped
+    enchant_name: '&7Soulbound'
+    enabled: true
+    weight: 40
+    book_only: false
+    single_use: true # Soulbound disappears off the item upon death
+    compatible_with:
+      - ALL
+
+  shockwave:
+    description: '&8> Right clicking on the upper surface of a block causes a shockwave that sends entities flying backwards in a radius of &e3&8-&e4&8 blocks, with a strength of &e0.5&8-&e0.7'
+    enchant_name: '&7Shockwave %lv_roman%'
+    enabled: true
+    weight: 10
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    radius_base: 3.0 # Base amount healed when killing an entity
+    radius_lv: 1.0 # Additional amount healed when killing an entity
+    force_base: 0.5
+    force_lv: 0.2
+    cooldown: 20
+    cooldown_message: '&cCooldown: {cooldown}s'
+    explode: true # If true, plays an explosion sound effect and visual on usage
+    compatible_with: # Limited to weapons
+      - SWORDS
+      - AXES
+
+  curse_brittle:
+    description: '&8> Curse enchant that, while moving, slowly decays durability'
+    enchant_name: '&cBrittle %lv_roman%'
+    enabled: true
+    weight: 5
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    durability_degeneration_base: 0.01 # base chance per movement packet to regenerate 1 durability at lv 1
+    durability_degeneration_lv: 0.01 # additional chance to regenerate 1 durability per level
+    compatible_with: # Limited to weapons
+      - ALL
+
+  curse_heavy:
+    description: '&8> Curse enchant that, while holding/wearing, slows the holder/wearer down and gives them mining fatigue'
+    enchant_name: '&cBurden %lv_roman%'
+    enabled: true
+    weight: 5
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    amplifier_slow: 0 # base strength of slow debuff (an amplifier of 0 means the effect is applied at level I, 1 is II, etc.)
+    amplifier_lv_slow: 1 # additional strength of slow per level
+    amplifier_fatigue: 0 # base strength of mining fatigue debuff (an amplifier of 0 means the effect is applied at level I, 1 is II, etc.)
+    amplifier_lv_fatigue: 1 # additional strength of mining fatigue per level
+    duration: 80 # duration of slow and mining fatigue debuffs granted per movement packet (20 = 1 second)
+    compatible_with: # Not limited to tools
+      - ALL
+
+  curse_hunger:
+    description: '&8> Curse enchant that slowly eats away at your hunger'
+    enchant_name: '&cParasitic %lv_roman%'
+    enabled: true
+    weight: 5
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    hunger_degeneration_lv: 0.05 # additional chance to remove 1 hunger per level
+    compatible_with: # Not limited to armor
+      - HELMETS
+      - CHESTPLATES
+      - LEGGINGS
+      - BOOTS
+
+
+# All usable compatible_with values, editing these values does not change anything
+compatible_with_values:
+  - SWORDS
+  - BOWS
+  - CROSSBOWS
+  - TRIDENTS
+  - HELMETS
+  - CHESTPLATES
+  - LEGGINGS
+  - BOOTS
+  - SHEARS
+  - FLINTANDSTEEL
+  - FISHINGROD
+  - ELYTRA
+  - PICKAXES
+  - AXES
+  - SHOVELS
+  - HOES
+  - ALL

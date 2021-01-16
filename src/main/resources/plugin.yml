@@ -1,0 +1,37 @@
+name: Enchantssquared
+version: 1.3-ALPHA
+main: me.athlaeos.enchantssquared.main.Main
+authors: [Athlaeos]
+description: Adds in a number of vanilla-like enchantments
+website: https://discord.gg/dUwtmYV
+softdepend: [WorldGuard]
+loadbefore: [WorldGuard]
+api-version: 1.13
+
+commands:
+  enchantssquared:
+    description: base command for Enchants Squared command
+    aliases: [es]
+
+permissions:
+  es.reload:
+    default: op
+    description: Permission to reload plugin
+  es.help:
+    default: true
+    description: Permission to use the /es help command
+  es.nocooldowns:
+    default: op
+    description: When using an enchant that normally has a cooldown, it will not go on cooldown
+  es.list:
+    default: op
+    description: Permission to use the /es help command
+  es.noregionrestrictions:
+    default: op
+    description: 'WORLDGUARD ONLY: When using an enchant within a WorldGuard flagged area against this enchant, it is not blocked'
+  es.enchant:
+    default: op
+    description: Admin command to enchant any item with a custom enchant
+  es.enchant.insertenchantmenthere:
+    default: op
+    description: Requires a player to have a specific enchant permission to be able to obtain it through enchanting
