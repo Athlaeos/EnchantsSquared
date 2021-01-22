@@ -11,6 +11,7 @@ import me.athlaeos.enchantssquared.enchantments.defendenchantments.Shielding;
 import me.athlaeos.enchantssquared.enchantments.defendenchantments.Steady;
 import me.athlaeos.enchantssquared.enchantments.healthregenerationenchantments.HealthRegenerationEnchantment;
 import me.athlaeos.enchantssquared.enchantments.healthregenerationenchantments.Vitality;
+import me.athlaeos.enchantssquared.enchantments.interactenchantments.AutoReplant;
 import me.athlaeos.enchantssquared.enchantments.interactenchantments.InteractEnchantment;
 import me.athlaeos.enchantssquared.enchantments.interactenchantments.PlaceTorch;
 import me.athlaeos.enchantssquared.enchantments.interactenchantments.Shockwave;
@@ -383,6 +384,8 @@ public class CustomEnchantManager {
         constantTriggerEnchantments.put(extractEnchantString(e.getEnchantLore()), (ConstantTriggerEnchantment) e);
         e = new Rejuvenation();
         constantTriggerEnchantments.put(extractEnchantString(e.getEnchantLore()), (ConstantTriggerEnchantment) e);
+        e = new LavaWalker();
+        constantTriggerEnchantments.put(extractEnchantString(e.getEnchantLore()), (ConstantTriggerEnchantment) e);
         e = new SpeedBoost();
         constantTriggerEnchantments.put(extractEnchantString(e.getEnchantLore()), (ConstantTriggerEnchantment) e);
         e = new JumpBoost();
@@ -438,6 +441,8 @@ public class CustomEnchantManager {
         healthRegenerationEnchantments.put(extractEnchantString(e.getEnchantLore()), (HealthRegenerationEnchantment) e);
 
         e = new PlaceTorch();
+        interactEnchantments.put(extractEnchantString(e.getEnchantLore()), (InteractEnchantment) e);
+        e = new AutoReplant();
         interactEnchantments.put(extractEnchantString(e.getEnchantLore()), (InteractEnchantment) e);
         e = new Shockwave();
         interactEnchantments.put(extractEnchantString(e.getEnchantLore()), (InteractEnchantment) e);

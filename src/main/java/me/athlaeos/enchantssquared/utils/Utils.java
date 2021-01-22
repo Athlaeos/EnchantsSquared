@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -79,6 +80,36 @@ public class Utils {
 				}
 			}
 		}
+	}
+
+	public static List<Block> getNearbyBlocks3D(Location location, int radius, Material filter) {
+		List<Block> blocks = new ArrayList<>();
+		assert location.getWorld() != null;
+		for(int x = location.getBlockX() - radius; x <= location.getBlockX() + radius; x++) {
+			for(int y = location.getBlockY() - radius; y <= location.getBlockY() + radius; y++) {
+				for(int z = location.getBlockZ() - radius; z <= location.getBlockZ() + radius; z++) {
+					Block b = location.getWorld().getBlockAt(x, y, z);
+					if (b.getType() == filter || filter == null){
+						blocks.add(b);
+					}
+				}
+			}
+		}
+		return blocks;
+	}
+
+	public static List<Block> getNearbyBlocks2D(Location location, int radius, Material filter) {
+		List<Block> blocks = new ArrayList<>();
+		assert location.getWorld() != null;
+		for(int x = location.getBlockX() - radius; x <= location.getBlockX() + radius; x++) {
+			for(int z = location.getBlockZ() - radius; z <= location.getBlockZ() + radius; z++) {
+				Block b = location.getWorld().getBlockAt(x, (int) location.getY(), z);
+				if (b.getType() == filter || filter == null) {
+					blocks.add(b);
+				}
+			}
+		}
+		return blocks;
 	}
 
 	public static Map<Integer, ArrayList<String>> pagesCreator(int pageSize, List<String> allEntries) {

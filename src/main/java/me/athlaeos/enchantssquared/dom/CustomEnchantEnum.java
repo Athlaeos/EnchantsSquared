@@ -37,5 +37,8 @@ public enum CustomEnchantEnum {
     STRENGTH,
     VIGOROUS,
     SOULBOUND,
+    LAVA_WALKER,
+    AUTO_REPLANT,
+    VEIN_MINER,
     UNASSIGNED
 }

@@ -53,6 +53,19 @@ enchantment_configuration:
     compatible_with:
       - ALL
 
+  lava_walker:
+    description: '&8> Transforms lava under you within a radius of &e1&8-&e2&8-&e3&8 blocks into magma, at the cost of durability.'
+    enchant_name: '&7Lava Walker %lv_roman%'
+    enabled: true
+    weight: 20
+    book_only: false
+    max_level: 2
+    max_level_table: 2
+    durability_degeneration: 0.1 # Chance per block of lava transformed to reduce 1 durability
+    transform_into: 'MAGMA_BLOCK' # The block lava will turn into when walked over
+    compatible_with:
+      - BOOTS
+
   shielding:
     description: '&8> Has a &e20&8-&e40%&8 chance to deflect projectiles that would normally hit you'
     enchant_name: '&7Shielding %lv_roman%'
@@ -67,7 +80,7 @@ enchantment_configuration:
 
   steady:
     description: '&8> Reduces knockback taken by &e20&8-&e40%'
-    enchant_name: '&7&8 %lv_roman%'
+    enchant_name: '&7Steady %lv_roman%'
     enabled: true
     weight: 40
     book_only: false
@@ -88,6 +101,13 @@ enchantment_configuration:
     # is reduced.
     cooldown: 100 # Cooldown in ticks
     cooldown_message: '&cCooldown: {cooldown}s' # Message sent to player if torch placement is on cooldown
+
+  auto_replant:
+    description: '&8> Right click with a hoe on a fully grown crop to instantly harvest and replant it'
+    enchant_name: '&7Harvesting'
+    enabled: true
+    weight: 40
+    book_only: false
 
   kinship:
     description: '&8> If the pickaxe matches the material of the ore you''re mining, some durability is restored. &estone:0-0-0&8, &eiron:1-2-3&8, &egold:5-10-15&8, &ediamond:10-20-30&8, &enetherite:50-100-150'

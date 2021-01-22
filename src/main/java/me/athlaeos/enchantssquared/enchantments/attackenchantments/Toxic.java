@@ -28,6 +28,8 @@ public class Toxic extends AttackEnchantment{
                 return;
             }
         }
+        if (victim == null) return;
+
         if (compatibleItems.contains(i.getType())){
             int finalDuration = 50 * ((level <= 1) ? this.duration_base : (this.duration_base + ((level - 1) * duration_lv)));
 

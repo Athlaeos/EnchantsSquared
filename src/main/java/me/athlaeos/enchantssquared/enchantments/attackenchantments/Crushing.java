@@ -27,6 +27,8 @@ public class Crushing extends AttackEnchantment{
                 return;
             }
         }
+        if (victim == null) return;
+
         if (compatibleItems.contains(i.getType())){
             int combinedArmorPieces = 0;
             if (victim.getEquipment() != null){

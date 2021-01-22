@@ -28,14 +28,13 @@ public class EnchantListener implements Listener {
         if (e.isCancelled()) return;
         Player p = e.getEnchanter();
         if (!manager.doesPlayerWantEnchants(p)) return;
-        if (e.getExpLevelCost() >= plugin.getConfig().getInt("minimal_exp_cost")){
+        if (e.getExpLevelCost() >= plugin.getConfig().getInt("level_minimum")){
             int randomEnchantNumber = RandomNumberGenerator.getRandom().nextInt(100) + 1;
             if (randomEnchantNumber <= min_enchant_level_needed){
                 plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
                     ItemStack item = e.getInventory().getItem(0);
                     enchantmanager.applyCustomEnchants(item, e.getEnchanter());
                 }, 1L);
-
             }
         }
     }

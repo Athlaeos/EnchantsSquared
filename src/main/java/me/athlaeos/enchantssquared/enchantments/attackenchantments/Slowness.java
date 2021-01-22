@@ -40,6 +40,7 @@ public class Slowness extends AttackEnchantment{
                 return;
             }
         }
+        if (victim == null) return;
 
         if (compatibleItems.contains(i.getType())){
             double final_apply_chance = (level <= 1) ? this.apply_chance : this.apply_chance + ((level - 1) * this.apply_chance_lv);

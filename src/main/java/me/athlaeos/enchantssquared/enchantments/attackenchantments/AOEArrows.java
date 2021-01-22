@@ -38,6 +38,7 @@ public class AOEArrows extends AttackEnchantment{
             }
         }
         if (!(e.getDamager() instanceof Projectile)) return;
+        if (victim == null) return;
         if (compatibleItems.contains(i.getType())){
             double finalRadius = (level <= 1) ? this.radius_base : (this.radius_base + ((level - 1) * radius_lv));
             double finalDamage = (level <= 1) ? this.aoe_damage_base : (this.aoe_damage_base + ((level - 1) * aoe_damage_lv));

@@ -48,6 +48,9 @@ public class WorldguardManager {
     private StateFlag ENCHANTSSQUARED_DENY_BARBARIAN;
     private StateFlag ENCHANTSSQUARED_DENY_BEHEADING;
     private StateFlag ENCHANTSSQUARED_DENY_SOULBOUND;
+    private StateFlag ENCHANTSSQUARED_DENY_LAVA_WALKER;
+    private StateFlag ENCHANTSSQUARED_DENY_VEIN_MINER;
+    private StateFlag ENCHANTSSQUARED_DENY_AUTO_REPLANT;
 
     public WorldguardManager(){
     }
@@ -133,5 +136,8 @@ public class WorldguardManager {
         this.ENCHANTSSQUARED_DENY_WITHERING = setFlag("es-deny-withering");
         this.ENCHANTSSQUARED_DENY_BEHEADING = setFlag("es-deny-beheading");
         this.ENCHANTSSQUARED_DENY_SOULBOUND = setFlag("es-deny-soulbound");
+        this.ENCHANTSSQUARED_DENY_LAVA_WALKER = setFlag("es-deny-lava-walker");
+        this.ENCHANTSSQUARED_DENY_VEIN_MINER = setFlag("es-deny-vein-miner");
+        this.ENCHANTSSQUARED_DENY_AUTO_REPLANT = setFlag("es-deny-auto-replant");
     }
 }
