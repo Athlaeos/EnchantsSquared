@@ -78,7 +78,8 @@ public class Shielding extends DefendEnchantment {
 
         message = ConfigManager.getInstance().getConfig("translations.yml").get().getString("enchant_notifications.activation_deflect_projectile");
 
-        for (String s : config.getStringList("enchantment_configuration.shielding.compatible_with")){
+        this.compatibleItemStrings = config.getStringList("enchantment_configuration.shielding.compatible_with");
+        for (String s : compatibleItemStrings){
             try {
                 MaterialClassType type = MaterialClassType.valueOf(s);
                 this.compatibleItems.addAll(ItemMaterialManager.getInstance().getMaterialsFromType(type));

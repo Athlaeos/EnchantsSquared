@@ -116,7 +116,8 @@ public class Shockwave extends InteractEnchantment{
         this.explode = config.getBoolean("enchantment_configuration.shockwave.explode");
         this.enchantDescription = config.getString("enchantment_configuration.shockwave.description");
 
-        for (String s : config.getStringList("enchantment_configuration.shockwave.compatible_with")){
+        this.compatibleItemStrings = config.getStringList("enchantment_configuration.shockwave.compatible_with");
+        for (String s : compatibleItemStrings){
             try {
                 MaterialClassType type = MaterialClassType.valueOf(s);
                 this.compatibleItems.addAll(ItemMaterialManager.getInstance().getMaterialsFromType(type));

@@ -2,28 +2,15 @@ package me.athlaeos.enchantssquared.enchantments.interactenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.hooks.JobsHook;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.main.Main;
-import me.athlaeos.enchantssquared.managers.CooldownManager;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
-import me.athlaeos.enchantssquared.managers.RandomNumberGenerator;
-import me.athlaeos.enchantssquared.utils.Utils;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Directional;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -54,6 +41,7 @@ public class AutoReplant extends InteractEnchantment{
                     BlockBreakEvent breakEvent = new BlockBreakEvent(e.getClickedBlock(), e.getPlayer());
                     Main.getPlugin().getServer().getPluginManager().callEvent(breakEvent);
                     if (!breakEvent.isCancelled()){
+                        JobsHook.getJobsHook().performBlockBreakAction(e.getPlayer(), e.getClickedBlock());
                         Collection<ItemStack> drops =  e.getClickedBlock().getDrops(e.getPlayer().getInventory().getItemInMainHand());
 
                         crop.setAge(0);

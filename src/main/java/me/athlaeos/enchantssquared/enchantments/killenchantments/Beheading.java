@@ -76,7 +76,8 @@ public class Beheading extends KillEnchantment{
         this.max_level = config.getInt("enchantment_configuration.beheading.max_level");
         this.enchantDescription = config.getString("enchantment_configuration.beheading.description");
 
-        for (String s : config.getStringList("enchantment_configuration.beheading.compatible_with")){
+        this.compatibleItemStrings = config.getStringList("enchantment_configuration.beheading.compatible_with");
+        for (String s : compatibleItemStrings){
             try {
                 MaterialClassType type = MaterialClassType.valueOf(s);
                 this.compatibleItems.addAll(ItemMaterialManager.getInstance().getMaterialsFromType(type));

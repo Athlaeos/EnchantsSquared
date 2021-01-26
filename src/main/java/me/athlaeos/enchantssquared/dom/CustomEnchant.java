@@ -15,6 +15,7 @@ public abstract class CustomEnchant {
     protected int max_level = 0;
     protected List<Enchantment> conflictsWith = new ArrayList<>();
     protected List<Material> compatibleItems = new ArrayList<>();
+    protected List<String> compatibleItemStrings = new ArrayList<>();
     protected boolean enabled;
     protected boolean book_only;
     protected int max_level_table = 0;
@@ -54,6 +55,10 @@ public abstract class CustomEnchant {
 
     public int getMax_level() {
         return max_level;
+    }
+
+    public List<String> getCompatibleItemStrings() {
+        return compatibleItemStrings;
     }
 
     public List<Enchantment> getConflictsWith() {

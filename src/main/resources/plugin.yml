@@ -1,10 +1,10 @@
 name: Enchantssquared
-version: 1.5-ALPHA
+version: 1.6-ALPHA
 main: me.athlaeos.enchantssquared.main.Main
 authors: [Athlaeos]
 description: Adds in a number of vanilla-like enchantments
 website: https://discord.gg/dUwtmYV
-softdepend: [WorldGuard]
+softdepend: [WorldGuard, Jobs]
 loadbefore: [WorldGuard]
 api-version: 1.13
 

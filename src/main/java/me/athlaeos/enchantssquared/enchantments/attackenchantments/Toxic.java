@@ -49,7 +49,8 @@ public class Toxic extends AttackEnchantment{
         this.max_level = config.getInt("enchantment_configuration.toxic.max_level");
         this.enchantDescription = config.getString("enchantment_configuration.toxic.description");
 
-        for (String s : config.getStringList("enchantment_configuration.toxic.compatible_with")){
+        this.compatibleItemStrings = config.getStringList("enchantment_configuration.toxic.compatible_with");
+        for (String s : compatibleItemStrings){
             try {
                 MaterialClassType type = MaterialClassType.valueOf(s);
                 this.compatibleItems.addAll(ItemMaterialManager.getInstance().getMaterialsFromType(type));

@@ -54,7 +54,8 @@ public class SpeedBoost extends ConstantTriggerEnchantment{
         this.max_level = config.getInt("enchantment_configuration.speed_boost.max_level");
         this.enchantDescription = config.getString("enchantment_configuration.speed_boost.description");
 
-        for (String s : config.getStringList("enchantment_configuration.speed_boost.compatible_with")){
+        this.compatibleItemStrings = config.getStringList("enchantment_configuration.speed_boost.compatible_with");
+        for (String s : compatibleItemStrings){
             try {
                 MaterialClassType type = MaterialClassType.valueOf(s);
                 this.compatibleItems.addAll(ItemMaterialManager.getInstance().getMaterialsFromType(type));

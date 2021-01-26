@@ -63,7 +63,8 @@ public class CurseHunger extends ConstantTriggerEnchantment{
         this.max_level = config.getInt("enchantment_configuration.curse_hunger.max_level");
         this.enchantDescription = config.getString("enchantment_configuration.curse_hunger.description");
 
-        for (String s : config.getStringList("enchantment_configuration.curse_hunger.compatible_with")){
+        this.compatibleItemStrings = config.getStringList("enchantment_configuration.curse_hunger.compatible_with");
+        for (String s : compatibleItemStrings){
             try {
                 MaterialClassType type = MaterialClassType.valueOf(s);
                 this.compatibleItems.addAll(ItemMaterialManager.getInstance().getMaterialsFromType(type));

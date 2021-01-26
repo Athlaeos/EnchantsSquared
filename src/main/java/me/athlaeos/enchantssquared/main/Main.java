@@ -1,6 +1,7 @@
 package me.athlaeos.enchantssquared.main;
 
 import me.athlaeos.enchantssquared.dom.Version;
+import me.athlaeos.enchantssquared.hooks.JobsHook;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.listeners.*;
 import me.athlaeos.enchantssquared.managers.CommandManager;
@@ -29,6 +30,7 @@ public final class Main extends JavaPlugin {
             this.saveResource("translations.yml", false);
         }
         WorldguardHook.getWorldguardHook().registerWorldGuard();
+        JobsHook.getJobsHook().registerJobs();
         if (WorldguardHook.getWorldguardHook().useWorldGuard()){
             WorldguardHook.getWorldguardHook().registerFlags();
         }

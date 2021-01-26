@@ -81,7 +81,8 @@ public class Slowness extends AttackEnchantment{
 
         message = ConfigManager.getInstance().getConfig("translations.yml").get().getString("enchant_notifications.application_slowness");
 
-        for (String s : config.getStringList("enchantment_configuration.slowness.compatible_with")){
+        this.compatibleItemStrings = config.getStringList("enchantment_configuration.slowness.compatible_with");
+        for (String s : compatibleItemStrings){
             try {
                 MaterialClassType type = MaterialClassType.valueOf(s);
                 this.compatibleItems.addAll(ItemMaterialManager.getInstance().getMaterialsFromType(type));

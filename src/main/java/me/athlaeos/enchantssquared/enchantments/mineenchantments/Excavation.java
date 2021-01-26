@@ -1,5 +1,6 @@
 package me.athlaeos.enchantssquared.enchantments.mineenchantments;
 
+import me.athlaeos.enchantssquared.hooks.JobsHook;
 import me.athlaeos.enchantssquared.main.Main;
 import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.CustomEnchantClassification;
@@ -118,6 +119,8 @@ public class Excavation extends BreakBlockEnchantment{
                     for (Location l : blocksToBreak){
                         if (breakableBlocks.contains(blockBroken.getWorld().getBlockAt(l).getType())){
                             Block block = blockBroken.getWorld().getBlockAt(l);
+                            JobsHook.getJobsHook().performBlockBreakAction(e.getPlayer(), block);
+                            Main.getPlugin().getServer().getPluginManager().callEvent(new BlockBreakEvent(block, e.getPlayer()));
                             if (smeltBlocks && smeltingAllowed){
                                 for (ItemStack i : MineUtils.cookBlock(heldTool, block)){
                                     block.getWorld().dropItem(block.getLocation().add(0.5, 0.5, 0.5), i);
@@ -126,7 +129,6 @@ public class Excavation extends BreakBlockEnchantment{
                             } else {
                                 block.breakNaturally(heldTool);
                             }
-                            Main.getPlugin().getServer().getPluginManager().callEvent(new BlockBreakEvent(block, e.getPlayer()));
 
                             if (RandomNumberGenerator.getRandom().nextDouble() <= durability_decay){
                                 durabilityDamage++;
@@ -198,7 +200,8 @@ public class Excavation extends BreakBlockEnchantment{
             }
         }
 
-        for (String s : config.getStringList("enchantment_configuration.excavation.compatible_with")){
+        this.compatibleItemStrings = config.getStringList("enchantment_configuration.excavation.compatible_with");
+        for (String s : compatibleItemStrings){
             try {
                 MaterialClassType type = MaterialClassType.valueOf(s);
                 this.compatibleItems.addAll(ItemMaterialManager.getInstance().getMaterialsFromType(type));

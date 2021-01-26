@@ -43,7 +43,8 @@ public class WaterBreathing extends ConstantTriggerEnchantment{
         this.book_only = config.getBoolean("enchantment_configuration.water_breathing.book_only");
         this.enchantDescription = config.getString("enchantment_configuration.water_breathing.description");
 
-        for (String s : config.getStringList("enchantment_configuration.water_breathing.compatible_with")){
+        this.compatibleItemStrings = config.getStringList("enchantment_configuration.water_breathing.compatible_with");
+        for (String s : compatibleItemStrings){
             try {
                 MaterialClassType type = MaterialClassType.valueOf(s);
                 this.compatibleItems.addAll(ItemMaterialManager.getInstance().getMaterialsFromType(type));

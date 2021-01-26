@@ -72,8 +72,9 @@ public class AOEArrows extends AttackEnchantment{
         this.max_level = config.getInt("enchantment_configuration.aoe_arrows.max_level");
         this.explosion = config.getBoolean("enchantment_configuration.aoe_arrows.explosion");
         this.enchantDescription = config.getString("enchantment_configuration.aoe_arrows.description");
+        this.compatibleItemStrings = config.getStringList("enchantment_configuration.aoe_arrows.compatible_with");
 
-        for (String s : config.getStringList("enchantment_configuration.aoe_arrows.compatible_with")){
+        for (String s : compatibleItemStrings){
             try {
                 MaterialClassType type = MaterialClassType.valueOf(s);
                 this.compatibleItems.addAll(ItemMaterialManager.getInstance().getMaterialsFromType(type));

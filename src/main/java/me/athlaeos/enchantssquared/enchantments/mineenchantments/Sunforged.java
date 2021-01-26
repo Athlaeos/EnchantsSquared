@@ -4,6 +4,7 @@ import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.CustomEnchantClassification;
 import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
+import me.athlaeos.enchantssquared.hooks.JobsHook;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.main.Main;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
@@ -42,8 +43,8 @@ public class Sunforged extends BreakBlockEnchantment{
                 for (ItemStack i : MineUtils.cookBlock(e.getPlayer().getInventory().getItemInMainHand(), e.getBlock())){
                     e.getBlock().getLocation().getWorld().dropItem(e.getBlock().getLocation().add(0.5, 0.5, 0.5), i);
                 }
+                JobsHook.getJobsHook().performBlockBreakAction(e.getPlayer(), e.getBlock());
                 e.getBlock().setType(Material.AIR);
-
                 if (item.getItemMeta() instanceof Damageable){
                     Damageable toolMeta = (Damageable) item.getItemMeta();
                     int unBreakingLevel = item.getEnchantmentLevel(Enchantment.DURABILITY);
@@ -69,7 +70,8 @@ public class Sunforged extends BreakBlockEnchantment{
         this.book_only = config.getBoolean("enchantment_configuration.sunforged.book_only");
         this.enchantDescription = config.getString("enchantment_configuration.sunforged.description");
 
-        for (String s : config.getStringList("enchantment_configuration.sunforged.compatible_with")){
+        this.compatibleItemStrings = config.getStringList("enchantment_configuration.sunforged.compatible_with");
+        for (String s : compatibleItemStrings){
             try {
                 MaterialClassType type = MaterialClassType.valueOf(s);
                 this.compatibleItems.addAll(ItemMaterialManager.getInstance().getMaterialsFromType(type));

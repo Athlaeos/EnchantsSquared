@@ -57,7 +57,8 @@ public class Crushing extends AttackEnchantment{
         this.max_level = config.getInt("enchantment_configuration.crushing.max_level");
         this.enchantDescription = config.getString("enchantment_configuration.crushing.description");
 
-        for (String s : config.getStringList("enchantment_configuration.crushing.compatible_with")){
+        this.compatibleItemStrings = config.getStringList("enchantment_configuration.crushing.compatible_with");
+        for (String s : compatibleItemStrings){
             try {
                 MaterialClassType type = MaterialClassType.valueOf(s);
                 this.compatibleItems.addAll(ItemMaterialManager.getInstance().getMaterialsFromType(type));

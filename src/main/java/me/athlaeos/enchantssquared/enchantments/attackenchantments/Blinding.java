@@ -75,8 +75,8 @@ public class Blinding extends AttackEnchantment{
         this.enchantDescription = config.getString("enchantment_configuration.blinding.description");
 
         message = ConfigManager.getInstance().getConfig("translations.yml").get().getString("enchant_notifications.application_blinding");
-
-        for (String s : config.getStringList("enchantment_configuration.blinding.compatible_with")){
+        this.compatibleItemStrings = config.getStringList("enchantment_configuration.blinding.compatible_with");
+        for (String s : compatibleItemStrings){
             try {
                 MaterialClassType type = MaterialClassType.valueOf(s);
                 this.compatibleItems.addAll(ItemMaterialManager.getInstance().getMaterialsFromType(type));

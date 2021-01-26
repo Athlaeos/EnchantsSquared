@@ -60,7 +60,8 @@ public class Rejuvenation extends ConstantTriggerEnchantment{
         this.max_level = config.getInt("enchantment_configuration.rejuvenation.max_level");
         this.enchantDescription = config.getString("enchantment_configuration.rejuvenation.description");
 
-        for (String s : config.getStringList("enchantment_configuration.rejuvenation.compatible_with")){
+        this.compatibleItemStrings = config.getStringList("enchantment_configuration.rejuvenation.compatible_with");
+        for (String s : compatibleItemStrings){
             try {
                 MaterialClassType type = MaterialClassType.valueOf(s);
                 this.compatibleItems.addAll(ItemMaterialManager.getInstance().getMaterialsFromType(type));

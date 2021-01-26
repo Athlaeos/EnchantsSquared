@@ -78,5 +78,6 @@ public class Kinship extends BreakBlockEnchantment{
         this.enchantDescription = config.getString("enchantment_configuration.kinship.description");
 
         this.compatibleItems.addAll(ItemMaterialManager.getInstance().getPickaxes());
+        this.compatibleItems.remove(Material.GOLDEN_PICKAXE);
     }
 }

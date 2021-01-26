@@ -17,9 +17,16 @@ custom_enchant_rate: 50
 # The enchantment name will be the name as written down in the config. Example: Curse of burdening will be es.enchant.curse_burden
 permission_required: false
 
+# Include rarity(weight) in /es list enchant descriptions
+eslist_include_weight: true
+# Include max level in /es list enchant descriptions
+eslist_include_max_level: true
+# Include compatible items in /es list enchant descriptions
+eslist_include_compatible_items: true
+
 enchantment_configuration:
   excavation:
-    description: '&8> Mines a 3x3x1 area instead of 1x1x1, hold shift to stop this effect.'
+    description: '&8> Mines a 3x3x1 area instead of 1x1x1, but you mine a bit slower. Sneak while mining to stop this effect.'
     enchant_name: '&7Excavation' # The lore applied on items, which is also used for determining item enchants
     enabled: true # If disabled, enchant will not appear in the enchantment table. It will still be functional though
     weight: 20 # The rarity of the item in weight, lower values mean less common
@@ -42,7 +49,8 @@ enchantment_configuration:
 
   rejuvenation:
     description: '&8> Slowly regenerates durability while moving'
-    enchant_name: '&7Rejuvenation %lv_roman%'
+    enchant_name: '&7Rejuvenation %lv_roman%' # For enchantments that have a max level higher than 0 you can use either
+    # %lv_roman% for roman numeral levels or %lv_number% for regular number levels, if you prefer lame virgin arabic numbers over epic chad roman numerals
     enabled: true
     weight: 80
     book_only: false
@@ -106,11 +114,11 @@ enchantment_configuration:
     description: '&8> Right click with a hoe on a fully grown crop to instantly harvest and replant it'
     enchant_name: '&7Harvesting'
     enabled: true
-    weight: 40
+    weight: 80
     book_only: false
 
   kinship:
-    description: '&8> If the pickaxe matches the material of the ore you''re mining, some durability is restored. &estone:0-0-0&8, &eiron:1-2-3&8, &egold:5-10-15&8, &ediamond:10-20-30&8, &enetherite:50-100-150'
+    description: '&8> If the pickaxe matches the material of the ore you''re mining, some durability is restored. &estone:0-0-0&8, &eiron:1-2-3&8, &ediamond:10-20-30&8, &enetherite:50-100-150'
     enchant_name: '&7Kinship %lv_roman%'
     enabled: true
     weight: 80
@@ -119,7 +127,6 @@ enchantment_configuration:
     max_level_table: 3
     durability_regen_netherite: 50 # Durability regenerated when mining netherite ore with a netherite pickaxe per level
     durability_regen_diamond: 10 # Durability regenerated when mining diamond ore with a diamond pickaxe per level
-    durability_regen_gold: 5 # Durability regenerated when mining gold ore with a gold pickaxe per level
     durability_regen_iron: 1 # Durability regenerated when mining iron ore with a iron pickaxe per level
     durability_regen_stone: 0 # Durability regenerated when mining stone with a stone pickaxe per level
 
@@ -168,7 +175,7 @@ enchantment_configuration:
       - HOES
 
   flight:
-    description: '&8> Allows the wearer flight at the cost of durability, unbreaking reduces this'
+    description: '&8> Allows the wearer flight at the cost of durability'
     enchant_name: '&7Wings'
     enabled: true
     weight: 10
@@ -423,7 +430,7 @@ enchantment_configuration:
 
 
   toxic:
-    description: '&8> Hitting an entity reduces its healing received by &e40&8-&e70&8-&e100%'
+    description: '&8> Hitting an entity reduces its healing received by &e40&8-&e70&8-&e100%&8 for &e6&8-&e8&8-&e10&8 seconds'
     enchant_name: '&7Toxic %lv_roman%'
     enabled: true
     weight: 80

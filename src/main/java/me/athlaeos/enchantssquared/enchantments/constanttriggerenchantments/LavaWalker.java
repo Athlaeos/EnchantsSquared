@@ -77,7 +77,8 @@ public class LavaWalker extends ConstantTriggerEnchantment{
             System.out.println("Material for transform_into for the lava walker enchant is not valid, please correct it");
         }
 
-        for (String s : config.getStringList("enchantment_configuration.lava_walker.compatible_with")){
+        this.compatibleItemStrings = config.getStringList("enchantment_configuration.lava_walker.compatible_with");
+        for (String s : compatibleItemStrings){
             try {
                 MaterialClassType type = MaterialClassType.valueOf(s);
                 this.compatibleItems.addAll(ItemMaterialManager.getInstance().getMaterialsFromType(type));

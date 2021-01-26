@@ -50,3 +50,9 @@ remove_enchant_description: 'Removes a line of lore/enchant from a held item. Li
 
 # Description message withing the '/es help' command of the enchant list command
 list_description: 'Shows a list of all enabled enchants as well as a description'
+# Translation of "weight" or rarity within the '/es list' command
+eslist_weight: '&eRarity: &7'
+# Translation of "max level" within the '/es list' command
+max_level_translation: '&eMax Level: &7%lv_roman%'
+# Translation of "compatible items" within the '/es list' command
+compatible_item_translation: '&eCompatible Items: &7'

@@ -67,7 +67,8 @@ public class Flight extends ConstantTriggerEnchantment{
         this.book_only = config.getBoolean("enchantment_configuration.flight.book_only");
         this.enchantDescription = config.getString("enchantment_configuration.flight.description");
 
-        for (String s : config.getStringList("enchantment_configuration.flight.compatible_with")){
+        this.compatibleItemStrings = config.getStringList("enchantment_configuration.flight.compatible_with");
+        for (String s : compatibleItemStrings){
             try {
                 MaterialClassType type = MaterialClassType.valueOf(s);
                 this.compatibleItems.addAll(ItemMaterialManager.getInstance().getMaterialsFromType(type));

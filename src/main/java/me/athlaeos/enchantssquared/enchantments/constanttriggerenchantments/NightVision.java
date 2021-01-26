@@ -43,7 +43,8 @@ public class NightVision extends ConstantTriggerEnchantment{
         this.book_only = config.getBoolean("enchantment_configuration.night_vision.book_only");
         this.enchantDescription = config.getString("enchantment_configuration.night_vision.description");
 
-        for (String s : config.getStringList("enchantment_configuration.night_vision.compatible_with")){
+        this.compatibleItemStrings = config.getStringList("enchantment_configuration.night_vision.compatible_with");
+        for (String s : compatibleItemStrings){
             try {
                 MaterialClassType type = MaterialClassType.valueOf(s);
                 this.compatibleItems.addAll(ItemMaterialManager.getInstance().getMaterialsFromType(type));

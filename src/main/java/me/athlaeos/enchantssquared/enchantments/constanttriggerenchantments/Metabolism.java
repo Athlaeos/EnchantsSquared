@@ -75,7 +75,8 @@ public class Metabolism extends ConstantTriggerEnchantment{
         this.saturation_limit = config.getInt("enchantment_configuration.metabolism.saturation_limit");
         this.enchantDescription = config.getString("enchantment_configuration.metabolism.description");
 
-        for (String s : config.getStringList("enchantment_configuration.metabolism.compatible_with")){
+        this.compatibleItemStrings = config.getStringList("enchantment_configuration.metabolism.compatible_with");
+        for (String s : compatibleItemStrings){
             try {
                 MaterialClassType type = MaterialClassType.valueOf(s);
                 this.compatibleItems.addAll(ItemMaterialManager.getInstance().getMaterialsFromType(type));
