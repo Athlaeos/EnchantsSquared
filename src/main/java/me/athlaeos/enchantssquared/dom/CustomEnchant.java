@@ -1,5 +1,6 @@
 package me.athlaeos.enchantssquared.dom;
 
+import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -16,13 +17,24 @@ public abstract class CustomEnchant {
     protected List<Enchantment> conflictsWith = new ArrayList<>();
     protected List<Material> compatibleItems = new ArrayList<>();
     protected List<String> compatibleItemStrings = new ArrayList<>();
+    protected List<Material> functionalItems = new ArrayList<>();
     protected boolean enabled;
     protected boolean book_only;
     protected int max_level_table = 0;
     protected YamlConfiguration config;
-    protected CustomEnchantEnum enchantType = CustomEnchantEnum.UNASSIGNED;
+    protected CustomEnchantType enchantType = CustomEnchantType.UNASSIGNED;
 
     public CustomEnchant() {
+    }
+
+    public void loadFunctionalItemStrings(List<String> itemClasses){
+        for (String s : itemClasses){
+            try {
+                MaterialClassType type = MaterialClassType.valueOf(s);
+                this.functionalItems.addAll(ItemMaterialManager.getInstance().getMaterialsFromType(type));
+            } catch (IllegalArgumentException ignored){
+            }
+        }
     }
 
     public String getRequiredPermission() {
@@ -82,7 +94,7 @@ public abstract class CustomEnchant {
         return compatibleItems;
     }
 
-    public CustomEnchantEnum getEnchantType() {
+    public CustomEnchantType getEnchantType() {
         return enchantType;
     }
 

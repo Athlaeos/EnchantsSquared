@@ -1,7 +1,7 @@
 package me.athlaeos.enchantssquared.enchantments.constanttriggerenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
@@ -13,14 +13,17 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Collections;
+
 public class Flight extends ConstantTriggerEnchantment{
     private double durability_decay;
 
     public Flight(){
-        this.enchantType = CustomEnchantEnum.FLIGHT;
+        this.enchantType = CustomEnchantType.FLIGHT;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.flight";
         loadConfig();
+        loadFunctionalItemStrings(Collections.singletonList("ALL"));
         this.max_level_table = 0;
         this.max_level = 0;
     }
@@ -40,18 +43,16 @@ public class Flight extends ConstantTriggerEnchantment{
                 return;
             }
         }
-        if (compatibleItems.contains(stack.getType())){
-            e.getPlayer().setAllowFlight(true);
-            if (e.getPlayer().isFlying()){
-                if (e.getPlayer().getGameMode() != GameMode.CREATIVE && e.getPlayer().getGameMode() != GameMode.SPECTATOR){
+        e.getPlayer().setAllowFlight(true);
+        if (e.getPlayer().isFlying()){
+            if (e.getPlayer().getGameMode() != GameMode.CREATIVE && e.getPlayer().getGameMode() != GameMode.SPECTATOR){
+                if (stack.getItemMeta() instanceof Damageable){
                     double break_chance = durability_decay * (1D/(stack.getEnchantmentLevel(Enchantment.DURABILITY) + 1D));
                     double randomDouble = RandomNumberGenerator.getRandom().nextDouble();
                     if (randomDouble < break_chance){
-                        if (stack.getItemMeta() instanceof Damageable){
-                            Damageable bootsMeta = (Damageable) stack.getItemMeta();
-                            bootsMeta.setDamage(bootsMeta.getDamage() + 1);
-                            stack.setItemMeta((ItemMeta) bootsMeta);
-                        }
+                        Damageable itemMeta = (Damageable) stack.getItemMeta();
+                        itemMeta.setDamage(itemMeta.getDamage() + 1);
+                        stack.setItemMeta((ItemMeta) itemMeta);
                     }
                 }
             }

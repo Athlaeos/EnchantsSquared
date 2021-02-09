@@ -3,7 +3,7 @@ package me.athlaeos.enchantssquared.commands;
 import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.Command;
 import me.athlaeos.enchantssquared.dom.CustomEnchant;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.main.Main;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.utils.Utils;
@@ -89,21 +89,21 @@ public class GetEnchantListCommand implements Command {
 				}
 			} catch (NumberFormatException nfe) {
 				try {
-					CustomEnchantEnum type = CustomEnchantEnum.valueOf(args[1].toUpperCase());
+					CustomEnchantType type = CustomEnchantType.valueOf(args[1].toUpperCase());
 					CustomEnchant enchant = CustomEnchantManager.getInstance().getEnchant(type);
 					sender.sendMessage(Utils.chat("&8&m                                             "));
 					sender.sendMessage(Utils.chat("&7" + CustomEnchantManager.getInstance().extractEnchantString(enchant.getEnchantLore())));
 					sender.sendMessage(Utils.chat(enchant.getEnchantDescription()));
 					if (eslist_include_weight){
-						helpLines.add(Utils.chat(weight_translation + enchant.getWeight()));
+						sender.sendMessage(Utils.chat(weight_translation + enchant.getWeight()));
 					}
 					if (eslist_include_max_level){
-						helpLines.add(Utils.chat(max_level_translation
+						sender.sendMessage(Utils.chat(max_level_translation
 								.replace("%lv_roman%", Utils.toRoman(enchant.getMax_level())
 										.replace("%lv_number%", "" + enchant.getMax_level()))));
 					}
 					if (eslist_include_compatible_items){
-						helpLines.add(Utils.chat(compatible_item_translation + String.join(", ", enchant.getCompatibleItemStrings()).toLowerCase()));
+						sender.sendMessage(Utils.chat(compatible_item_translation + String.join(", ", enchant.getCompatibleItemStrings()).toLowerCase()));
 					}
 					sender.sendMessage(Utils.chat("&8&m                                             "));
 					return true;
@@ -190,8 +190,10 @@ public class GetEnchantListCommand implements Command {
 	public List<String> getSubcommandArgs(CommandSender sender, String[] args) {
 		if (args.length == 2) {
 			List<String> subargs = new ArrayList<String>();
-			for (CustomEnchantEnum e : CustomEnchantEnum.values()){
-				subargs.add(e.toString().toLowerCase());
+			for (CustomEnchantType e : CustomEnchantType.values()){
+				if (e != CustomEnchantType.UNASSIGNED){
+					subargs.add(e.toString().toLowerCase());
+				}
 			}
 			return subargs;
 		}

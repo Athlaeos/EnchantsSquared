@@ -1,6 +1,6 @@
 package me.athlaeos.enchantssquared.dom;
 
-public enum CustomEnchantEnum {
+public enum CustomEnchantType {
     FLIGHT,
     HASTE,
     JUMP_BOOST,
@@ -20,6 +20,7 @@ public enum CustomEnchantEnum {
     CURSE_HEAVY,
     CURSE_DURABILITY,
     CURSE_HUNGER,
+    CURSE_BERSERK,
     WITHERING,
     POISONING,
     CRUSHING,
@@ -40,5 +41,7 @@ public enum CustomEnchantEnum {
     LAVA_WALKER,
     AUTO_REPLANT,
     VEIN_MINER,
+    CHEMICAL_SHIELD,
+    POTION_POTENCY_BUFF,
     UNASSIGNED
 }

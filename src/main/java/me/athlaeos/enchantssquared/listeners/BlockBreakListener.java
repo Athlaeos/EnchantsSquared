@@ -1,12 +1,9 @@
 package me.athlaeos.enchantssquared.listeners;
 
 import me.athlaeos.enchantssquared.dom.CustomEnchant;
-import me.athlaeos.enchantssquared.dom.CustomEnchantClassification;
-import me.athlaeos.enchantssquared.dom.Version;
 import me.athlaeos.enchantssquared.enchantments.mineenchantments.BreakBlockEnchantment;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
-import me.athlaeos.enchantssquared.managers.MinecraftVersionManager;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -32,7 +29,7 @@ public class BlockBreakListener implements Listener {
             ItemStack mainHandItem = e.getPlayer().getInventory().getItemInMainHand();
             if (mainHandItem.getType() != Material.AIR){
                 if (mainHandItem.hasItemMeta()){
-                    Map<CustomEnchant, Integer> enchants = enchantManager.getItemsEnchants(mainHandItem, CustomEnchantClassification.ON_BLOCK_BREAK);
+                    Map<CustomEnchant, Integer> enchants = enchantManager.getItemsEnchantsFromPDC(mainHandItem);
                     for (CustomEnchant enchant : enchants.keySet()){
                         if (enchant instanceof BreakBlockEnchantment){
                             ((BreakBlockEnchantment) enchant).execute(e, mainHandItem, enchants.get(enchant));

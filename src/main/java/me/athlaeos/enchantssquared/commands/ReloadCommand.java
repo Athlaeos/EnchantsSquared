@@ -2,6 +2,7 @@ package me.athlaeos.enchantssquared.commands;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.Command;
+import me.athlaeos.enchantssquared.main.Main;
 import me.athlaeos.enchantssquared.managers.CommandManager;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.utils.MineUtils;
@@ -27,8 +28,9 @@ public class ReloadCommand implements Command {
 		for (String config : ConfigManager.getInstance().getConfigs().keySet()){
 			ConfigManager.getInstance().getConfigs().get(config).reload();
 		}
-		CustomEnchantManager.getInstance().reload();
+
 		CommandManager.getInstance().reload();
+		CustomEnchantManager.getInstance().reload();
 		MineUtils.reload();
 		sender.sendMessage(Utils.chat(reload_successful));
 		return true;

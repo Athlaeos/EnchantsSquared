@@ -1,7 +1,7 @@
 package me.athlaeos.enchantssquared.enchantments.mineenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
 import org.bukkit.Material;
@@ -10,6 +10,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,9 +23,12 @@ public class Kinship extends BreakBlockEnchantment{
     private Map<Material, Material> pickaxeBreakables = new HashMap<>();
 
     public Kinship(){
-        this.enchantType = CustomEnchantEnum.KINSHIP;
+        this.enchantType = CustomEnchantType.KINSHIP;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.kinship";
+        loadFunctionalItemStrings(Collections.singletonList("PICKAXES"));
+        this.compatibleItemStrings = Collections.singletonList("PICKAXES");
+        this.functionalItems.remove(Material.GOLDEN_PICKAXE);
         loadConfig();
         try {
             pickaxeBreakables.put(Material.valueOf("NETHERITE_PICKAXE"), Material.valueOf("NETHERITE_ORE"));
@@ -36,7 +41,7 @@ public class Kinship extends BreakBlockEnchantment{
 
     @Override
     public void execute(BlockBreakEvent e, ItemStack item, int level) {
-        if (this.compatibleItems.contains(item.getType())){
+        if (this.functionalItems.contains(item.getType())){
             if (!e.getPlayer().hasPermission("es.noregionrestrictions")){
                 if (WorldguardHook.getWorldguardHook().isLocationInRegionWithFlag(e.getPlayer().getLocation(), "es-deny-kinship")){
                     return;

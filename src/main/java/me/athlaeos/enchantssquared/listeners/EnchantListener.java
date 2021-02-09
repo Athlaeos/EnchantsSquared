@@ -33,7 +33,7 @@ public class EnchantListener implements Listener {
             if (randomEnchantNumber <= min_enchant_level_needed){
                 plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
                     ItemStack item = e.getInventory().getItem(0);
-                    enchantmanager.applyCustomEnchants(item, e.getEnchanter());
+                    enchantmanager.enchantForPlayer(item, e.getEnchanter());
                 }, 1L);
             }
         }

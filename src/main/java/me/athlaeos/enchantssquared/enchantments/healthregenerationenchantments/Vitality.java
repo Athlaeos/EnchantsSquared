@@ -1,18 +1,17 @@
 package me.athlaeos.enchantssquared.enchantments.healthregenerationenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantClassification;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
 import me.athlaeos.enchantssquared.utils.Utils;
-import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
-import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Collections;
 
 public class Vitality extends HealthRegenerationEnchantment{
     private int extra_healing_lv;
@@ -20,9 +19,10 @@ public class Vitality extends HealthRegenerationEnchantment{
     private CustomEnchantManager manager;
 
     public Vitality(){
-        this.enchantType = CustomEnchantEnum.VITALITY;
+        this.enchantType = CustomEnchantType.VITALITY;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.vitality";
+        loadFunctionalItemStrings(Collections.singletonList("ALL"));
         loadConfig();
     }
 
@@ -38,9 +38,7 @@ public class Vitality extends HealthRegenerationEnchantment{
         assert e.getEntity() instanceof LivingEntity;
         int collectiveLevel = 0;
         for (ItemStack item : Utils.getEntityEquipment(e.getEntity(), true)){
-            if (this.compatibleItems.contains(item.getType())){
-                collectiveLevel += manager.getEnchantStrength(item, CustomEnchantEnum.VITALITY, CustomEnchantClassification.ON_HEALTH_REGEN);
-            }
+            collectiveLevel += manager.getEnchantStrength(item, CustomEnchantType.VITALITY);
         }
 
         int healBonus = extra_healing_lv * collectiveLevel;

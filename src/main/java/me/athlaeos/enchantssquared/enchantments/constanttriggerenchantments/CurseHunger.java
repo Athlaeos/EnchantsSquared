@@ -1,8 +1,7 @@
 package me.athlaeos.enchantssquared.enchantments.constanttriggerenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantClassification;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.main.Main;
@@ -10,20 +9,21 @@ import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
 import me.athlaeos.enchantssquared.managers.RandomNumberGenerator;
 import me.athlaeos.enchantssquared.utils.Utils;
-import org.bukkit.Material;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Collections;
 
 public class CurseHunger extends ConstantTriggerEnchantment{
     private double hunger_degeneration_lv;
     private CustomEnchantManager manager;
 
     public CurseHunger(){
-        this.enchantType = CustomEnchantEnum.CURSE_HUNGER;
+        this.enchantType = CustomEnchantType.CURSE_HUNGER;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.curse_hunger";
+        loadFunctionalItemStrings(Collections.singletonList("ALL"));
         loadConfig();
     }
 
@@ -38,8 +38,8 @@ public class CurseHunger extends ConstantTriggerEnchantment{
         }
         int collectiveLevel = 0;
         for (ItemStack item : Utils.getEntityEquipment(e.getPlayer(), true)){
-            if (this.compatibleItems.contains(item.getType())) {
-                collectiveLevel += manager.getEnchantStrength(item, CustomEnchantEnum.CURSE_HUNGER, CustomEnchantClassification.CONSTANT_TRIGGER);
+            if (this.functionalItems.contains(item.getType())) {
+                collectiveLevel += manager.getEnchantStrength(item, CustomEnchantType.CURSE_HUNGER);
             }
         }
         double hungerDegenerationChance = collectiveLevel * hunger_degeneration_lv;

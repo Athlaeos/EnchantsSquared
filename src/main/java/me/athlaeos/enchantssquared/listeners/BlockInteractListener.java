@@ -1,7 +1,6 @@
 package me.athlaeos.enchantssquared.listeners;
 
 import me.athlaeos.enchantssquared.dom.CustomEnchant;
-import me.athlaeos.enchantssquared.dom.CustomEnchantClassification;
 import me.athlaeos.enchantssquared.enchantments.interactenchantments.InteractEnchantment;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
@@ -38,7 +37,7 @@ public class BlockInteractListener implements Listener {
                     return;
                 }
 
-                Map<CustomEnchant, Integer> enchants = CustomEnchantManager.getInstance().getItemsEnchants(clickedItem, CustomEnchantClassification.ON_INTERACT);
+                Map<CustomEnchant, Integer> enchants = CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(clickedItem);
                 for (CustomEnchant en : enchants.keySet()){
                     if (en instanceof InteractEnchantment){
                         ((InteractEnchantment) en).execute(e, clickedItem, enchants.get(en));

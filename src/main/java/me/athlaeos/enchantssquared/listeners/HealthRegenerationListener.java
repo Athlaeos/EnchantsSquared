@@ -2,12 +2,12 @@ package me.athlaeos.enchantssquared.listeners;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.CustomEnchant;
-import me.athlaeos.enchantssquared.dom.CustomEnchantClassification;
 import me.athlaeos.enchantssquared.enchantments.healthregenerationenchantments.HealthRegenerationEnchantment;
 import me.athlaeos.enchantssquared.enchantments.healthregenerationenchantments.Vitality;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.enchantmanagers.ToxicHealingReductionManager;
+import me.athlaeos.enchantssquared.utils.Utils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
@@ -40,14 +40,9 @@ public class HealthRegenerationListener implements Listener {
                 Vitality v = null;
 
                 LivingEntity entity = (LivingEntity) e.getEntity();
-                List<ItemStack> equipment = new ArrayList<>();
-                if (entity.getEquipment() == null) return;
-                if (entity.getEquipment().getHelmet() != null) equipment.add(entity.getEquipment().getHelmet());
-                if (entity.getEquipment().getChestplate() != null) equipment.add(entity.getEquipment().getChestplate());
-                if (entity.getEquipment().getLeggings() != null) equipment.add(entity.getEquipment().getLeggings());
-                if (entity.getEquipment().getBoots() != null) equipment.add(entity.getEquipment().getBoots());
+                List<ItemStack> equipment = Utils.getEntityEquipment(e.getEntity(), true);
                 for (ItemStack i : equipment){
-                    for (CustomEnchant en : CustomEnchantManager.getInstance().getItemsEnchants(i, CustomEnchantClassification.ON_HEALTH_REGEN).keySet()){
+                    for (CustomEnchant en : CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(i).keySet()){
                         if (en instanceof HealthRegenerationEnchantment){
                             if (en instanceof Vitality){ //vitality is an exception enchantment that may only execute
                                 //once per event instead of once for each piece of armor

@@ -1,34 +1,29 @@
 package me.athlaeos.enchantssquared.enchantments.constanttriggerenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantClassification;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
-import me.athlaeos.enchantssquared.managers.RandomNumberGenerator;
 import me.athlaeos.enchantssquared.utils.Utils;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.Collections;
 
 public class Vigorous extends ConstantTriggerEnchantment{
     private double health_lv;
     private CustomEnchantManager manager = null;
 
     public Vigorous(){
-        this.enchantType = CustomEnchantEnum.VIGOROUS;
+        this.enchantType = CustomEnchantType.VIGOROUS;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.vigorous";
+        loadFunctionalItemStrings(Collections.singletonList("ALL"));
         loadConfig();
     }
 
@@ -48,9 +43,7 @@ public class Vigorous extends ConstantTriggerEnchantment{
         }
         int collectiveLevel = 0;
         for (ItemStack item : Utils.getEntityEquipment(e.getPlayer(), true)){
-            if (this.compatibleItems.contains(item.getType())) {
-                collectiveLevel += manager.getEnchantStrength(item, CustomEnchantEnum.VIGOROUS, CustomEnchantClassification.CONSTANT_TRIGGER);
-            }
+            collectiveLevel += manager.getEnchantStrength(item, CustomEnchantType.VIGOROUS);
         }
         double finalBonusHealth = collectiveLevel * health_lv;
         e.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20 + (healthBoostLevel * 4) + finalBonusHealth);

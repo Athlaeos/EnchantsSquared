@@ -14,7 +14,6 @@ public class AnvilListener implements Listener {
 
     private Main plugin;
     private final CustomEnchantManager enchantmanager = CustomEnchantManager.getInstance();
-    private final ConfigManager configManager = ConfigManager.getInstance();
     private int spamlimiter = 0;
     private String message;
 

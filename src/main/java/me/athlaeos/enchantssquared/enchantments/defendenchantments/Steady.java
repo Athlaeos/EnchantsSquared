@@ -2,29 +2,28 @@ package me.athlaeos.enchantssquared.enchantments.defendenchantments;
 
 import me.athlaeos.enchantssquared.main.Main;
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantClassification;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
 import me.athlaeos.enchantssquared.utils.Utils;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.Collections;
 
 public class Steady extends DefendEnchantment {
     private double knockbacK_reduction_lv = 1D;
     private CustomEnchantManager manager;
 
     public Steady(){
-        this.enchantType = CustomEnchantEnum.KNOCKBACK_PROTECTION;
+        this.enchantType = CustomEnchantType.KNOCKBACK_PROTECTION;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.steady";
+        loadFunctionalItemStrings(Collections.singletonList("ALL"));
         loadConfig();
     }
 
@@ -39,9 +38,7 @@ public class Steady extends DefendEnchantment {
 
         int collectiveLevel = 0;
         for (ItemStack item : Utils.getEntityEquipment(victim, true)) {
-            if (this.compatibleItems.contains(item.getType())) {
-                collectiveLevel += manager.getEnchantStrength(item, CustomEnchantEnum.KNOCKBACK_PROTECTION, CustomEnchantClassification.ON_DAMAGED);
-            }
+            collectiveLevel += manager.getEnchantStrength(item, CustomEnchantType.KNOCKBACK_PROTECTION);
         }
 
         double final_knockback_reduced = 1 - (collectiveLevel * knockbacK_reduction_lv);

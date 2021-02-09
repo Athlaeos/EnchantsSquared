@@ -1,40 +1,30 @@
 package me.athlaeos.enchantssquared.enchantments.interactenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.main.Main;
 import me.athlaeos.enchantssquared.managers.CooldownManager;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
-import me.athlaeos.enchantssquared.managers.RandomNumberGenerator;
 import me.athlaeos.enchantssquared.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Directional;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 public class Shockwave extends InteractEnchantment{
     private int cooldown;
@@ -46,9 +36,10 @@ public class Shockwave extends InteractEnchantment{
     private boolean explode;
 
     public Shockwave(){
-        this.enchantType = CustomEnchantEnum.SHOCKWAVE;
+        this.enchantType = CustomEnchantType.SHOCKWAVE;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.shockwave";
+        loadFunctionalItemStrings(Arrays.asList("SWORDS", "AXES", "PICKAXES", "HOES", "SHOVELS", "SHEARS", "SHIELDS"));
         loadConfig();
     }
 

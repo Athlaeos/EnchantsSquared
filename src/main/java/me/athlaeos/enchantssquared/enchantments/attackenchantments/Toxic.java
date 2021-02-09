@@ -1,7 +1,7 @@
 package me.athlaeos.enchantssquared.enchantments.attackenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
@@ -10,14 +10,17 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
+
 public class Toxic extends AttackEnchantment{
     private int duration_base;
     private int duration_lv;
 
     public Toxic(){
-        this.enchantType = CustomEnchantEnum.TOXIC;
+        this.enchantType = CustomEnchantType.TOXIC;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.toxic";
+        loadFunctionalItemStrings(Arrays.asList("SWORDS", "AXES", "BOWS", "CROSSBOWS", "PICKAXES", "HOES", "SHOVELS", "TRIDENTS", "SHEARS"));
         loadConfig();
     }
 
@@ -30,11 +33,9 @@ public class Toxic extends AttackEnchantment{
         }
         if (victim == null) return;
 
-        if (compatibleItems.contains(i.getType())){
-            int finalDuration = 50 * ((level <= 1) ? this.duration_base : (this.duration_base + ((level - 1) * duration_lv)));
+        int finalDuration = 50 * ((level <= 1) ? this.duration_base : (this.duration_base + ((level - 1) * duration_lv)));
 
-            ToxicHealingReductionManager.getInstance().afflictEntity(victim.getUniqueId(), level, finalDuration);
-        }
+        ToxicHealingReductionManager.getInstance().afflictEntity(victim.getUniqueId(), level, finalDuration);
     }
 
     @Override

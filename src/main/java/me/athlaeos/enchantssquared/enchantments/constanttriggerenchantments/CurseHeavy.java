@@ -1,7 +1,7 @@
 package me.athlaeos.enchantssquared.enchantments.constanttriggerenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
@@ -9,6 +9,8 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.Collections;
 
 public class CurseHeavy extends ConstantTriggerEnchantment{
     private int duration;
@@ -18,9 +20,10 @@ public class CurseHeavy extends ConstantTriggerEnchantment{
     private int amplifier_lv_fatigue;
 
     public CurseHeavy(){
-        this.enchantType = CustomEnchantEnum.CURSE_HEAVY;
+        this.enchantType = CustomEnchantType.CURSE_HEAVY;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.curse_heavy";
+        loadFunctionalItemStrings(Collections.singletonList("ALL"));
         loadConfig();
     }
 
@@ -33,7 +36,7 @@ public class CurseHeavy extends ConstantTriggerEnchantment{
         }
         int final_amplifier_slow = (level <= 1) ? this.amplifier_slow : (this.amplifier_slow + ((level - 1) * amplifier_lv_slow));
         int final_amplifier_fatigue = (level <= 1) ? this.amplifier_fatigue : (this.amplifier_fatigue + ((level - 1) * amplifier_lv_fatigue));
-        if (compatibleItems.contains(stack.getType())){
+        if (functionalItems.contains(stack.getType())){
             if (e.getPlayer().hasPotionEffect(PotionEffectType.SLOW)){
                 if (e.getPlayer().getPotionEffect(PotionEffectType.SLOW).getAmplifier() <= final_amplifier_slow){
                     e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, duration, final_amplifier_slow), true);

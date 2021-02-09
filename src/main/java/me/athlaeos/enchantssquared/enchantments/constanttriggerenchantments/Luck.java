@@ -1,7 +1,7 @@
 package me.athlaeos.enchantssquared.enchantments.constanttriggerenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
@@ -10,15 +10,18 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.Collections;
+
 public class Luck extends ConstantTriggerEnchantment{
     private int amplifier;
     private int duration;
     private int amplifier_lv;
 
     public Luck(){
-        this.enchantType = CustomEnchantEnum.LUCKY;
+        this.enchantType = CustomEnchantType.LUCKY;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.luck";
+        loadFunctionalItemStrings(Collections.singletonList("ALL"));
         loadConfig();
     }
 
@@ -30,14 +33,12 @@ public class Luck extends ConstantTriggerEnchantment{
             }
         }
         int final_amplifier = (level <= 1) ? this.amplifier : (this.amplifier + ((level - 1) * amplifier_lv));
-        if (compatibleItems.contains(stack.getType())){
-            if (e.getPlayer().hasPotionEffect(PotionEffectType.LUCK)){
-                if (e.getPlayer().getPotionEffect(PotionEffectType.LUCK).getAmplifier() <= final_amplifier){
-                    e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.LUCK, duration, final_amplifier), true);
-                }
-            } else {
+        if (e.getPlayer().hasPotionEffect(PotionEffectType.LUCK)){
+            if (e.getPlayer().getPotionEffect(PotionEffectType.LUCK).getAmplifier() <= final_amplifier){
                 e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.LUCK, duration, final_amplifier), true);
             }
+        } else {
+            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.LUCK, duration, final_amplifier), true);
         }
     }
 

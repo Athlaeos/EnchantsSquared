@@ -17,5 +17,6 @@ public enum MaterialClassType {
     AXES,
     SHOVELS,
     HOES,
+    SHIELDS,
     ALL
 }

@@ -1,12 +1,11 @@
 package me.athlaeos.enchantssquared.enchantments.attackenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
 import me.athlaeos.enchantssquared.utils.Utils;
-import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.*;
@@ -14,6 +13,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 public class AOEArrows extends AttackEnchantment{
@@ -24,9 +24,10 @@ public class AOEArrows extends AttackEnchantment{
     private boolean explosion;
 
     public AOEArrows(){
-        this.enchantType = CustomEnchantEnum.ARROW_AOE;
+        this.enchantType = CustomEnchantType.ARROW_AOE;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.aoe_arrows";
+        loadFunctionalItemStrings(Arrays.asList("BOWS", "CROSSBOWS"));
         loadConfig();
     }
 
@@ -39,7 +40,7 @@ public class AOEArrows extends AttackEnchantment{
         }
         if (!(e.getDamager() instanceof Projectile)) return;
         if (victim == null) return;
-        if (compatibleItems.contains(i.getType())){
+        if (functionalItems.contains(i.getType())){
             double finalRadius = (level <= 1) ? this.radius_base : (this.radius_base + ((level - 1) * radius_lv));
             double finalDamage = (level <= 1) ? this.aoe_damage_base : (this.aoe_damage_base + ((level - 1) * aoe_damage_lv));
             double damage = e.getDamage();

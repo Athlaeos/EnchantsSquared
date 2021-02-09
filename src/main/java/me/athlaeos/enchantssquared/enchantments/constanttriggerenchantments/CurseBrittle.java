@@ -1,7 +1,7 @@
 package me.athlaeos.enchantssquared.enchantments.constanttriggerenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.main.Main;
@@ -13,14 +13,17 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Collections;
+
 public class CurseBrittle extends ConstantTriggerEnchantment{
     private double durability_degeneration_base;
     private double durability_degeneration_lv;
 
     public CurseBrittle(){
-        this.enchantType = CustomEnchantEnum.CURSE_DURABILITY;
+        this.enchantType = CustomEnchantType.CURSE_DURABILITY;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.curse_brittle";
+        loadFunctionalItemStrings(Collections.singletonList("ALL"));
         loadConfig();
     }
 
@@ -31,7 +34,7 @@ public class CurseBrittle extends ConstantTriggerEnchantment{
                 return;
             }
         }
-        if (compatibleItems.contains(stack.getType())){
+        if (functionalItems.contains(stack.getType())){
             double durability_degen_chance = (level <= 1) ? durability_degeneration_base : (durability_degeneration_base + ((level - 1) * durability_degeneration_lv));
             if (RandomNumberGenerator.getRandom().nextDouble() < durability_degen_chance){
                 if (stack.getItemMeta() instanceof Damageable){

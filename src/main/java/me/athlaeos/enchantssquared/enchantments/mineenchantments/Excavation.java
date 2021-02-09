@@ -3,8 +3,7 @@ package me.athlaeos.enchantssquared.enchantments.mineenchantments;
 import me.athlaeos.enchantssquared.hooks.JobsHook;
 import me.athlaeos.enchantssquared.main.Main;
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantClassification;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
@@ -29,6 +28,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Excavation extends BreakBlockEnchantment{
@@ -42,11 +42,12 @@ public class Excavation extends BreakBlockEnchantment{
     private final List<Material> hoeBreakables = new ArrayList<>();
 
     public Excavation(){
-        this.enchantType = CustomEnchantEnum.EXCAVATION;
+        this.enchantType = CustomEnchantType.EXCAVATION;
         this.max_level_table = 0;
         this.max_level = 0;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.excavation";
+        loadFunctionalItemStrings(Arrays.asList("HOES", "AXES", "PICKAXES", "SHOVELS"));
         loadConfig();
     }
 
@@ -114,11 +115,11 @@ public class Excavation extends BreakBlockEnchantment{
                 } else {
                     int durabilityDamage = 0;
                     ExcavationBlockFaceManager.getInstance().getBlockFaceMap().remove(e.getPlayer().getUniqueId());
-                    boolean smeltBlocks = CustomEnchantManager.getInstance().doesItemHaveEnchant(
-                            heldTool, CustomEnchantEnum.SUNFORGED, CustomEnchantClassification.ON_BLOCK_BREAK);
+                    boolean smeltBlocks = CustomEnchantManager.getInstance().doesItemHaveEnchant(heldTool, CustomEnchantType.SUNFORGED);
                     for (Location l : blocksToBreak){
                         if (breakableBlocks.contains(blockBroken.getWorld().getBlockAt(l).getType())){
                             Block block = blockBroken.getWorld().getBlockAt(l);
+                            if (block.getDrops(item).isEmpty()) continue;
                             JobsHook.getJobsHook().performBlockBreakAction(e.getPlayer(), block);
                             Main.getPlugin().getServer().getPluginManager().callEvent(new BlockBreakEvent(block, e.getPlayer()));
                             if (smeltBlocks && smeltingAllowed){

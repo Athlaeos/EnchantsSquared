@@ -1,27 +1,26 @@
 package me.athlaeos.enchantssquared.enchantments.killenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantClassification;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
-import me.athlaeos.enchantssquared.managers.RandomNumberGenerator;
 import me.athlaeos.enchantssquared.managers.enchantmanagers.SoulboundItemManager;
-import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
+
+import java.util.Collections;
 
 public class Soulbound extends KillEnchantment{
     private boolean single_use;
 
     public Soulbound(){
-        this.enchantType = CustomEnchantEnum.SOULBOUND;
+        this.enchantType = CustomEnchantType.SOULBOUND;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.soulbound";
+        loadFunctionalItemStrings(Collections.singletonList("ALL"));
         loadConfig();
     }
 
@@ -34,7 +33,7 @@ public class Soulbound extends KillEnchantment{
         }
         if (e.getDrops().contains(stack)){
             if (single_use){
-                CustomEnchantManager.getInstance().removeEnchant(stack, CustomEnchantEnum.SOULBOUND, CustomEnchantClassification.ON_KILL);
+                CustomEnchantManager.getInstance().removeEnchant(stack, CustomEnchantType.SOULBOUND);
             }
             SoulboundItemManager.getInstance().executeOnDeath((e.getEntity()).getUniqueId(), stack);
             e.getDrops().remove(stack);

@@ -62,6 +62,8 @@ public final class Main extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new EntityAttackEntityListener(), this);
         this.getServer().getPluginManager().registerEvents(new EntityDeathListener(), this);
         this.getServer().getPluginManager().registerEvents(new PlayerRespawnListener(), this);
+        this.getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
+        this.getServer().getPluginManager().registerEvents(new PotionEffectListener(), this);
     }
 
     @Override

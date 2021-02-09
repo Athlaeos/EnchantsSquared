@@ -1,22 +1,22 @@
 package me.athlaeos.enchantssquared.enchantments.attackenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
 import me.athlaeos.enchantssquared.managers.RandomNumberGenerator;
 import me.athlaeos.enchantssquared.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.Arrays;
 
 public class Withering extends AttackEnchantment{
     private int amplifier;
@@ -29,9 +29,10 @@ public class Withering extends AttackEnchantment{
     private String message;
 
     public Withering(){
-        this.enchantType = CustomEnchantEnum.WITHERING;
+        this.enchantType = CustomEnchantType.WITHERING;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.withering";
+        loadFunctionalItemStrings(Arrays.asList("SWORDS", "AXES", "BOWS", "CROSSBOWS", "PICKAXES", "HOES", "SHOVELS", "TRIDENTS", "SHEARS"));
         loadConfig();
     }
 
@@ -44,22 +45,20 @@ public class Withering extends AttackEnchantment{
         }
         if (victim == null) return;
 
-        if (compatibleItems.contains(i.getType())){
-            double final_apply_chance = (level <= 1) ? this.apply_chance : this.apply_chance + ((level - 1) * this.apply_chance_lv);
-            if (RandomNumberGenerator.getRandom().nextDouble() <= final_apply_chance){
-                int final_amplifier = (level <= 1) ? this.amplifier : this.amplifier + ((level - 1) * this.amplifier_lv);
-                int final_duration = (level <= 1) ? this.duration : this.duration + ((level - 1) * this.duration_lv);
-                if (victim.hasPotionEffect(PotionEffectType.WITHER)){
-                    if (victim.getPotionEffect(PotionEffectType.WITHER).getAmplifier() <= final_amplifier){
-                        victim.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, final_duration, final_amplifier, false, true), true);
-                    }
-                } else {
+        double final_apply_chance = (level <= 1) ? this.apply_chance : this.apply_chance + ((level - 1) * this.apply_chance_lv);
+        if (RandomNumberGenerator.getRandom().nextDouble() <= final_apply_chance){
+            int final_amplifier = (level <= 1) ? this.amplifier : this.amplifier + ((level - 1) * this.amplifier_lv);
+            int final_duration = (level <= 1) ? this.duration : this.duration + ((level - 1) * this.duration_lv);
+            if (victim.hasPotionEffect(PotionEffectType.WITHER)){
+                if (victim.getPotionEffect(PotionEffectType.WITHER).getAmplifier() <= final_amplifier){
                     victim.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, final_duration, final_amplifier, false, true), true);
                 }
-                if (damager instanceof Player){
-                    if (!message.equals("")){
-                        ((Player) damager).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Utils.chat(message)));
-                    }
+            } else {
+                victim.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, final_duration, final_amplifier, false, true), true);
+            }
+            if (damager instanceof Player){
+                if (!message.equals("")){
+                    ((Player) damager).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Utils.chat(message)));
                 }
             }
         }

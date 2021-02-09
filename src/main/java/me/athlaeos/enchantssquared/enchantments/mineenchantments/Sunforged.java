@@ -1,8 +1,7 @@
 package me.athlaeos.enchantssquared.enchantments.mineenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantClassification;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.JobsHook;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
@@ -19,13 +18,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Arrays;
+
 public class Sunforged extends BreakBlockEnchantment{
     public Sunforged(){
-        this.enchantType = CustomEnchantEnum.SUNFORGED;
+        this.enchantType = CustomEnchantType.SUNFORGED;
         this.max_level_table = 0;
         this.max_level = 0;
         this.conflictsWith.add(Enchantment.SILK_TOUCH);
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
+        loadFunctionalItemStrings(Arrays.asList("SWORDS", "AXES", "PICKAXES", "HOES", "SHOVELS", "SHEARS"));
         this.requiredPermission = "es.enchant.sunforged";
         loadConfig();
     }
@@ -38,23 +40,26 @@ public class Sunforged extends BreakBlockEnchantment{
                     return;
                 }
             }
-            boolean hasExcavation = CustomEnchantManager.getInstance().doesItemHaveEnchant(e.getPlayer().getInventory().getItemInMainHand(), CustomEnchantEnum.EXCAVATION, CustomEnchantClassification.ON_BLOCK_BREAK);
-            if (!hasExcavation || e.getPlayer().isSneaking()){ //if player is sneaking excavation is disabled, so it smelts single blocks
-                for (ItemStack i : MineUtils.cookBlock(e.getPlayer().getInventory().getItemInMainHand(), e.getBlock())){
-                    e.getBlock().getLocation().getWorld().dropItem(e.getBlock().getLocation().add(0.5, 0.5, 0.5), i);
-                }
-                JobsHook.getJobsHook().performBlockBreakAction(e.getPlayer(), e.getBlock());
-                e.getBlock().setType(Material.AIR);
-                if (item.getItemMeta() instanceof Damageable){
-                    Damageable toolMeta = (Damageable) item.getItemMeta();
-                    int unBreakingLevel = item.getEnchantmentLevel(Enchantment.DURABILITY);
-                    double breakChance = 1D/(unBreakingLevel + 1D) * 100;
-                    if ((RandomNumberGenerator.getRandom().nextInt(100) + 1) < breakChance){
-                        PlayerItemDamageEvent event = new PlayerItemDamageEvent(e.getPlayer(), item, 1);
-                        Main.getPlugin().getServer().getPluginManager().callEvent(event);
-                        if (!event.isCancelled()){
-                            toolMeta.setDamage(toolMeta.getDamage() + event.getDamage());
-                            item.setItemMeta((ItemMeta) toolMeta);
+            if (this.functionalItems.contains(item.getType())){
+                boolean hasExcavation = CustomEnchantManager.getInstance().doesItemHaveEnchant(e.getPlayer().getInventory().getItemInMainHand(), CustomEnchantType.EXCAVATION);
+                if (!hasExcavation || e.getPlayer().isSneaking()){ //if player is sneaking excavation is disabled, so it smelts single blocks
+                    if (e.getBlock().getDrops(item).isEmpty()) return;
+                    for (ItemStack i : MineUtils.cookBlock(e.getPlayer().getInventory().getItemInMainHand(), e.getBlock())){
+                        e.getBlock().getLocation().getWorld().dropItem(e.getBlock().getLocation().add(0.5, 0.5, 0.5), i);
+                    }
+                    JobsHook.getJobsHook().performBlockBreakAction(e.getPlayer(), e.getBlock());
+                    e.getBlock().setType(Material.AIR);
+                    if (item.getItemMeta() instanceof Damageable){
+                        Damageable toolMeta = (Damageable) item.getItemMeta();
+                        int unBreakingLevel = item.getEnchantmentLevel(Enchantment.DURABILITY);
+                        double breakChance = 1D/(unBreakingLevel + 1D) * 100;
+                        if ((RandomNumberGenerator.getRandom().nextInt(100) + 1) < breakChance){
+                            PlayerItemDamageEvent event = new PlayerItemDamageEvent(e.getPlayer(), item, 1);
+                            Main.getPlugin().getServer().getPluginManager().callEvent(event);
+                            if (!event.isCancelled()){
+                                toolMeta.setDamage(toolMeta.getDamage() + event.getDamage());
+                                item.setItemMeta((ItemMeta) toolMeta);
+                            }
                         }
                     }
                 }

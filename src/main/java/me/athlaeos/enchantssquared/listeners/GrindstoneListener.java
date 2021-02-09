@@ -1,6 +1,8 @@
 package me.athlaeos.enchantssquared.listeners;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
+import me.athlaeos.enchantssquared.dom.CustomEnchant;
+import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.utils.Utils;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -14,7 +16,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GrindstoneListener implements Listener {
 
@@ -36,14 +40,11 @@ public class GrindstoneListener implements Listener {
             if (e.getSlotType() == InventoryType.SlotType.RESULT){
                 ItemStack item = e.getCurrentItem();
                 if (item != null){
-                    if (item.hasItemMeta()){
-                        ItemMeta meta = item.getItemMeta();
-                        assert meta != null;
-                        if (meta.hasLore()){
-                            meta.setLore(new ArrayList<>());
-                        }
-                        item.setItemMeta(meta);
-                    }
+                    CustomEnchantManager.getInstance().setItemEnchants(item, new HashMap<>());
+//                    ItemMeta itemMeta = item.getItemMeta();
+//                    assert itemMeta != null;
+//                    itemMeta.setLore(null);
+//                    item.setItemMeta(itemMeta);
                 }
             }
         }

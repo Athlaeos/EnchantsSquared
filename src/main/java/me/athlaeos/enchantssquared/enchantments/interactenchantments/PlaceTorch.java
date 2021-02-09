@@ -1,13 +1,11 @@
 package me.athlaeos.enchantssquared.enchantments.interactenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
-import me.athlaeos.enchantssquared.dom.Version;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.main.Main;
 import me.athlaeos.enchantssquared.managers.CooldownManager;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
-import me.athlaeos.enchantssquared.managers.MinecraftVersionManager;
 import me.athlaeos.enchantssquared.managers.RandomNumberGenerator;
 import me.athlaeos.enchantssquared.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
@@ -15,12 +13,9 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -29,6 +24,7 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 public class PlaceTorch extends InteractEnchantment{
     private int durability_cost;
@@ -37,11 +33,13 @@ public class PlaceTorch extends InteractEnchantment{
     private boolean use_unbreaking;
 
     public PlaceTorch(){
-        this.enchantType = CustomEnchantEnum.ILLUMINATED;
+        this.enchantType = CustomEnchantType.ILLUMINATED;
         this.max_level_table = 0;
         this.max_level = 0;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.illuminated";
+        loadFunctionalItemStrings(Collections.singletonList("PICKAXES"));
+        this.compatibleItemStrings = Collections.singletonList("PICKAXES");
         loadConfig();
     }
 
@@ -54,6 +52,7 @@ public class PlaceTorch extends InteractEnchantment{
         }
         if (e.getClickedBlock() == null) return;
         if (e.getClickedBlock().isPassable()) return;
+        if (!e.getPlayer().isSneaking()) return;
         if (!CooldownManager.getInstance().canPlayerUseItem(e.getPlayer().getUniqueId(), "illuminated_cooldown")) {
             if (!cooldown_message.equals("")){
                 e.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Utils.chat(cooldown_message

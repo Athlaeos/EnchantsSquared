@@ -1,7 +1,7 @@
 package me.athlaeos.enchantssquared.enchantments.constanttriggerenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.main.Main;
@@ -13,14 +13,17 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Collections;
+
 public class Rejuvenation extends ConstantTriggerEnchantment{
     private double durability_regeneration_base;
     private double durability_regeneration_lv;
 
     public Rejuvenation(){
-        this.enchantType = CustomEnchantEnum.REJUVENATION;
+        this.enchantType = CustomEnchantType.REJUVENATION;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.rejuvenation";
+        loadFunctionalItemStrings(Collections.singletonList("ALL"));
         loadConfig();
     }
 
@@ -34,7 +37,7 @@ public class Rejuvenation extends ConstantTriggerEnchantment{
         if (!(stack.getItemMeta() instanceof Damageable)) {
             return;
         }
-        if (compatibleItems.contains(stack.getType())) {
+        if (functionalItems.contains(stack.getType())) {
             double durability_regen_chance = (level <= 1) ? durability_regeneration_base : (durability_regeneration_base + ((level - 1) * durability_regeneration_lv));
             if (RandomNumberGenerator.getRandom().nextDouble() < durability_regen_chance) {
                 PlayerItemDamageEvent event = new PlayerItemDamageEvent(e.getPlayer(), stack, -1);

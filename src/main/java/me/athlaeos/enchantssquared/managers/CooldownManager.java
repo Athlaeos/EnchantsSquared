@@ -14,10 +14,6 @@ public class CooldownManager {
         allCooldowns.put("shockwave_cooldown", new HashMap<>());
     }
 
-    public void registerCustomItemCooldownMap(String key){
-        allCooldowns.put(key, new HashMap<>());
-    }
-
     public static CooldownManager getInstance(){
         if (manager == null){
             manager = new CooldownManager();
@@ -26,10 +22,12 @@ public class CooldownManager {
     }
 
     public void setItemCooldown(UUID player, int timems, String cooldownKey){
+        if (!allCooldowns.containsKey(cooldownKey)) allCooldowns.put(cooldownKey, new HashMap<>());
         allCooldowns.get(cooldownKey).put(player, System.currentTimeMillis() + timems);
     }
 
     public long getItemCooldown(UUID player, String cooldownKey){
+        if (!allCooldowns.containsKey(cooldownKey)) allCooldowns.put(cooldownKey, new HashMap<>());
         if (allCooldowns.get(cooldownKey).containsKey(player)){
             return allCooldowns.get(cooldownKey).get(player) - System.currentTimeMillis();
         }
@@ -37,10 +35,9 @@ public class CooldownManager {
     }
 
     public boolean canPlayerUseItem(UUID player, String cooldownKey){
+        if (!allCooldowns.containsKey(cooldownKey)) allCooldowns.put(cooldownKey, new HashMap<>());
         if (allCooldowns.get(cooldownKey).containsKey(player)){
-            if (allCooldowns.get(cooldownKey).get(player) > System.currentTimeMillis()){
-                return false;
-            }
+            return allCooldowns.get(cooldownKey).get(player) <= System.currentTimeMillis();
         }
         return true;
     }

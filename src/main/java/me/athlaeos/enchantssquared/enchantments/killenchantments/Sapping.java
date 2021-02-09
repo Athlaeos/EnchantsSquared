@@ -1,7 +1,7 @@
 package me.athlaeos.enchantssquared.enchantments.killenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
@@ -10,6 +10,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
+
 public class Sapping extends KillEnchantment{
     private int exp_base;
     private int exp_lv;
@@ -17,9 +19,10 @@ public class Sapping extends KillEnchantment{
     private double drop_chance_lv;
 
     public Sapping(){
-        this.enchantType = CustomEnchantEnum.BONUS_EXP;
+        this.enchantType = CustomEnchantType.BONUS_EXP;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.sapping";
+        loadFunctionalItemStrings(Arrays.asList("SWORDS", "AXES", "PICKAXES", "HOES", "SHOVELS", "SHEARS", "BOWS", "CROSSBOWS", "TRIDENTS"));
         loadConfig();
     }
 
@@ -30,13 +33,11 @@ public class Sapping extends KillEnchantment{
                 return;
             }
         }
-        if (this.compatibleItems.contains(stack.getType())){
-            double final_drop_chance = (level <= 1) ? this.drop_chance_base : (this.drop_chance_base + ((level - 1) * drop_chance_lv));
+        double final_drop_chance = (level <= 1) ? this.drop_chance_base : (this.drop_chance_base + ((level - 1) * drop_chance_lv));
 
-            if (RandomNumberGenerator.getRandom().nextDouble() < final_drop_chance){
-                int final_exp_dropped = (level <= 1) ? this.exp_base : (this.exp_base + ((level - 1) * exp_lv));
-                e.setDroppedExp(e.getDroppedExp() + final_exp_dropped);
-            }
+        if (RandomNumberGenerator.getRandom().nextDouble() < final_drop_chance){
+            int final_exp_dropped = (level <= 1) ? this.exp_base : (this.exp_base + ((level - 1) * exp_lv));
+            e.setDroppedExp(e.getDroppedExp() + final_exp_dropped);
         }
     }
 

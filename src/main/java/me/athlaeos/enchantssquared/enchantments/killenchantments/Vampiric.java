@@ -2,7 +2,7 @@ package me.athlaeos.enchantssquared.enchantments.killenchantments;
 
 import me.athlaeos.enchantssquared.main.Main;
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
@@ -12,14 +12,17 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
+
 public class Vampiric extends KillEnchantment{
     private double healing_base;
     private double healing_lv;
 
     public Vampiric(){
-        this.enchantType = CustomEnchantEnum.VAMPIRIC;
+        this.enchantType = CustomEnchantType.VAMPIRIC;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.vampiric";
+        loadFunctionalItemStrings(Arrays.asList("SWORDS", "AXES", "PICKAXES", "HOES", "SHOVELS", "SHEARS", "BOWS", "CROSSBOWS", "TRIDENTS"));
         loadConfig();
     }
 
@@ -30,16 +33,14 @@ public class Vampiric extends KillEnchantment{
                 return;
             }
         }
-        if (this.compatibleItems.contains(stack.getType())){
-            double final_amount_healed = (level <= 1) ? this.healing_base : (this.healing_base + ((level - 1) * healing_lv));
-            double killer_max_health = killer.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-            EntityRegainHealthEvent event = new EntityRegainHealthEvent(killer, final_amount_healed, EntityRegainHealthEvent.RegainReason.CUSTOM);
-            Main.getPlugin().getServer().getPluginManager().callEvent(event);
-            if (killer.getHealth() + event.getAmount() > killer_max_health){
-                killer.setHealth(killer_max_health);
-            } else {
-                killer.setHealth(killer.getHealth() + event.getAmount());
-            }
+        double final_amount_healed = (level <= 1) ? this.healing_base : (this.healing_base + ((level - 1) * healing_lv));
+        double killer_max_health = killer.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+        EntityRegainHealthEvent event = new EntityRegainHealthEvent(killer, final_amount_healed, EntityRegainHealthEvent.RegainReason.CUSTOM);
+        Main.getPlugin().getServer().getPluginManager().callEvent(event);
+        if (killer.getHealth() + event.getAmount() > killer_max_health){
+            killer.setHealth(killer_max_health);
+        } else {
+            killer.setHealth(killer.getHealth() + event.getAmount());
         }
     }
 

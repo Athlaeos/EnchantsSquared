@@ -1,17 +1,18 @@
 package me.athlaeos.enchantssquared.enchantments.killenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
 import me.athlaeos.enchantssquared.managers.RandomNumberGenerator;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+
+import java.util.Arrays;
 
 public class Beheading extends KillEnchantment{
     private double beheading_base;
@@ -19,9 +20,10 @@ public class Beheading extends KillEnchantment{
     private double axe_buff;
 
     public Beheading(){
-        this.enchantType = CustomEnchantEnum.DECAPITATION;
+        this.enchantType = CustomEnchantType.DECAPITATION;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.beheading";
+        loadFunctionalItemStrings(Arrays.asList("SWORDS", "AXES", "PICKAXES", "HOES", "SHOVELS", "SHEARS", "BOWS", "CROSSBOWS", "TRIDENTS"));
         loadConfig();
     }
 
@@ -32,33 +34,31 @@ public class Beheading extends KillEnchantment{
                 return;
             }
         }
-        if (this.compatibleItems.contains(stack.getType())){
-            double final_beheading_chance =  (level <= 1) ? this.beheading_base : this.beheading_base + ((level - 1) * this.beheading_lv);
-            if (ItemMaterialManager.getInstance().getAxes().contains(stack.getType())){
-                final_beheading_chance *= axe_buff;
+        double final_beheading_chance =  (level <= 1) ? this.beheading_base : this.beheading_base + ((level - 1) * this.beheading_lv);
+        if (ItemMaterialManager.getInstance().getAxes().contains(stack.getType())){
+            final_beheading_chance *= axe_buff;
+        }
+
+        if (RandomNumberGenerator.getRandom().nextDouble() < final_beheading_chance){
+            ItemStack head = null;
+            if (e.getEntity() instanceof Zombie){
+                head = new ItemStack(Material.ZOMBIE_HEAD, 1);
+            } else if (e.getEntity() instanceof WitherSkeleton){
+                head = new ItemStack(Material.WITHER_SKELETON_SKULL, 1);
+            } else if (e.getEntity() instanceof Skeleton){
+                head = new ItemStack(Material.SKELETON_SKULL, 1);
+            } else if (e.getEntity() instanceof Creeper){
+                head = new ItemStack(Material.CREEPER_HEAD, 1);
+            } else if (e.getEntity() instanceof HumanEntity){
+                head = new ItemStack(Material.PLAYER_HEAD, 1);
+                SkullMeta meta = (SkullMeta) head.getItemMeta();
+                assert meta != null;
+                meta.setOwningPlayer((Player)e.getEntity());
+                head.setItemMeta(meta);
             }
 
-            if (RandomNumberGenerator.getRandom().nextDouble() < final_beheading_chance){
-                ItemStack head = null;
-                if (e.getEntity() instanceof Zombie){
-                    head = new ItemStack(Material.ZOMBIE_HEAD, 1);
-                } else if (e.getEntity() instanceof WitherSkeleton){
-                    head = new ItemStack(Material.WITHER_SKELETON_SKULL, 1);
-                } else if (e.getEntity() instanceof Skeleton){
-                    head = new ItemStack(Material.SKELETON_SKULL, 1);
-                } else if (e.getEntity() instanceof Creeper){
-                    head = new ItemStack(Material.CREEPER_HEAD, 1);
-                } else if (e.getEntity() instanceof HumanEntity){
-                    head = new ItemStack(Material.PLAYER_HEAD, 1);
-                    SkullMeta meta = (SkullMeta) head.getItemMeta();
-                    assert meta != null;
-                    meta.setOwningPlayer((Player)e.getEntity());
-                    head.setItemMeta(meta);
-                }
-
-                if (head != null){
-                    e.getDrops().add(head);
-                }
+            if (head != null){
+                e.getDrops().add(head);
             }
         }
     }

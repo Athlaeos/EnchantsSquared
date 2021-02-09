@@ -1,7 +1,7 @@
 package me.athlaeos.enchantssquared.enchantments.constanttriggerenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.main.Main;
@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Collections;
 import java.util.List;
 
 public class LavaWalker extends ConstantTriggerEnchantment{
@@ -24,9 +25,10 @@ public class LavaWalker extends ConstantTriggerEnchantment{
     private Material transform_into;
 
     public LavaWalker(){
-        this.enchantType = CustomEnchantEnum.LAVA_WALKER;
+        this.enchantType = CustomEnchantType.LAVA_WALKER;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.lavawalker";
+        loadFunctionalItemStrings(Collections.singletonList("ALL"));
         loadConfig();
     }
 
@@ -37,23 +39,21 @@ public class LavaWalker extends ConstantTriggerEnchantment{
                 return;
             }
         }
-        if (compatibleItems.contains(stack.getType())) {
-            List<Block> nearbyBlocks = Utils.getNearbyBlocks2D(e.getPlayer().getLocation().subtract(0, 1, 0), level - 1, Material.LAVA);
-            for (Block b : nearbyBlocks){
-                BlockBreakEvent event = new BlockBreakEvent(b, e.getPlayer());
-                Main.getPlugin().getServer().getPluginManager().callEvent(event);
-                if (!event.isCancelled()){
-                    b.setType(transform_into);
+        List<Block> nearbyBlocks = Utils.getNearbyBlocks2D(e.getPlayer().getLocation().subtract(0, 1, 0), level - 1, Material.LAVA);
+        for (Block b : nearbyBlocks){
+            BlockBreakEvent event = new BlockBreakEvent(b, e.getPlayer());
+            Main.getPlugin().getServer().getPluginManager().callEvent(event);
+            if (!event.isCancelled()){
+                b.setType(transform_into);
 
-                    if (RandomNumberGenerator.getRandom().nextDouble() < durability_degeneration){
-                        if (stack.getItemMeta() instanceof Damageable){
-                            PlayerItemDamageEvent breakEvent = new PlayerItemDamageEvent(e.getPlayer(), stack, 1);
-                            Main.getPlugin().getServer().getPluginManager().callEvent(breakEvent);
-                            if (!breakEvent.isCancelled()){
-                                Damageable toolMeta = (Damageable) stack.getItemMeta();
-                                toolMeta.setDamage(toolMeta.getDamage() + breakEvent.getDamage());
-                                stack.setItemMeta((ItemMeta) toolMeta);
-                            }
+                if (RandomNumberGenerator.getRandom().nextDouble() < durability_degeneration){
+                    if (stack.getItemMeta() instanceof Damageable){
+                        PlayerItemDamageEvent breakEvent = new PlayerItemDamageEvent(e.getPlayer(), stack, 1);
+                        Main.getPlugin().getServer().getPluginManager().callEvent(breakEvent);
+                        if (!breakEvent.isCancelled()){
+                            Damageable toolMeta = (Damageable) stack.getItemMeta();
+                            toolMeta.setDamage(toolMeta.getDamage() + breakEvent.getDamage());
+                            stack.setItemMeta((ItemMeta) toolMeta);
                         }
                     }
                 }

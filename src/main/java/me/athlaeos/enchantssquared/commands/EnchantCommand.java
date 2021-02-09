@@ -2,7 +2,7 @@ package me.athlaeos.enchantssquared.commands;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.Command;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.utils.Utils;
 import org.bukkit.Material;
@@ -32,10 +32,10 @@ public class EnchantCommand implements Command {
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
 		if (args.length <= 1) return false;
-		CustomEnchantEnum chosenEnchant;
+		CustomEnchantType chosenEnchant;
 		int chosenLevel = 1;
 		try {
-			chosenEnchant = CustomEnchantEnum.valueOf(args[1].toUpperCase());
+			chosenEnchant = CustomEnchantType.valueOf(args[1].toUpperCase());
 		} catch (IllegalArgumentException e){
 			return false;
 		}
@@ -53,8 +53,8 @@ public class EnchantCommand implements Command {
 
 		ItemStack inHandItem = ((Player) sender).getInventory().getItemInMainHand();
 		if (inHandItem.getType() != Material.AIR) {
-			CustomEnchantManager.getInstance().removeEnchant(inHandItem, chosenEnchant, null);
-			CustomEnchantManager.getInstance().applyEnchant(inHandItem, chosenEnchant, chosenLevel);
+			CustomEnchantManager.getInstance().removeEnchant(inHandItem, chosenEnchant);
+			CustomEnchantManager.getInstance().addEnchant(inHandItem, chosenEnchant, chosenLevel);
 			sender.sendMessage(Utils.chat(enchant_success));
 			if (inHandItem.getType() == Material.BOOK){
 				inHandItem.setType(Material.ENCHANTED_BOOK);
@@ -89,8 +89,10 @@ public class EnchantCommand implements Command {
 	public List<String> getSubcommandArgs(CommandSender sender, String[] args) {
 		if (args.length == 2){
 			List<String> returns = new ArrayList<>();
-			for (CustomEnchantEnum c : CustomEnchantEnum.values()){
-				returns.add(c.toString().toLowerCase());
+			for (CustomEnchantType c : CustomEnchantType.values()){
+				if (c != CustomEnchantType.UNASSIGNED){
+					returns.add(c.toString().toLowerCase());
+				}
 			}
 			return returns;
 		}

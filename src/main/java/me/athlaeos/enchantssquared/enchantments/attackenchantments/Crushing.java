@@ -1,7 +1,7 @@
 package me.athlaeos.enchantssquared.enchantments.attackenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
@@ -9,14 +9,17 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
+
 public class Crushing extends AttackEnchantment{
     private double damage_base;
     private double damage_lv;
 
     public Crushing(){
-        this.enchantType = CustomEnchantEnum.CRUSHING;
+        this.enchantType = CustomEnchantType.CRUSHING;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.crushing";
+        loadFunctionalItemStrings(Arrays.asList("SWORDS", "AXES", "BOWS", "CROSSBOWS", "PICKAXES", "HOES", "SHOVELS", "TRIDENTS", "SHEARS"));
         loadConfig();
     }
 
@@ -29,20 +32,18 @@ public class Crushing extends AttackEnchantment{
         }
         if (victim == null) return;
 
-        if (compatibleItems.contains(i.getType())){
-            int combinedArmorPieces = 0;
-            if (victim.getEquipment() != null){
-                for (ItemStack item : victim.getEquipment().getArmorContents()){
-                    if (item != null){
-                        if (item.getType().toString().contains("DIAMOND_") || item.getType().toString().contains("NETHERITE_")){
-                            combinedArmorPieces++;
-                        }
+        int combinedArmorPieces = 0;
+        if (victim.getEquipment() != null){
+            for (ItemStack item : victim.getEquipment().getArmorContents()){
+                if (item != null){
+                    if (item.getType().toString().contains("DIAMOND_") || item.getType().toString().contains("NETHERITE_")){
+                        combinedArmorPieces++;
                     }
                 }
             }
-            double damageMultiplier = 1 + (combinedArmorPieces * ((level <= 1) ? this.damage_base : this.damage_base + ((level - 1) * damage_lv)) / 100D);
-            e.setDamage(e.getDamage() * damageMultiplier);
         }
+        double damageMultiplier = 1 + (combinedArmorPieces * ((level <= 1) ? this.damage_base : this.damage_base + ((level - 1) * damage_lv)) / 100D);
+        e.setDamage(e.getDamage() * damageMultiplier);
     }
 
     @Override

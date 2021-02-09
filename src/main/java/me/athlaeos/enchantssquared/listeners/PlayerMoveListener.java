@@ -1,20 +1,16 @@
 package me.athlaeos.enchantssquared.listeners;
 
 import me.athlaeos.enchantssquared.dom.CustomEnchant;
-import me.athlaeos.enchantssquared.dom.CustomEnchantClassification;
-import me.athlaeos.enchantssquared.dom.Version;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.enchantments.constanttriggerenchantments.ConstantTriggerEnchantment;
-import me.athlaeos.enchantssquared.enchantments.constanttriggerenchantments.Flight;
 import me.athlaeos.enchantssquared.enchantments.constanttriggerenchantments.Metabolism;
 import me.athlaeos.enchantssquared.enchantments.constanttriggerenchantments.Vigorous;
-import me.athlaeos.enchantssquared.enchantments.mineenchantments.BreakBlockEnchantment;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
+import me.athlaeos.enchantssquared.managers.CooldownManager;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
-import me.athlaeos.enchantssquared.managers.MinecraftVersionManager;
+import me.athlaeos.enchantssquared.utils.Utils;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -26,54 +22,35 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PlayerMoveListener implements Listener {
     private final CustomEnchantManager enchantManager;
+    private final boolean isVigorEnabled;
+    private Set<UUID> playersWhoHadFlight = new HashSet<>();
 
     public PlayerMoveListener(){
         this.enchantManager = CustomEnchantManager.getInstance();
+        Vigorous v = new Vigorous();
+        isVigorEnabled = v.isEnabled();
     }
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent e){
-        if (!e.isCancelled()){
+        if (e.isCancelled()) return;
+        if (CooldownManager.getInstance().canPlayerUseItem(e.getPlayer().getUniqueId(), "movement-spam-limiter")){
             if (!e.getPlayer().hasPermission("es.noregionrestrictions")){
                 if (WorldguardHook.getWorldguardHook().isLocationInRegionWithFlag(e.getPlayer().getLocation(), "es-deny-all")) return;
             }
             Metabolism m = null;
             Vigorous v = null;
 
-            List<ItemStack> equipment = new ArrayList<>();
-            if (e.getPlayer().getEquipment() == null) return;
-            if (e.getPlayer().getEquipment().getHelmet() != null){
-                equipment.add(e.getPlayer().getEquipment().getHelmet());
-            }
-            if (e.getPlayer().getEquipment().getChestplate() != null){
-                equipment.add(e.getPlayer().getEquipment().getChestplate());
-            }
-            if (e.getPlayer().getEquipment().getLeggings() != null){
-                equipment.add(e.getPlayer().getEquipment().getLeggings());
-            }
-            if (e.getPlayer().getEquipment().getBoots() != null){
-                equipment.add(e.getPlayer().getEquipment().getBoots());
-            }
-            if (e.getPlayer().getEquipment().getItemInMainHand().getType() != Material.AIR){
-                equipment.add(e.getPlayer().getEquipment().getItemInMainHand());
-            }
-            if (e.getPlayer().getEquipment().getItemInOffHand().getType() != Material.AIR){
-                equipment.add(e.getPlayer().getEquipment().getItemInOffHand());
-            }
+            List<ItemStack> equipment = Utils.getEntityEquipment(e.getPlayer(), true);
 
             for (ItemStack i : equipment){
                 if (i == null) continue;
-                if (!(i.getItemMeta() instanceof Damageable)){
-                    continue;
-                }
 
-                Map<CustomEnchant, Integer> enchants = enchantManager.getItemsEnchants(i, CustomEnchantClassification.CONSTANT_TRIGGER);
+                Map<CustomEnchant, Integer> enchants = enchantManager.getItemsEnchantsFromPDC(i);
                 for (CustomEnchant enchant : enchants.keySet()){
                     if (enchant instanceof Metabolism){
                         m = (Metabolism) enchant;
@@ -85,12 +62,23 @@ public class PlayerMoveListener implements Listener {
                 }
             }
             if (m != null) m.execute(e, null, 0);
-            if (v != null) { v.execute(e, null, 0); } else { resetPlayerHealth(e); }
+            if (v != null) {
+                v.execute(e, null, 0);
+            } else {
+                if (isVigorEnabled){
+                    resetPlayerHealth(e);
+                }
+            }
             checkFlightConditions(e);
             checkBreakConditions(e);
+
+            CooldownManager.getInstance().setItemCooldown(e.getPlayer().getUniqueId(), 500, "movement-spam-limiter");
         }
     }
 
+    /*
+    Resets the player's health back to its vanilla value if the player doesn't have the vigorous enchantment
+     */
     private void resetPlayerHealth(PlayerMoveEvent e){
         int healthBoostLevel = 0;
         PotionEffect healthBoostBuff = e.getPlayer().getPotionEffect(PotionEffectType.HEALTH_BOOST);
@@ -172,12 +160,17 @@ public class PlayerMoveListener implements Listener {
         || e.getPlayer().hasPermission("essentials.fly")){
             return;
         }
-        for (CustomEnchant enchant : CustomEnchantManager.getInstance().getItemsEnchants(e.getPlayer().getInventory().getBoots(), CustomEnchantClassification.CONSTANT_TRIGGER).keySet()){
-            if (enchant instanceof Flight){
+        List<ItemStack> equipment = Utils.getEntityEquipment(e.getPlayer(), true);
+        for (ItemStack item : equipment){
+            if (CustomEnchantManager.getInstance().doesItemHaveEnchant(item, CustomEnchantType.FLIGHT)) {
+                playersWhoHadFlight.add(e.getPlayer().getUniqueId());
                 return;
             }
         }
-        e.getPlayer().setFlying(false);
-        e.getPlayer().setAllowFlight(false);
+        if (playersWhoHadFlight.contains(e.getPlayer().getUniqueId())){
+            playersWhoHadFlight.remove(e.getPlayer().getUniqueId());
+            e.getPlayer().setFlying(false);
+            e.getPlayer().setAllowFlight(false);
+        }
     }
 }

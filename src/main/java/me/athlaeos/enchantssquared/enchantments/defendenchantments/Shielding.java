@@ -1,8 +1,7 @@
 package me.athlaeos.enchantssquared.enchantments.defendenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantClassification;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
@@ -11,14 +10,14 @@ import me.athlaeos.enchantssquared.managers.RandomNumberGenerator;
 import me.athlaeos.enchantssquared.utils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.SmallFireball;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Collections;
 
 public class Shielding extends DefendEnchantment {
     private double deflect_chance_lv;
@@ -26,9 +25,10 @@ public class Shielding extends DefendEnchantment {
     private CustomEnchantManager manager;
 
     public Shielding(){
-        this.enchantType = CustomEnchantEnum.SHIELDING;
+        this.enchantType = CustomEnchantType.SHIELDING;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.shielding";
+        loadFunctionalItemStrings(Collections.singletonList("ALL"));
         loadConfig();
     }
 
@@ -46,9 +46,7 @@ public class Shielding extends DefendEnchantment {
 
         int collectiveLevel = 0;
         for (ItemStack item : Utils.getEntityEquipment(victim, true)){
-            if (this.compatibleItems.contains(item.getType())){
-                collectiveLevel += manager.getEnchantStrength(item, CustomEnchantEnum.SHIELDING, CustomEnchantClassification.ON_DAMAGED);
-            }
+            collectiveLevel += manager.getEnchantStrength(item, CustomEnchantType.SHIELDING);
         }
 
         double final_deflect_chance = collectiveLevel * deflect_chance_lv;

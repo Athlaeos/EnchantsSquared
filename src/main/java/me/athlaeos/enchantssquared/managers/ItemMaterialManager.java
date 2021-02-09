@@ -20,6 +20,7 @@ public class ItemMaterialManager {
     private final Material shears;
     private final Material flintAndSteel;
     private final Material fishingRod;
+    private final Material shield;
     private Material elytra;
     private Material bow;
     private Material crossbow;
@@ -48,7 +49,7 @@ public class ItemMaterialManager {
                 helmets.add(m);
             }
         }
-
+        shield = Material.SHIELD;
         shears = Material.SHEARS;
         flintAndSteel = Material.FLINT_AND_STEEL;
         fishingRod = Material.FISHING_ROD;
@@ -100,6 +101,8 @@ public class ItemMaterialManager {
                 break;
             case FLINTANDSTEEL: materials.add(flintAndSteel);
                 break;
+            case SHIELDS: materials.add(shield);
+                break;
             case ALL:{
                 materials.addAll(axes);
                 materials.addAll(pickaxes);
@@ -117,6 +120,7 @@ public class ItemMaterialManager {
                 materials.add(shears);
                 materials.add(fishingRod);
                 materials.add(flintAndSteel);
+                materials.add(shield);
                 break;
             }
         }
@@ -189,6 +193,10 @@ public class ItemMaterialManager {
 
     public Material getCrossbow() {
         return crossbow;
+    }
+
+    public Material getShield() {
+        return shield;
     }
 
     public List<Material> getAll() {

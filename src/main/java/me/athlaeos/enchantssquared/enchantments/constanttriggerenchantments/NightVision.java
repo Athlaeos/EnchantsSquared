@@ -1,7 +1,7 @@
 package me.athlaeos.enchantssquared.enchantments.constanttriggerenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
@@ -10,13 +10,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.Collections;
+
 public class NightVision extends ConstantTriggerEnchantment{
     private int duration;
 
     public NightVision(){
-        this.enchantType = CustomEnchantEnum.NIGHT_VISION;
+        this.enchantType = CustomEnchantType.NIGHT_VISION;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.night_vision";
+        loadFunctionalItemStrings(Collections.singletonList("ALL"));
         loadConfig();
         this.max_level_table = 0;
         this.max_level = 0;
@@ -29,9 +32,7 @@ public class NightVision extends ConstantTriggerEnchantment{
                 return;
             }
         }
-        if (compatibleItems.contains(stack.getType())){
-            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, duration, 0), true);
-        }
+        e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, duration, 0), true);
     }
 
     @Override

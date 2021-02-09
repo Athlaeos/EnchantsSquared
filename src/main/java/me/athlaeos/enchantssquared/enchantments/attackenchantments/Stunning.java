@@ -1,7 +1,7 @@
 package me.athlaeos.enchantssquared.enchantments.attackenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
@@ -16,6 +16,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.Arrays;
+
 public class Stunning extends AttackEnchantment{
     private int duration;
     private int duration_lv;
@@ -26,9 +28,10 @@ public class Stunning extends AttackEnchantment{
     private String message;
 
     public Stunning(){
-        this.enchantType = CustomEnchantEnum.STUNNING;
+        this.enchantType = CustomEnchantType.STUNNING;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.stunning";
+        loadFunctionalItemStrings(Arrays.asList("SWORDS", "AXES", "BOWS", "CROSSBOWS", "PICKAXES", "HOES", "SHOVELS", "TRIDENTS", "SHEARS"));
         loadConfig();
     }
 
@@ -41,27 +44,25 @@ public class Stunning extends AttackEnchantment{
         }
         if (victim == null) return;
 
-        if (compatibleItems.contains(i.getType())){
-            double final_apply_chance = (level <= 1) ? this.apply_chance : this.apply_chance + ((level - 1) * this.apply_chance_lv);
-            if (buffed_axe_potency) {
-                if (ItemMaterialManager.getInstance().getAxes().contains(i.getType())){
-                    final_apply_chance *= 2;
-                }
+        double final_apply_chance = (level <= 1) ? this.apply_chance : this.apply_chance + ((level - 1) * this.apply_chance_lv);
+        if (buffed_axe_potency) {
+            if (ItemMaterialManager.getInstance().getAxes().contains(i.getType())){
+                final_apply_chance *= 2;
             }
-            if (RandomNumberGenerator.getRandom().nextDouble() <= final_apply_chance){
-                int final_duration = (level <= 1) ? this.duration : this.duration + ((level - 1) * this.duration_lv);
+        }
+        if (RandomNumberGenerator.getRandom().nextDouble() <= final_apply_chance){
+            int final_duration = (level <= 1) ? this.duration : this.duration + ((level - 1) * this.duration_lv);
 
-                victim.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, final_duration, 9, true, false), true);
-                victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, final_duration, 9, true, false), true);
-                victim.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, final_duration, 9, true, false), true);
-                victim.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, final_duration, 9, true, false), true);
-                victim.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, final_duration, 128, true, false), true);
-                victim.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, final_duration, 9, true, false), true);
+            victim.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, final_duration, 9, true, false), true);
+            victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, final_duration, 9, true, false), true);
+            victim.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, final_duration, 9, true, false), true);
+            victim.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, final_duration, 9, true, false), true);
+            victim.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, final_duration, 128, true, false), true);
+            victim.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, final_duration, 9, true, false), true);
 
-                if (damager instanceof Player){
-                    if (!message.equals("")){
-                        ((Player) damager).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Utils.chat(message)));
-                    }
+            if (damager instanceof Player){
+                if (!message.equals("")){
+                    ((Player) damager).spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(Utils.chat(message)));
                 }
             }
         }

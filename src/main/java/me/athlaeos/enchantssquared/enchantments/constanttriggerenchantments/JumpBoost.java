@@ -1,15 +1,16 @@
 package me.athlaeos.enchantssquared.enchantments.constanttriggerenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
-import org.bukkit.Material;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.Collections;
 
 public class JumpBoost extends ConstantTriggerEnchantment{
     private int amplifier;
@@ -17,9 +18,10 @@ public class JumpBoost extends ConstantTriggerEnchantment{
     private int amplifier_lv;
 
     public JumpBoost(){
-        this.enchantType = CustomEnchantEnum.JUMP_BOOST;
+        this.enchantType = CustomEnchantType.JUMP_BOOST;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.jump_boost";
+        loadFunctionalItemStrings(Collections.singletonList("ALL"));
         loadConfig();
     }
 
@@ -31,14 +33,12 @@ public class JumpBoost extends ConstantTriggerEnchantment{
             }
         }
         int final_amplifier = (level <= 1) ? this.amplifier : (this.amplifier + ((level - 1) * amplifier_lv));
-        if (compatibleItems.contains(stack.getType())){
-            if (e.getPlayer().hasPotionEffect(PotionEffectType.JUMP)){
-                if (e.getPlayer().getPotionEffect(PotionEffectType.JUMP).getAmplifier() <= final_amplifier){
-                    e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, duration, final_amplifier), true);
-                }
-            } else {
+        if (e.getPlayer().hasPotionEffect(PotionEffectType.JUMP)){
+            if (e.getPlayer().getPotionEffect(PotionEffectType.JUMP).getAmplifier() <= final_amplifier){
                 e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, duration, final_amplifier), true);
             }
+        } else {
+            e.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, duration, final_amplifier), true);
         }
     }
 

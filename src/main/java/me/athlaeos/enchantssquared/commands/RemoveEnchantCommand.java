@@ -2,17 +2,14 @@ package me.athlaeos.enchantssquared.commands;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.Command;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.utils.Utils;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,6 +54,7 @@ public class RemoveEnchantCommand implements Command {
                 itemlore.remove(lineNumber - 1);
                 meta.setLore(itemlore);
                 inhandItem.setItemMeta(meta);
+                CustomEnchantManager.getInstance().updateItem(inhandItem);
                 sender.sendMessage(Utils.chat(remove_enchant_successful));
             } else {
                 sender.sendMessage(Utils.chat(remove_enchant_failed));

@@ -1,7 +1,7 @@
 package me.athlaeos.enchantssquared.enchantments.interactenchantments;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchantEnum;
+import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.hooks.JobsHook;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.main.Main;
@@ -14,14 +14,17 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 public class AutoReplant extends InteractEnchantment{
     public AutoReplant(){
-        this.enchantType = CustomEnchantEnum.AUTO_REPLANT;
+        this.enchantType = CustomEnchantType.AUTO_REPLANT;
         this.max_level_table = 0;
         this.max_level = 0;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.autoreplant";
+        loadFunctionalItemStrings(Collections.singletonList("HOES"));
+        this.compatibleItemStrings = Collections.singletonList("HOES");
         loadConfig();
     }
 

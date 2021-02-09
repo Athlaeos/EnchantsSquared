@@ -51,6 +51,9 @@ public class WorldguardManager {
     private StateFlag ENCHANTSSQUARED_DENY_LAVA_WALKER;
     private StateFlag ENCHANTSSQUARED_DENY_VEIN_MINER;
     private StateFlag ENCHANTSSQUARED_DENY_AUTO_REPLANT;
+    private StateFlag ENCHANTSSQUARED_DENY_POTION_POTENCY_BUFF;
+    private StateFlag ENCHANTSSQUARED_DENY_CHEMICAL_SHIELD;
+    private StateFlag ENCHANSTSQUARED_DENY_CURSE_BERSERK;
 
     public WorldguardManager(){
     }
@@ -74,7 +77,8 @@ public class WorldguardManager {
             if (existing instanceof StateFlag) {
                 newFlag = (StateFlag) existing;
             } else {
-                System.out.println("[EnchantsSquared] Something went wrong with WorldguardHook#setFlag for flag " + s + ", contact the plugin developer!");
+//                System.out.println("[EnchantsSquared] Something went wrong with WorldguardHook#setFlag for flag " + s + ", contact the plugin developer!");
+                //Error message temporarily disabled until i can figure out why the fuck worldguard sometimes doesn't work
             }
         }
         return newFlag;
@@ -139,5 +143,8 @@ public class WorldguardManager {
         this.ENCHANTSSQUARED_DENY_LAVA_WALKER = setFlag("es-deny-lava-walker");
         this.ENCHANTSSQUARED_DENY_VEIN_MINER = setFlag("es-deny-vein-miner");
         this.ENCHANTSSQUARED_DENY_AUTO_REPLANT = setFlag("es-deny-auto-replant");
+        this.ENCHANTSSQUARED_DENY_POTION_POTENCY_BUFF = setFlag("es-deny-potion-potency-buff");
+        this.ENCHANTSSQUARED_DENY_CHEMICAL_SHIELD = setFlag("es-deny-chemical-shield");
+        this.ENCHANSTSQUARED_DENY_CURSE_BERSERK = setFlag("es-deny-curse-berserk");
     }
 }
