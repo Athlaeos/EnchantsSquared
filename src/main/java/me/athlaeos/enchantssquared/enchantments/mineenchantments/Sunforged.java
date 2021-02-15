@@ -5,13 +5,15 @@ import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.JobsHook;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
-import me.athlaeos.enchantssquared.main.Main;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
 import me.athlaeos.enchantssquared.managers.RandomNumberGenerator;
 import me.athlaeos.enchantssquared.utils.MineUtils;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
@@ -21,6 +23,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Arrays;
 
 public class Sunforged extends BreakBlockEnchantment{
+    private static boolean drop_exp;
+
     public Sunforged(){
         this.enchantType = CustomEnchantType.SUNFORGED;
         this.max_level_table = 0;
@@ -45,8 +49,17 @@ public class Sunforged extends BreakBlockEnchantment{
                 if (!hasExcavation || e.getPlayer().isSneaking()){ //if player is sneaking excavation is disabled, so it smelts single blocks
                     if (e.getBlock().getDrops(item).isEmpty()) return;
                     for (ItemStack i : MineUtils.cookBlock(e.getPlayer().getInventory().getItemInMainHand(), e.getBlock())){
-                        e.getBlock().getLocation().getWorld().dropItem(e.getBlock().getLocation().add(0.5, 0.5, 0.5), i);
+                        if (i != null){
+                            e.getBlock().getWorld().dropItem(e.getBlock().getLocation().add(0.5, 0.5, 0.5), i);
+                        }
                     }
+                    if (Sunforged.isDrop_exp()){
+                        if (!MineUtils.cookBlock(e.getPlayer().getInventory().getItemInMainHand(), e.getBlock()).equals(e.getBlock().getDrops(e.getPlayer().getInventory().getItemInMainHand()))){
+                            ExperienceOrb orb = (ExperienceOrb) e.getBlock().getWorld().spawnEntity(e.getBlock().getLocation().add(0.5, 0.5, 0.5), EntityType.EXPERIENCE_ORB);
+                            orb.setExperience(1);
+                        }
+                    }
+
                     JobsHook.getJobsHook().performBlockBreakAction(e.getPlayer(), e.getBlock());
                     e.getBlock().setType(Material.AIR);
                     if (item.getItemMeta() instanceof Damageable){
@@ -55,7 +68,7 @@ public class Sunforged extends BreakBlockEnchantment{
                         double breakChance = 1D/(unBreakingLevel + 1D) * 100;
                         if ((RandomNumberGenerator.getRandom().nextInt(100) + 1) < breakChance){
                             PlayerItemDamageEvent event = new PlayerItemDamageEvent(e.getPlayer(), item, 1);
-                            Main.getPlugin().getServer().getPluginManager().callEvent(event);
+                            EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
                             if (!event.isCancelled()){
                                 toolMeta.setDamage(toolMeta.getDamage() + event.getDamage());
                                 item.setItemMeta((ItemMeta) toolMeta);
@@ -74,6 +87,7 @@ public class Sunforged extends BreakBlockEnchantment{
         this.weight = config.getInt("enchantment_configuration.sunforged.weight");
         this.book_only = config.getBoolean("enchantment_configuration.sunforged.book_only");
         this.enchantDescription = config.getString("enchantment_configuration.sunforged.description");
+        drop_exp = config.getBoolean("enchantment_configuration.sunforged.drop_exp");
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.sunforged.compatible_with");
         for (String s : compatibleItemStrings){
@@ -84,5 +98,9 @@ public class Sunforged extends BreakBlockEnchantment{
                 System.out.println("Material category " + s + " in the config:sunforged is not valid, please correct it");
             }
         }
+    }
+
+    public static boolean isDrop_exp(){
+        return drop_exp;
     }
 }

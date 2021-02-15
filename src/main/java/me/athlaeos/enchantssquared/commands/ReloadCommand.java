@@ -2,17 +2,13 @@ package me.athlaeos.enchantssquared.commands;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.Command;
-import me.athlaeos.enchantssquared.main.Main;
 import me.athlaeos.enchantssquared.managers.CommandManager;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.utils.MineUtils;
 import me.athlaeos.enchantssquared.utils.Utils;
 import org.bukkit.command.CommandSender;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class ReloadCommand implements Command {
 	private String reload_successful;

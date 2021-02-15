@@ -4,7 +4,7 @@ import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
-import me.athlaeos.enchantssquared.main.Main;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.managers.CooldownManager;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
 import me.athlaeos.enchantssquared.utils.Utils;
@@ -72,7 +72,7 @@ public class Shockwave extends InteractEnchantment{
         for (Entity entity : entitiesInRadius){
             if (entity instanceof LivingEntity && !(entity instanceof ArmorStand)){
                 EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(e.getPlayer(), entity, EntityDamageEvent.DamageCause.ENTITY_EXPLOSION, 0);
-                Main.getPlugin().getServer().getPluginManager().callEvent(event);
+                EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
                 if (!event.isCancelled()){
                     entity.setVelocity(new Vector(
                             (entity.getLocation().getX() - playerLocation.getX()) * final_force,

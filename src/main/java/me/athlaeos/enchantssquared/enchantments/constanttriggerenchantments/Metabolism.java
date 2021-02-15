@@ -4,7 +4,7 @@ import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
-import me.athlaeos.enchantssquared.main.Main;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
 import me.athlaeos.enchantssquared.managers.RandomNumberGenerator;
@@ -47,7 +47,7 @@ public class Metabolism extends ConstantTriggerEnchantment{
 
         if (RandomNumberGenerator.getRandom().nextDouble() < hungerRegenerationChance){
             FoodLevelChangeEvent event = new FoodLevelChangeEvent(e.getPlayer(), 1);
-            Main.getPlugin().getServer().getPluginManager().callEvent(event);
+            EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
             if (!event.isCancelled()){
                 if (e.getPlayer().getFoodLevel() == 20){
                     if (e.getPlayer().getSaturation() < saturation_limit && e.getPlayer().getSaturation() <= 19F){

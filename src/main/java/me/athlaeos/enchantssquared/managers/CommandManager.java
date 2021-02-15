@@ -3,7 +3,7 @@ package me.athlaeos.enchantssquared.managers;
 import me.athlaeos.enchantssquared.commands.*;
 import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.Command;
-import me.athlaeos.enchantssquared.main.Main;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.utils.Utils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -15,13 +15,13 @@ import java.util.Map;
 
 public class CommandManager implements TabExecutor {
 	
-	private Main plugin;
+	private EnchantsSquared plugin;
 	private Map<String, Command> commands = new HashMap<>();
 	private String invalid_command;
 	private String warning_no_permission;
 	private static CommandManager manager = null;
 
-	public CommandManager(Main plugin) {
+	public CommandManager(EnchantsSquared plugin) {
 		this.plugin = plugin;
 		invalid_command = ConfigManager.getInstance().getConfig("translations.yml").get().getString("warning_invalid_command");
 		warning_no_permission = ConfigManager.getInstance().getConfig("translations.yml").get().getString("warning_no_permission");
@@ -39,13 +39,13 @@ public class CommandManager implements TabExecutor {
 
 	public static CommandManager getInstance(){
 		if (manager == null){
-			manager = new CommandManager(Main.getPlugin());
+			manager = new CommandManager(EnchantsSquared.getPlugin());
 		}
 		return manager;
 	}
 
 	public void reload(){
-		manager = new CommandManager(Main.getPlugin());
+		manager = new CommandManager(EnchantsSquared.getPlugin());
 	}
 
 	@Override

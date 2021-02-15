@@ -11,8 +11,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 
-public final class Main extends JavaPlugin {
-    private static Main plugin = null;
+public final class EnchantsSquared extends JavaPlugin {
+    private static EnchantsSquared plugin = null;
+    private static AnvilListener anvilListener = null;
+    private static EnchantListener enchantListener = null;
 
     @Override
     public void onEnable() {
@@ -53,8 +55,10 @@ public final class Main extends JavaPlugin {
             this.getServer().getPluginManager().registerEvents(new GrindstoneListener(), this);
         }
 
-        this.getServer().getPluginManager().registerEvents(new AnvilListener(), this);
-        this.getServer().getPluginManager().registerEvents(new EnchantListener(), this);
+        anvilListener = new AnvilListener();
+        enchantListener = new EnchantListener();
+        this.getServer().getPluginManager().registerEvents(anvilListener, this);
+        this.getServer().getPluginManager().registerEvents(enchantListener, this);
         this.getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
         this.getServer().getPluginManager().registerEvents(new BlockInteractListener(), this);
         this.getServer().getPluginManager().registerEvents(new PlayerMoveListener(), this);
@@ -66,12 +70,20 @@ public final class Main extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new PotionEffectListener(), this);
     }
 
+    public static AnvilListener getAnvilListener() {
+        return anvilListener;
+    }
+
+    public static EnchantListener getEnchantListener() {
+        return enchantListener;
+    }
+
     @Override
     public void onDisable() {
         // Plugin shutdown logic
     }
 
-    public static Main getPlugin(){
+    public static EnchantsSquared getPlugin(){
         return plugin;
     }
 }

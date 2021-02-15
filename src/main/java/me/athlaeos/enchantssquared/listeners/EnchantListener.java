@@ -1,6 +1,6 @@
 package me.athlaeos.enchantssquared.listeners;
 
-import me.athlaeos.enchantssquared.main.Main;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.PlayerOptionsManager;
@@ -13,13 +13,13 @@ import org.bukkit.inventory.ItemStack;
 
 public class EnchantListener implements Listener {
 
-    private Main plugin;
+    private EnchantsSquared plugin;
     private int min_enchant_level_needed;
     private PlayerOptionsManager manager = PlayerOptionsManager.getManager();
     private CustomEnchantManager enchantmanager = CustomEnchantManager.getInstance();
 
     public EnchantListener(){
-        plugin = Main.getPlugin();
+        plugin = EnchantsSquared.getPlugin();
         min_enchant_level_needed = ConfigManager.getInstance().getConfig("config.yml").get().getInt("custom_enchant_rate");
     }
 

@@ -4,7 +4,7 @@ import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
-import me.athlaeos.enchantssquared.main.Main;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
 import me.athlaeos.enchantssquared.managers.RandomNumberGenerator;
 import me.athlaeos.enchantssquared.utils.Utils;
@@ -42,14 +42,14 @@ public class LavaWalker extends ConstantTriggerEnchantment{
         List<Block> nearbyBlocks = Utils.getNearbyBlocks2D(e.getPlayer().getLocation().subtract(0, 1, 0), level - 1, Material.LAVA);
         for (Block b : nearbyBlocks){
             BlockBreakEvent event = new BlockBreakEvent(b, e.getPlayer());
-            Main.getPlugin().getServer().getPluginManager().callEvent(event);
+            EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
             if (!event.isCancelled()){
                 b.setType(transform_into);
 
                 if (RandomNumberGenerator.getRandom().nextDouble() < durability_degeneration){
                     if (stack.getItemMeta() instanceof Damageable){
                         PlayerItemDamageEvent breakEvent = new PlayerItemDamageEvent(e.getPlayer(), stack, 1);
-                        Main.getPlugin().getServer().getPluginManager().callEvent(breakEvent);
+                        EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(breakEvent);
                         if (!breakEvent.isCancelled()){
                             Damageable toolMeta = (Damageable) stack.getItemMeta();
                             toolMeta.setDamage(toolMeta.getDamage() + breakEvent.getDamage());

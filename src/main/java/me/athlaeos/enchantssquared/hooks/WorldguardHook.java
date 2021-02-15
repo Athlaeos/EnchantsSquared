@@ -1,6 +1,6 @@
 package me.athlaeos.enchantssquared.hooks;
 
-import me.athlaeos.enchantssquared.main.Main;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.managers.WorldguardManager;
 import org.bukkit.Location;
 
@@ -16,7 +16,7 @@ public class WorldguardHook {
     }
 
     public void registerWorldGuard(){
-        if (Main.getPlugin().getServer().getPluginManager().getPlugin("WorldGuard") == null){
+        if (EnchantsSquared.getPlugin().getServer().getPluginManager().getPlugin("WorldGuard") == null){
             useWorldGuard = false;
         } else {
             useWorldGuard = true;

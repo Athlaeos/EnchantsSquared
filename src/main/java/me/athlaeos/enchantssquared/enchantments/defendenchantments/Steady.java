@@ -1,6 +1,6 @@
 package me.athlaeos.enchantssquared.enchantments.defendenchantments;
 
-import me.athlaeos.enchantssquared.main.Main;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
@@ -50,7 +50,7 @@ public class Steady extends DefendEnchantment {
             public void run() {
                 victim.setVelocity(victim.getVelocity().multiply(final_knockback_reduced1));
             }
-        }.runTask(Main.getPlugin());
+        }.runTask(EnchantsSquared.getPlugin());
     }
 
     @Override

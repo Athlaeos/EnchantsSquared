@@ -1,6 +1,6 @@
 package me.athlaeos.enchantssquared.listeners;
 
-import me.athlaeos.enchantssquared.main.Main;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.utils.Utils;
@@ -12,13 +12,13 @@ import org.bukkit.inventory.ItemStack;
 
 public class AnvilListener implements Listener {
 
-    private Main plugin;
+    private EnchantsSquared plugin;
     private final CustomEnchantManager enchantmanager = CustomEnchantManager.getInstance();
     private int spamlimiter = 0;
     private String message;
 
     public AnvilListener(){
-        plugin = Main.getPlugin();
+        plugin = EnchantsSquared.getPlugin();
         message = ConfigManager.getInstance().getConfig("translations.yml").get().getString("warning_allowed_enchants_exceeded");
     }
 

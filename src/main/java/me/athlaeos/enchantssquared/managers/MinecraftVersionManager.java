@@ -1,6 +1,6 @@
 package me.athlaeos.enchantssquared.managers;
 
-import me.athlaeos.enchantssquared.main.Main;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.dom.Version;
 
 import java.util.HashMap;
@@ -10,10 +10,10 @@ public class MinecraftVersionManager {
     private static MinecraftVersionManager manager = null;
     private Map<Version, Integer> versions = new HashMap<>();
     private Version serverVersion;
-    private static Main plugin;
+    private static EnchantsSquared plugin;
 
     public MinecraftVersionManager(){
-        plugin = Main.getPlugin();
+        plugin = EnchantsSquared.getPlugin();
         setServerVersion();
         versions.put(Version.MINECRAFT_1_13, 1);
         versions.put(Version.MINECRAFT_1_14, 2);

@@ -1,6 +1,6 @@
 package me.athlaeos.enchantssquared.configs;
 
-import me.athlaeos.enchantssquared.main.Main;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
@@ -9,7 +9,7 @@ public class Config {
     private String name;
     private File file;
     private YamlConfiguration config;
-    private final Main plugin = Main.getPlugin();
+    private final EnchantsSquared plugin = EnchantsSquared.getPlugin();
 
     public Config(String name) {
         this.name = name;

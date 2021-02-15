@@ -4,12 +4,15 @@ import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.hooks.JobsHook;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
-import me.athlaeos.enchantssquared.main.Main;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
@@ -40,18 +43,30 @@ public class AutoReplant extends InteractEnchantment{
                 .contains(e.getClickedBlock().getType())){
             if (e.getClickedBlock().getBlockData() instanceof Ageable){
                 Ageable crop = (Ageable) e.getClickedBlock().getBlockData();
+                Block blockUnderCrop = e.getClickedBlock().getWorld().getBlockAt(e.getClickedBlock().getLocation().add(0, -1, 0));
+                EquipmentSlot hand;
+                if (e.getPlayer().getInventory().getItemInMainHand().equals(tool)){
+                    hand = EquipmentSlot.HAND;
+                } else {
+                    hand = EquipmentSlot.OFF_HAND;
+                }
                 if (crop.getAge() >= crop.getMaximumAge()){
                     BlockBreakEvent breakEvent = new BlockBreakEvent(e.getClickedBlock(), e.getPlayer());
-                    Main.getPlugin().getServer().getPluginManager().callEvent(breakEvent);
+                    EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(breakEvent);
                     if (!breakEvent.isCancelled()){
                         JobsHook.getJobsHook().performBlockBreakAction(e.getPlayer(), e.getClickedBlock());
                         Collection<ItemStack> drops =  e.getClickedBlock().getDrops(e.getPlayer().getInventory().getItemInMainHand());
 
-                        crop.setAge(0);
-                        e.getClickedBlock().setBlockData(crop);
                         for (ItemStack drop : drops){
                             e.getClickedBlock().getWorld().dropItem(e.getClickedBlock().getLocation().add(0.5, 0.5, 0.5), drop);
                         }
+                    }
+                    BlockPlaceEvent placeEvent = new BlockPlaceEvent(e.getClickedBlock(), e.getClickedBlock().getState()
+                    , blockUnderCrop, tool, e.getPlayer(), true, hand);
+                    EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(placeEvent);
+                    if (!placeEvent.isCancelled()){
+                        crop.setAge(0);
+                        e.getClickedBlock().setBlockData(crop);
                     }
                 }
             }

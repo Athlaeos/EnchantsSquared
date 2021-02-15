@@ -3,7 +3,7 @@ package me.athlaeos.enchantssquared.enchantments.interactenchantments;
 import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
-import me.athlaeos.enchantssquared.main.Main;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.managers.CooldownManager;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
 import me.athlaeos.enchantssquared.managers.RandomNumberGenerator;
@@ -101,7 +101,7 @@ public class PlaceTorch extends InteractEnchantment{
                 directional.setFacing(e.getBlockFace());
                 torchBlock.setBlockData(directional);
                 BlockPlaceEvent event = new BlockPlaceEvent(torchBlock, torchBlock.getState(), e.getClickedBlock(), tool, e.getPlayer(), true, EquipmentSlot.HAND);
-                Main.getPlugin().getServer().getPluginManager().callEvent(event);
+                EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
                 if (!event.isCancelled()){
                     placedTorch = true;
                 } else {
@@ -120,7 +120,7 @@ public class PlaceTorch extends InteractEnchantment{
                 } else {
                     clickedBlock.getWorld().getBlockAt(clickedBlock).setType(Material.TORCH);
                     BlockPlaceEvent event1 = new BlockPlaceEvent(torchBlock1, torchBlock1.getState(), e.getClickedBlock(), tool, e.getPlayer(), true, EquipmentSlot.HAND);
-                    Main.getPlugin().getServer().getPluginManager().callEvent(event1);
+                    EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event1);
                     if (!event1.isCancelled()){
                         placedTorch = true;
                     } else {

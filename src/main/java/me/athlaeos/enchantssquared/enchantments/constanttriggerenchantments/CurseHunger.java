@@ -4,7 +4,7 @@ import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
-import me.athlaeos.enchantssquared.main.Main;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
 import me.athlaeos.enchantssquared.managers.RandomNumberGenerator;
@@ -45,7 +45,7 @@ public class CurseHunger extends ConstantTriggerEnchantment{
         double hungerDegenerationChance = collectiveLevel * hunger_degeneration_lv;
         if (RandomNumberGenerator.getRandom().nextDouble() < hungerDegenerationChance){
             FoodLevelChangeEvent event = new FoodLevelChangeEvent(e.getPlayer(), -1);
-            Main.getPlugin().getServer().getPluginManager().callEvent(event);
+            EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
             if (!event.isCancelled()){
                 e.getPlayer().setFoodLevel(e.getPlayer().getFoodLevel() + event.getFoodLevel());
             }

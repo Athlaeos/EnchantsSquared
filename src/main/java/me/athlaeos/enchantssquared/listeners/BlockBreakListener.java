@@ -4,6 +4,7 @@ import me.athlaeos.enchantssquared.dom.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.mineenchantments.BreakBlockEnchantment;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
+import me.athlaeos.enchantssquared.managers.enchantmanagers.ExcavationBlockFaceManager;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -23,6 +24,9 @@ public class BlockBreakListener implements Listener {
     @EventHandler (priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent e){
         if (!e.isCancelled()){
+            if (ExcavationBlockFaceManager.getInstance().getBlockFaceMap().get(e.getPlayer().getUniqueId()) == null){
+                return;
+            }
             if (!e.getPlayer().hasPermission("es.noregionrestrictions")){
                 if (WorldguardHook.getWorldguardHook().isLocationInRegionWithFlag(e.getBlock().getLocation(), "es-deny-all")) return;
             }

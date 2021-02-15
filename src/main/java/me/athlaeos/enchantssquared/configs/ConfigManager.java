@@ -1,18 +1,18 @@
 package me.athlaeos.enchantssquared.configs;
 
-import me.athlaeos.enchantssquared.main.Main;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 
 import java.util.HashMap;
 
 //All credit to spigotmc.org user Bimmr for this manager
 public class ConfigManager {
 
-    private final Main plugin;
+    private final EnchantsSquared plugin;
     private HashMap<String, Config> configs = new HashMap<String, Config>();
     private static ConfigManager manager = null;
 
     public ConfigManager() {
-        plugin = Main.getPlugin();
+        plugin = EnchantsSquared.getPlugin();
         getConfig("config.yml").save();
         getConfig("excavationblocks.yml").save();
         getConfig("smeltblocksrecipes.yml").save();

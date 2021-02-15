@@ -7,6 +7,7 @@ import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
 import me.athlaeos.enchantssquared.managers.RandomNumberGenerator;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
@@ -43,16 +44,18 @@ public class Flight extends ConstantTriggerEnchantment{
                 return;
             }
         }
-        e.getPlayer().setAllowFlight(true);
-        if (e.getPlayer().isFlying()){
-            if (e.getPlayer().getGameMode() != GameMode.CREATIVE && e.getPlayer().getGameMode() != GameMode.SPECTATOR){
-                if (stack.getItemMeta() instanceof Damageable){
-                    double break_chance = durability_decay * (1D/(stack.getEnchantmentLevel(Enchantment.DURABILITY) + 1D));
-                    double randomDouble = RandomNumberGenerator.getRandom().nextDouble();
-                    if (randomDouble < break_chance){
-                        Damageable itemMeta = (Damageable) stack.getItemMeta();
-                        itemMeta.setDamage(itemMeta.getDamage() + 1);
-                        stack.setItemMeta((ItemMeta) itemMeta);
+        if (stack.getType() != Material.ENCHANTED_BOOK){
+            e.getPlayer().setAllowFlight(true);
+            if (e.getPlayer().isFlying()){
+                if (e.getPlayer().getGameMode() != GameMode.CREATIVE && e.getPlayer().getGameMode() != GameMode.SPECTATOR){
+                    if (stack.getItemMeta() instanceof Damageable){
+                        double break_chance = durability_decay * (1D/(stack.getEnchantmentLevel(Enchantment.DURABILITY) + 1D));
+                        double randomDouble = RandomNumberGenerator.getRandom().nextDouble();
+                        if (randomDouble < break_chance){
+                            Damageable itemMeta = (Damageable) stack.getItemMeta();
+                            itemMeta.setDamage(itemMeta.getDamage() + 1);
+                            stack.setItemMeta((ItemMeta) itemMeta);
+                        }
                     }
                 }
             }

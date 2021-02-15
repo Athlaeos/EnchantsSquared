@@ -1,7 +1,7 @@
 package me.athlaeos.enchantssquared.enchantments.mineenchantments;
 
 import me.athlaeos.enchantssquared.hooks.JobsHook;
-import me.athlaeos.enchantssquared.main.Main;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
@@ -19,6 +19,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
@@ -106,6 +108,7 @@ public class Excavation extends BreakBlockEnchantment{
                     blocksToBreak.addAll(Utils.getBlocksInArea(l1, l2));
                 }
 
+                int blocksSmelted = 0;
                 if (e.getPlayer().getGameMode() == GameMode.CREATIVE){
                     for (Location l : blocksToBreak){
                         if (breakableBlocks.contains(blockBroken.getWorld().getBlockAt(l).getType())){
@@ -116,15 +119,25 @@ public class Excavation extends BreakBlockEnchantment{
                     int durabilityDamage = 0;
                     ExcavationBlockFaceManager.getInstance().getBlockFaceMap().remove(e.getPlayer().getUniqueId());
                     boolean smeltBlocks = CustomEnchantManager.getInstance().doesItemHaveEnchant(heldTool, CustomEnchantType.SUNFORGED);
+                    int kinshipLevel = CustomEnchantManager.getInstance().getEnchantStrength(heldTool, CustomEnchantType.KINSHIP);
                     for (Location l : blocksToBreak){
                         if (breakableBlocks.contains(blockBroken.getWorld().getBlockAt(l).getType())){
                             Block block = blockBroken.getWorld().getBlockAt(l);
                             if (block.getDrops(item).isEmpty()) continue;
                             JobsHook.getJobsHook().performBlockBreakAction(e.getPlayer(), block);
-                            Main.getPlugin().getServer().getPluginManager().callEvent(new BlockBreakEvent(block, e.getPlayer()));
+                            EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(new BlockBreakEvent(block, e.getPlayer()));
+                            if (kinshipLevel > 0){
+                                Kinship k = Kinship.getKinship();
+                                if (k != null){
+                                    k.execute(e, heldTool, kinshipLevel);
+                                }
+                            }
                             if (smeltBlocks && smeltingAllowed){
                                 for (ItemStack i : MineUtils.cookBlock(heldTool, block)){
-                                    block.getWorld().dropItem(block.getLocation().add(0.5, 0.5, 0.5), i);
+                                    if (i != null){
+                                        block.getWorld().dropItem(block.getLocation().add(0.5, 0.5, 0.5), i);
+                                        blocksSmelted++;
+                                    }
                                 }
                                 block.setType(Material.AIR);
                             } else {
@@ -134,6 +147,12 @@ public class Excavation extends BreakBlockEnchantment{
                             if (RandomNumberGenerator.getRandom().nextDouble() <= durability_decay){
                                 durabilityDamage++;
                             }
+                        }
+                    }
+                    if (smeltBlocks){
+                        if (Sunforged.isDrop_exp()){
+                            ExperienceOrb orb = (ExperienceOrb) e.getBlock().getWorld().spawnEntity(e.getBlock().getLocation().add(0.5, 0.5, 0.5), EntityType.EXPERIENCE_ORB);
+                            orb.setExperience(blocksSmelted);
                         }
                     }
                     if (nerf_excavation_speed){
@@ -151,7 +170,7 @@ public class Excavation extends BreakBlockEnchantment{
                         double breakChance = 1D/(unBreakingLevel + 1D) * 100;
                         if ((RandomNumberGenerator.getRandom().nextInt(100) + 1) < breakChance){
                             PlayerItemDamageEvent event = new PlayerItemDamageEvent(e.getPlayer(), item, durabilityDamage);
-                            Main.getPlugin().getServer().getPluginManager().callEvent(event);
+                            EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
                             if (!event.isCancelled()){
                                 toolMeta.setDamage(toolMeta.getDamage() + durabilityDamage);
                                 item.setItemMeta((ItemMeta) toolMeta);

@@ -4,7 +4,7 @@ import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.dom.MaterialClassType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
-import me.athlaeos.enchantssquared.main.Main;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
 import me.athlaeos.enchantssquared.managers.RandomNumberGenerator;
 import org.bukkit.event.player.PlayerItemDamageEvent;
@@ -41,7 +41,7 @@ public class Rejuvenation extends ConstantTriggerEnchantment{
             double durability_regen_chance = (level <= 1) ? durability_regeneration_base : (durability_regeneration_base + ((level - 1) * durability_regeneration_lv));
             if (RandomNumberGenerator.getRandom().nextDouble() < durability_regen_chance) {
                 PlayerItemDamageEvent event = new PlayerItemDamageEvent(e.getPlayer(), stack, -1);
-                Main.getPlugin().getServer().getPluginManager().callEvent(event);
+                EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
                 if (!event.isCancelled()){
                     Damageable toolMeta = (Damageable) stack.getItemMeta();
                     toolMeta.setDamage(toolMeta.getDamage() + event.getDamage());

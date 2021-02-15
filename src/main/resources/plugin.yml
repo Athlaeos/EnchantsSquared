@@ -1,6 +1,6 @@
 name: Enchantssquared
-version: 1.8-ALPHA
-main: me.athlaeos.enchantssquared.main.Main
+version: 1.10-ALPHA
+main: me.athlaeos.enchantssquared.main.EnchantsSquared
 authors: [Athlaeos]
 description: Adds in a number of vanilla-like enchantments
 website: https://discord.gg/dUwtmYV

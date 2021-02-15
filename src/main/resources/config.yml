@@ -199,6 +199,7 @@ enchantment_configuration:
     enabled: true
     weight: 20
     book_only: false
+    drop_exp: false # If true, each block mined with sunforged drops 1 exp orb. Careful, as this is really fucking overpowered.
     # Blocks and recipes can be found in smeltblocksrecipes.yml
     compatible_with: # Limited to AXES, PICKAXES, SHOVELS, and HOES
       - AXES

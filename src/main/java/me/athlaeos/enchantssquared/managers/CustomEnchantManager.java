@@ -19,7 +19,7 @@ import me.athlaeos.enchantssquared.enchantments.mineenchantments.Kinship;
 import me.athlaeos.enchantssquared.enchantments.mineenchantments.Sunforged;
 import me.athlaeos.enchantssquared.enchantments.potionenchantments.IncreasePotionPotency;
 import me.athlaeos.enchantssquared.enchantments.potionenchantments.SplashPotionBlock;
-import me.athlaeos.enchantssquared.main.Main;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.utils.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -41,7 +41,7 @@ public class CustomEnchantManager {
     private BiMap<Integer, CustomEnchant> allEnchants;
     private List<String> stringEnchantments = new ArrayList<>();
 
-    private final NamespacedKey enchantmentsKey = new NamespacedKey(Main.getPlugin(), "es_enchantments");
+    private final NamespacedKey enchantmentsKey = new NamespacedKey(EnchantsSquared.getPlugin(), "es_enchantments");
 
     private int maxEnchants;
     private int maxEnchantsFromTable;
@@ -257,7 +257,7 @@ public class CustomEnchantManager {
     public void setItemEnchants(ItemStack item, Map<CustomEnchant, Integer> enchantments){
         if (item == null) return;
         ItemMeta meta = item.getItemMeta();
-        assert meta != null;
+        if (meta == null) return;
         if (enchantments.isEmpty()){
             if (meta.getPersistentDataContainer().has(enchantmentsKey, PersistentDataType.STRING)){
                 meta.getPersistentDataContainer().remove(enchantmentsKey);

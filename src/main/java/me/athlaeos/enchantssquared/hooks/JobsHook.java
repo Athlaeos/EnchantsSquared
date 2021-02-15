@@ -1,8 +1,7 @@
 package me.athlaeos.enchantssquared.hooks;
 
-import me.athlaeos.enchantssquared.main.Main;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.managers.JobsManager;
-import me.athlaeos.enchantssquared.managers.WorldguardManager;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -19,7 +18,7 @@ public class JobsHook {
     }
 
     public void registerJobs(){
-        if (Main.getPlugin().getServer().getPluginManager().getPlugin("Jobs") == null){
+        if (EnchantsSquared.getPlugin().getServer().getPluginManager().getPlugin("Jobs") == null){
             useJobs = false;
         } else {
             useJobs = true;

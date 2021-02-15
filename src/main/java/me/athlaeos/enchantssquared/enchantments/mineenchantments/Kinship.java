@@ -20,6 +20,7 @@ public class Kinship extends BreakBlockEnchantment{
     private int durability_diamond;
     private int durability_iron;
     private int durability_stone;
+    private static Kinship kinship = null;
     private Map<Material, Material> pickaxeBreakables = new HashMap<>();
 
     public Kinship(){
@@ -37,6 +38,8 @@ public class Kinship extends BreakBlockEnchantment{
         pickaxeBreakables.put(Material.DIAMOND_PICKAXE, Material.DIAMOND_ORE);
         pickaxeBreakables.put(Material.IRON_PICKAXE, Material.IRON_ORE);
         pickaxeBreakables.put(Material.STONE_PICKAXE, Material.STONE);
+
+        kinship = this;
     }
 
     @Override
@@ -68,6 +71,10 @@ public class Kinship extends BreakBlockEnchantment{
                 }
             }
         }
+    }
+
+    public static Kinship getKinship() {
+        return kinship;
     }
 
     @Override
