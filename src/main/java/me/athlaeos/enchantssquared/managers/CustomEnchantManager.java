@@ -3,14 +3,14 @@ package me.athlaeos.enchantssquared.managers;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import me.athlaeos.enchantssquared.configs.ConfigManager;
-import me.athlaeos.enchantssquared.dom.CustomEnchant;
-import me.athlaeos.enchantssquared.dom.CustomEnchantType;
+import me.athlaeos.enchantssquared.dom.*;
 import me.athlaeos.enchantssquared.enchantments.attackenchantments.*;
 import me.athlaeos.enchantssquared.enchantments.constanttriggerenchantments.*;
 import me.athlaeos.enchantssquared.enchantments.defendenchantments.Shielding;
 import me.athlaeos.enchantssquared.enchantments.defendenchantments.Steady;
 import me.athlaeos.enchantssquared.enchantments.healthregenerationenchantments.Vitality;
 import me.athlaeos.enchantssquared.enchantments.interactenchantments.AutoReplant;
+import me.athlaeos.enchantssquared.enchantments.interactenchantments.ElytraFireworkBoost;
 import me.athlaeos.enchantssquared.enchantments.interactenchantments.PlaceTorch;
 import me.athlaeos.enchantssquared.enchantments.interactenchantments.Shockwave;
 import me.athlaeos.enchantssquared.enchantments.killenchantments.*;
@@ -33,6 +33,8 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class CustomEnchantManager {
 
@@ -127,6 +129,45 @@ public class CustomEnchantManager {
         setItemEnchants(item, obtainedEnchantments);
     }
 
+    public SingleEnchant pickRandomEnchant(List<CustomEnchant> enchantments){
+        double accumulatedWeight = 0.0;
+        List<Entry> entries = new ArrayList<>();
+
+        for (CustomEnchant c : enchantments){
+            if (c.isEnabled()){
+                accumulatedWeight += c.getWeight();
+                Entry e = new Entry();
+                e.object = c;
+                e.accumulatedWeight = accumulatedWeight;
+                entries.add(e);
+            }
+        }
+        double r = RandomNumberGenerator.getRandom().nextDouble() * accumulatedWeight;
+        for (Entry entry : entries) {
+            if (entry.accumulatedWeight >= r) {
+                int designatedLevel;
+                if (entry.object.getMax_level() < entry.object.getMax_level_table()){
+                    System.out.println("[EnchantsSquared] An enchanted book was attempted to be made, but max_enchants_table for" +
+                            "the enchant " + entry.object.getEnchantLore() + " is higher than max_enchants." +
+                            "This cannot be the case, so for this instance the value of max_enchants_table was set to the same " +
+                            "value as max_enchants. Be sure to correct this mistake");
+                    entry.object.setMax_level_table(entry.object.getMax_level());
+                }
+                if (entry.object.getMax_level_table() > 0){
+                    designatedLevel = RandomNumberGenerator.getRandom().nextInt(entry.object.getMax_level()) + 1;
+                } else {
+                    designatedLevel = 1;
+                }
+                return new SingleEnchant(entry.object, designatedLevel);
+            }
+        }
+        return null;
+    }
+
+    public List<CustomEnchant> getTradableEnchants(){
+        return allEnchants.values().stream().filter(CustomEnchant::isAvailableForTrade).collect(Collectors.toList());
+    }
+
     /*
     Returns a list of all CustomEnchants if they are compatible with the item given
      */
@@ -159,19 +200,25 @@ public class CustomEnchantManager {
     Attempts to combine the enchantments from item1 and item2 into output, both in lore and in PersistentDataContainer
     Returns false if the total amount of enchantments exceeds maxEnchants
      */
-    public boolean combineItems(ItemStack item1, ItemStack item2, ItemStack output){
-        if (item2 == null || output == null) return true;
+    public AnvilRecipeOutcome combineItems(ItemStack item1, ItemStack item2, ItemStack output){
+        boolean combiningWithBook = false;
+        if (item2 != null){
+            if (item2.getType() == Material.ENCHANTED_BOOK){
+                combiningWithBook = true;
+            }
+        }
+        if ((item2 == null || output == null) && !combiningWithBook) return new AnvilRecipeOutcome(null, AnvilRecipeOutcomeState.OUTPUT_NULL);
         Map<CustomEnchant, Integer> item1enchants = getItemsEnchantsFromLore(item1, item1);
         Map<CustomEnchant, Integer> item2enchants = getItemsEnchantsFromLore(item2, item1);
         Map<CustomEnchant, Integer> resultEnchants = new HashMap<>();
 
-        if (output.hasItemMeta()){
-            if (Objects.requireNonNull(output.getItemMeta()).hasLore()){
-                Objects.requireNonNull(output.getItemMeta().getLore()).clear();
-            }
-        } else {
-            return true;
-        }
+//        if (output.hasItemMeta()){
+//            if (Objects.requireNonNull(output.getItemMeta()).hasLore()){
+//                Objects.requireNonNull(output.getItemMeta().getLore()).clear();
+//            }
+//        } else {
+//            return true;
+//        }
 
         for (CustomEnchant e1 : item1enchants.keySet()){
             if (item2enchants.containsKey(e1)){
@@ -199,11 +246,18 @@ public class CustomEnchantManager {
             }
         }
 
+        if (combiningWithBook){
+            output = item1.clone();
+        }
+
         if (output.getType() != Material.ENCHANTED_BOOK && resultEnchants.size() > maxEnchants){
-            return false;
+            return new AnvilRecipeOutcome(null, AnvilRecipeOutcomeState.MAX_ENCHANTS_EXCEEDED);
+        }
+        setItemEnchants(output, resultEnchants);
+        if (resultEnchants.size() == 0){
+            return new AnvilRecipeOutcome(output, AnvilRecipeOutcomeState.ITEM_NO_CUSTOM_ENCHANTS);
         } else {
-            setItemEnchants(output, resultEnchants);
-            return true;
+            return new AnvilRecipeOutcome(output, AnvilRecipeOutcomeState.SUCCESSFUL);
         }
     }
 
@@ -284,9 +338,13 @@ public class CustomEnchantManager {
         //if the lore contains an enchantment it's not supposed to have, it is removed
         int firstEnchantIndex = 0; //This'll track where in the lore the last enchant is located,
         // so that once enchants are added back to it no other lore has to be removed
+        boolean enchantAtLine0 = false;
         for (String l : lore){
             if (isLoreAnEnchant(l)){
-                if (firstEnchantIndex == 0) firstEnchantIndex = lore.indexOf(l);
+                if (firstEnchantIndex == 0) {
+                    firstEnchantIndex = lore.indexOf(l);
+                    if (firstEnchantIndex == 0) enchantAtLine0 = true;
+                }
             } else {
                 finalLore.add(l);
             }
@@ -302,9 +360,14 @@ public class CustomEnchantManager {
                     finalLore.add(Utils.chat(e.getEnchantLore().replace("%lv_number%", "" + enchantments.get(e))
                             .replace("%lv_roman%", Utils.toRoman(enchantments.get(e)))));
                 }
-            } else {
+            } else if (enchantAtLine0 || firstEnchantIndex != 0){
                 for (CustomEnchant e : enchantments.keySet()){
                     finalLore.add(firstEnchantIndex, Utils.chat(e.getEnchantLore().replace("%lv_number%", "" + enchantments.get(e))
+                            .replace("%lv_roman%", Utils.toRoman(enchantments.get(e)))));
+                }
+            } else {
+                for (CustomEnchant e : enchantments.keySet()){
+                    finalLore.add(Utils.chat(e.getEnchantLore().replace("%lv_number%", "" + enchantments.get(e))
                             .replace("%lv_roman%", Utils.toRoman(enchantments.get(e)))));
                 }
             }
@@ -474,6 +537,8 @@ public class CustomEnchantManager {
         allEnchants.put(40, new IncreasePotionPotency());
 
         allEnchants.put(41, new CurseBerserk());
+
+//        allEnchants.put(42, new ElytraFireworkBoost());
 
         for (CustomEnchant c : allEnchants.values()){
             stringEnchantments.add(extractEnchantString(c.getEnchantLore()));

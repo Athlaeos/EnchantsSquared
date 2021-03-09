@@ -57,6 +57,11 @@ public class Crushing extends AttackEnchantment{
         this.max_level_table = config.getInt("enchantment_configuration.crushing.max_level_table");
         this.max_level = config.getInt("enchantment_configuration.crushing.max_level");
         this.enchantDescription = config.getString("enchantment_configuration.crushing.description");
+        this.tradeMinCostBase = config.getInt("enchantment_configuration.crushing.trade_cost_base_lower");
+        this.tradeMaxCostBase = config.getInt("enchantment_configuration.crushing.trade_cost_base_upper");
+        this.tradeMinCostLv = config.getInt("enchantment_configuration.crushing.trade_cost_lv_lower");
+        this.tradeMaxCostLv = config.getInt("enchantment_configuration.crushing.trade_cost_base_upper");
+        this.availableForTrade = config.getBoolean("enchantment_configuration.crushing.trade_enabled");
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.crushing.compatible_with");
         for (String s : compatibleItemStrings){

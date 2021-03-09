@@ -21,9 +21,12 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Sunforged extends BreakBlockEnchantment{
-    private static boolean drop_exp;
+    private static double drop_exp_chance;
+    private Map<Material, BlockExperience> blockExperienceValues = new HashMap<>();
 
     public Sunforged(){
         this.enchantType = CustomEnchantType.SUNFORGED;
@@ -34,6 +37,13 @@ public class Sunforged extends BreakBlockEnchantment{
         loadFunctionalItemStrings(Arrays.asList("SWORDS", "AXES", "PICKAXES", "HOES", "SHOVELS", "SHEARS"));
         this.requiredPermission = "es.enchant.sunforged";
         loadConfig();
+        blockExperienceValues.put(Material.SPAWNER, new BlockExperience(15, 43));
+        blockExperienceValues.put(Material.COAL_ORE, new BlockExperience(0, 2));
+        blockExperienceValues.put(Material.DIAMOND_ORE, new BlockExperience(3, 7));
+        blockExperienceValues.put(Material.EMERALD_ORE, new BlockExperience(3, 7));
+        blockExperienceValues.put(Material.LAPIS_ORE, new BlockExperience(2, 5));
+        blockExperienceValues.put(Material.NETHER_QUARTZ_ORE, new BlockExperience(2, 5));
+        blockExperienceValues.put(Material.REDSTONE_ORE, new BlockExperience(1, 5));
     }
 
     @Override
@@ -48,15 +58,26 @@ public class Sunforged extends BreakBlockEnchantment{
                 boolean hasExcavation = CustomEnchantManager.getInstance().doesItemHaveEnchant(e.getPlayer().getInventory().getItemInMainHand(), CustomEnchantType.EXCAVATION);
                 if (!hasExcavation || e.getPlayer().isSneaking()){ //if player is sneaking excavation is disabled, so it smelts single blocks
                     if (e.getBlock().getDrops(item).isEmpty()) return;
-                    for (ItemStack i : MineUtils.cookBlock(e.getPlayer().getInventory().getItemInMainHand(), e.getBlock())){
-                        if (i != null){
-                            e.getBlock().getWorld().dropItem(e.getBlock().getLocation().add(0.5, 0.5, 0.5), i);
-                        }
+                    ItemStack heldTool = e.getPlayer().getInventory().getItemInMainHand();
+                    boolean smeltedBlock = false;
+                    for (ItemStack i : MineUtils.cookBlock(heldTool, e.getBlock())){
+                        e.getBlock().getWorld().dropItem(e.getBlock().getLocation().add(0.5, 0.5, 0.5), i);
                     }
-                    if (Sunforged.isDrop_exp()){
-                        if (!MineUtils.cookBlock(e.getPlayer().getInventory().getItemInMainHand(), e.getBlock()).equals(e.getBlock().getDrops(e.getPlayer().getInventory().getItemInMainHand()))){
+                    if (!MineUtils.cookBlock(heldTool, e.getBlock()).equals(e.getBlock().getDrops(heldTool))){
+                        smeltedBlock = true;
+                    }
+                    if (smeltedBlock){
+                        if (Sunforged.doesDropEXP()){
                             ExperienceOrb orb = (ExperienceOrb) e.getBlock().getWorld().spawnEntity(e.getBlock().getLocation().add(0.5, 0.5, 0.5), EntityType.EXPERIENCE_ORB);
                             orb.setExperience(1);
+                        }
+                    } else {
+                        if (blockExperienceValues.containsKey(e.getBlock().getType())){
+                            int value = blockExperienceValues.get(e.getBlock().getType()).getRandomExperience();
+                            if (value > 0){
+                                ExperienceOrb orb = (ExperienceOrb) e.getBlock().getWorld().spawnEntity(e.getBlock().getLocation().add(0.5, 0.5, 0.5), EntityType.EXPERIENCE_ORB);
+                                orb.setExperience(value);
+                            }
                         }
                     }
 
@@ -87,7 +108,12 @@ public class Sunforged extends BreakBlockEnchantment{
         this.weight = config.getInt("enchantment_configuration.sunforged.weight");
         this.book_only = config.getBoolean("enchantment_configuration.sunforged.book_only");
         this.enchantDescription = config.getString("enchantment_configuration.sunforged.description");
-        drop_exp = config.getBoolean("enchantment_configuration.sunforged.drop_exp");
+        this.tradeMinCostBase = config.getInt("enchantment_configuration.sunforged.trade_cost_base_lower");
+        this.tradeMaxCostBase = config.getInt("enchantment_configuration.sunforged.trade_cost_base_upper");
+        this.tradeMinCostLv = config.getInt("enchantment_configuration.sunforged.trade_cost_lv_lower");
+        this.tradeMaxCostLv = config.getInt("enchantment_configuration.sunforged.trade_cost_base_upper");
+        drop_exp_chance = config.getDouble("enchantment_configuration.sunforged.drop_exp_chance");
+        this.availableForTrade = config.getBoolean("enchantment_configuration.sunforged.trade_enabled");
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.sunforged.compatible_with");
         for (String s : compatibleItemStrings){
@@ -100,7 +126,20 @@ public class Sunforged extends BreakBlockEnchantment{
         }
     }
 
-    public static boolean isDrop_exp(){
-        return drop_exp;
+    public static boolean doesDropEXP(){
+        return RandomNumberGenerator.getRandom().nextDouble() <= drop_exp_chance;
+    }
+
+    private static class BlockExperience{
+        private final int lowerBound;
+        private final int upperBound;
+        BlockExperience(int lowerBound, int upperBound){
+            this.lowerBound = lowerBound;
+            this.upperBound = upperBound;
+        }
+
+        public int getRandomExperience(){
+            return RandomNumberGenerator.getRandom().nextInt(((upperBound + 1) - lowerBound)) + lowerBound;
+        }
     }
 }

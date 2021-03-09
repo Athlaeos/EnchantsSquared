@@ -5,12 +5,23 @@ level_minimum: 30
 # This means that the higher this number, the generally more enchantments will appear on an item
 # This also makes this amount the max amount of custom enchants that can appear on an item at once in an enchantment table
 enchantment_table_rolls: 3
+# The additional levels it'll cost to combine items with custom enchants in an anvil
+enchantment_extra_cost: 2
+
+# Disable certain core features of the plugin in case they severely clash with other plugins, or you just don't want to use them.
+disable_anvil: false # Disables custom enchantments from being able to be combined in an anvil
+disable_enchanting: false # Disables custom enchantments from appearing in the enchantment table
+disable_trading: false # Disables villagers from trading custom enchantments
 
 # The maximum amount of enchantments you're allowed to put on a tool
 max_enchants: 5
 
-# The chance for custom enchantments to appear on an item, in %
+# The chance for custom enchantments to appear on an item while enchanting, in %
 custom_enchant_rate: 50
+# The chance for an enchanted book in a villager trade to instead be of a random custom enchantment, in %
+# The enchantments appearing will appear at the same rate they would when enchanting a normal enchanted book, except
+# there will always be just 1 enchantment.
+custom_enchant_trade_rate: 33
 
 # If true, players require permissions for each individual enchant to be able to obtain them while enchanting.
 # The permission for each of these will be es.enchant.(enchantment name)
@@ -41,6 +52,15 @@ enchantment_configuration:
     # a lot more blocks a lot faster than it normally would. However, from my experience, players tend to complain their
     # tools break too fast if this value is set at 1, hence why it's set at 0.33 by default. If you have an economy on your
     # server it is recommended to keep excavation in mind when balancing it, because players WILL get a LOT of resources.
+    trade_enabled: true # If true, custom enchantments will appear in villager trades
+    trade_cost_base_lower: 32 # Lowest emerald cost value for a level 1 enchantment, cost is random between lower and upper value
+    trade_cost_base_upper: 64 # Highest emerald cost value for a level 1 enchantment
+      # Example: If an enchant is configured as so:
+      # trade_cost_base_lower: 8
+      # trade_cost_base_upper: 16
+      # trade_cost_lv_lower: 4
+      # trade_cost_lv_upper: 8
+    # A level 1 enchant of this type would cost between 8-16 emeralds, a level 2 would cost 12-24, level 3 16-32, etc.
     compatible_with: # Limited to AXES, PICKAXES, SHOVELS, and HOES
       - AXES
       - PICKAXES
@@ -58,8 +78,14 @@ enchantment_configuration:
     max_level_table: 3
     durability_regeneration_base: 0.1 # Base chance per movement packet to regenerate 1 durability at lv 1
     durability_regeneration_lv: 0.1 # Additional chance to regenerate 1 durability per level
+    trade_enabled: true
+    trade_cost_base_lower: 12
+    trade_cost_base_upper: 24
+    trade_cost_lv_lower: 6 # Additional emerald cost per extra level added to the lower base cost of an enchant
+    trade_cost_lv_upper: 12 # Additional emerald cost per extra level added to the upper base cost of an enchant
     compatible_with:
       - ALL
+
 
   lava_walker:
     description: '&8> Transforms lava under you within a radius of &e1&8-&e2&8-&e3&8 blocks into magma, at the cost of durability.'
@@ -71,6 +97,11 @@ enchantment_configuration:
     max_level_table: 2
     durability_degeneration: 0.1 # Chance per block of lava transformed to reduce 1 durability
     transform_into: 'MAGMA_BLOCK' # The block lava will turn into when walked over
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
     compatible_with:
       - BOOTS
 
@@ -83,7 +114,12 @@ enchantment_configuration:
     max_level: 2
     max_level_table: 2
     deflect_chance_lv: 0.2 # Chance per level to deflect a projectile
-    compatible_with: # Not limited to armor
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
+    compatible_with:
       - CHESTPLATES
 
   chemical_shield:
@@ -92,6 +128,9 @@ enchantment_configuration:
     enabled: true
     weight: 40
     book_only: false
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
 
   potion_potency_buff:
     description: '&8> Any potion you drink will have their duration reduced by &e20&8-&e40%&8, but have their amplifiers increased by &eI&8-&eII'
@@ -113,10 +152,15 @@ enchantment_configuration:
     # seconds with an enchant strength of II.
     # If duration_buff_base is set to 40, it will add a flat 2 seconds to the potion effect duration.
     # Both values have to be either decimals or whole numbers, if you use a mix of both an error will be shown on startup.
-    compatible_with: # Limited to weapons
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 16
+    trade_cost_lv_upper: 32
+    compatible_with:
       - CHESTPLATES
       - SHIELDS
-      - ELYTRAS
+      - ELYTRA
 
   steady:
     description: '&8> Reduces knockback taken by &e20&8-&e40%'
@@ -127,7 +171,12 @@ enchantment_configuration:
     max_level: 2
     max_level_table: 2
     knockback_reduction_lv: 0.2 # Knockback reduced per level
-    compatible_with: # Not limited to armor
+    trade_enabled: true
+    trade_cost_base_lower: 12
+    trade_cost_base_upper: 24
+    trade_cost_lv_lower: 6
+    trade_cost_lv_upper: 12
+    compatible_with:
       - LEGGINGS
 
   illuminated:
@@ -141,6 +190,9 @@ enchantment_configuration:
     # is reduced.
     cooldown: 100 # Cooldown in ticks
     cooldown_message: '&cCooldown: {cooldown}s' # Message sent to player if torch placement is on cooldown
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
 
   auto_replant:
     description: '&8> Right click with a hoe on a fully grown crop to instantly harvest and replant it'
@@ -148,6 +200,9 @@ enchantment_configuration:
     enabled: true
     weight: 80
     book_only: false
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 48
 
   kinship:
     description: '&8> If the pickaxe matches the material of the ore you''re mining, some durability is restored. &estone:0-0-0&8, &eiron:1-2-3&8, &ediamond:10-20-30&8, &enetherite:50-100-150'
@@ -161,6 +216,11 @@ enchantment_configuration:
     durability_regen_diamond: 10 # Durability regenerated when mining diamond ore with a diamond pickaxe per level
     durability_regen_iron: 1 # Durability regenerated when mining iron ore with a iron pickaxe per level
     durability_regen_stone: 0 # Durability regenerated when mining stone with a stone pickaxe per level
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
 
   metabolism:
     description: '&8> Slowly regenerates hunger points while moving'
@@ -172,7 +232,12 @@ enchantment_configuration:
     max_level_table: 2
     saturation_limit: 5 # Maximum amount of saturation points regenerated if player has 10 full hunger bars
     hunger_regeneration_lv: 0.03 # additional chance to regenerate 1 hunger per level
-    compatible_with: # Not limited to armor
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
+    compatible_with:
       - HELMETS
       - CHESTPLATES
       - LEGGINGS
@@ -187,7 +252,12 @@ enchantment_configuration:
     max_level: 5
     max_level_table: 5
     health_lv: 1 # Extra half-hearts added to the wearer's max health per level
-    compatible_with: # Limited to HELMETS, CHESTPLATES, LEGGINGS, and BOOTS
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 6
+    trade_cost_lv_upper: 12
+    compatible_with:
       - HELMETS
       - CHESTPLATES
       - LEGGINGS
@@ -199,9 +269,12 @@ enchantment_configuration:
     enabled: true
     weight: 20
     book_only: false
-    drop_exp: false # If true, each block mined with sunforged drops 1 exp orb. Careful, as this is really fucking overpowered.
+    drop_exp_chance: 0.0 # Chance for a sunforge smelted block to drop 1 exp
     # Blocks and recipes can be found in smeltblocksrecipes.yml
-    compatible_with: # Limited to AXES, PICKAXES, SHOVELS, and HOES
+    trade_enabled: true
+    trade_cost_base_lower: 32
+    trade_cost_base_upper: 48
+    compatible_with:
       - AXES
       - PICKAXES
       - SHOVELS
@@ -214,7 +287,10 @@ enchantment_configuration:
     weight: 10
     book_only: false
     durability_decay: 1.0 # Chance per movement packet to decay 1 durability (1.0 = 100%)
-    compatible_with: # Not limited to armor
+    trade_enabled: true
+    trade_cost_base_lower: 48
+    trade_cost_base_upper: 64
+    compatible_with:
       - BOOTS
 
   speed_boost:
@@ -228,7 +304,12 @@ enchantment_configuration:
     amplifier: 0 # Base strength of speed boost buff (an amplifier of 0 means the effect is applied at level I, 1 is II, etc.)
     amplifier_lv: 1 # Additional strength of speed buff per level
     duration: 100 # Duration of speed boost buff granted per movement packet (20 = 1 second)
-    compatible_with: # Not limited to armor
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 16
+    trade_cost_lv_upper: 32
+    compatible_with:
       - BOOTS
 
   jump_boost:
@@ -242,7 +323,12 @@ enchantment_configuration:
     amplifier: 0 # Base strength of jump boost buff (an amplifier of 0 means the effect is applied at level I, 1 is II, etc.)
     amplifier_lv: 1 # Additional strength of jump buff per level
     duration: 100 # Duration of jump boost buff granted per movement packet (20 = 1 second)
-    compatible_with: # Not limited to armor
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
+    compatible_with:
       - BOOTS
 
   luck:
@@ -256,7 +342,12 @@ enchantment_configuration:
     amplifier: 0 # Base strength of luck (an amplifier of 0 means the effect is applied at level I, 1 is II, etc.)
     amplifier_lv: 1 # Additional strength of luck per level
     duration: 100 # Duration of luck granted per movement packet (20 = 1 second)
-    compatible_with: # Not limited to armor
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
+    compatible_with:
       - CHESTPLATES
 
   night_vision:
@@ -266,7 +357,10 @@ enchantment_configuration:
     weight: 20
     book_only: false
     duration: 300 # Duration of night vision buff granted per movement packet (20 = 1 second)
-    compatible_with: # Not limited to armor
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 48
+    compatible_with:
       - HELMETS
 
   water_breathing:
@@ -276,7 +370,10 @@ enchantment_configuration:
     weight: 80
     book_only: false
     duration: 100 # Duration of water breathing buff granted per movement packet (20 = 1 second)
-    compatible_with: # Not limited to armor
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 48
+    compatible_with:
       - HELMETS
 
   haste:
@@ -290,7 +387,12 @@ enchantment_configuration:
     amplifier: 0 # Base strength of haste buff (an amplifier of 0 means the effect is applied at level I, 1 is II, etc.)
     amplifier_lv: 1 # Additional strength of haste buff per level
     duration: 100 # Duration of haste buff granted per movement packet (20 = 1 second)
-    compatible_with: # Not limited to tools
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 16
+    trade_cost_lv_upper: 32
+    compatible_with:
       - SWORDS
       - PICKAXES
       - SHOVELS
@@ -308,7 +410,12 @@ enchantment_configuration:
     amplifier: 0 # Base strength of strength buff (an amplifier of 0 means the effect is applied at level I, 1 is II, etc.)
     amplifier_lv: 1 # Additional strength of strength buff per level
     duration: 100 # Duration of strength buff granted per movement packet (20 = 1 second)
-    compatible_with: # Not limited to tools
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
+    compatible_with:
       - AXES
 
   vitality:
@@ -317,13 +424,18 @@ enchantment_configuration:
     enabled: true
     weight: 80
     book_only: false
-    max_level: 4
+    max_level: 5
     max_level_table: 4
     extra_healing_lv: 5 # additional healing in % per level per piece of armor.
     max_bonus_healing: 100 # the cap for additional healing, no matter how much combined vitality the player has.
     # Having vitality 3 on 4 pieces of armor grants (3 * 4 * extra_healing_lv) more healing,
     # or max_bonus_healing if it exceeds its value
-    compatible_with: # Not limited to armor
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 6
+    trade_cost_lv_upper: 12
+    compatible_with:
       - HELMETS
       - CHESTPLATES
       - LEGGINGS
@@ -343,7 +455,12 @@ enchantment_configuration:
     amplifier_lv: 1 # Additional amplitude debuff strength per level
     duration: 20 # Base duration of the debuff (20 = 1 second)
     duration_lv: 20 # Additional duration of the debuff per level
-    compatible_with: # Limited to weapons
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
+    compatible_with:
       - SWORDS
       - BOWS
       - CROSSBOWS
@@ -362,7 +479,12 @@ enchantment_configuration:
     amplifier_lv: 1 # Additional amplitude debuff strength per level
     duration: 20 # Base duration of the debuff (20 = 1 second)
     duration_lv: 20 # Additional duration of the debuff per level
-    compatible_with: # Limited to weapons
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
+    compatible_with:
       - SWORDS
       - BOWS
       - CROSSBOWS
@@ -381,7 +503,12 @@ enchantment_configuration:
     amplifier_lv: 0 # Additional amplitude debuff strength per level
     duration: 40 # Base duration of the debuff (20 = 1 second)
     duration_lv: 20 # Additional duration of the debuff per level
-    compatible_with: # Limited to weapons
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
+    compatible_with:
       - SWORDS
       - BOWS
       - CROSSBOWS
@@ -400,7 +527,12 @@ enchantment_configuration:
     duration: 20 # Base duration of the debuff (20 = 1 second)
     duration_lv: 20 # Additional duration of the debuff per level
     buffed_axe_potency: true # If true, (pick)axes have twice the chance to stun targets over swords or (cross)bows
-    compatible_with: # Limited to weapons
+    trade_enabled: true
+    trade_cost_base_lower: 12
+    trade_cost_base_upper: 24
+    trade_cost_lv_lower: 6
+    trade_cost_lv_upper: 12
+    compatible_with:
       - SWORDS
       - BOWS
       - CROSSBOWS
@@ -421,7 +553,12 @@ enchantment_configuration:
     amplifier_lv: 1 # Additional amplitude debuff strength per level
     duration: 40 # Base duration of the debuff (20 = 1 second)
     duration_lv: 20 # Additional duration of the debuff per level
-    compatible_with: # Limited to weapons
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
+    compatible_with:
       - SWORDS
       - BOWS
       - CROSSBOWS
@@ -438,11 +575,32 @@ enchantment_configuration:
     apply_chance_lv: 0.02 # The additional chance per level the damaged target is inflicted with blindness
     duration: 20 # Base duration of the debuff (20 = 1 second)
     duration_lv: 10 # Additional duration of the debuff per level
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
     compatible_with: # Limited to weapons
       - SWORDS
       - BOWS
       - CROSSBOWS
       - AXES
+
+  elytra_firework_buff: # This enchantment is disabled for the time being, as the result of this enchantment didn't work as expected
+    description: '&8> You gain extra speed from firework rocket boosts while gliding'
+    enchant_name: '&7Volatile Fuel %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    potency_buff_base: 1.5 # Base velocity multiplier at lv 1
+    potency_buff_lv: 0.25 # Additional velocity multiplier at levels higher than 1
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
 
   nausea:
     description: '&8> Has a &e3&8-&e5% chance to inflict the entity you''re damaging with Nausea'
@@ -456,6 +614,11 @@ enchantment_configuration:
     apply_chance_lv: 0.02 # The additional chance per level the damaged target is inflicted with nausea
     duration: 60 # Base duration of the debuff (20 = 1 second)
     duration_lv: 20 # Additional duration of the debuff per level
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
     compatible_with: # Limited to weapons
       - SWORDS
       - BOWS
@@ -474,6 +637,11 @@ enchantment_configuration:
     healing_reduction_lv: 0.3 # Additional healing reduction for each additional level
     duration_base: 120 # Base duration in ticks
     duration_lv: 40 # Additional duration per level in ticks
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
     compatible_with: # Limited to weapons
       - CROSSBOWS
       - BOWS
@@ -489,6 +657,11 @@ enchantment_configuration:
     max_level_table: 3
     damage_base: 2.5 # Base additional damage dealt per piece of diamond/netherite armor at enchantment level 1
     damage_lv: 1.25 # Additional damage dealt per piece of diamond/netherite armor per extra level
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 24
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 12
     compatible_with:
       - CROSSBOWS
       - AXES
@@ -507,6 +680,11 @@ enchantment_configuration:
     radius_base: 1.5 # Base radius of AOE around mob damaged
     radius_lv: 0.5 # Additional radius per level of AOE around mob damaged
     explosion: true # Displays and plays the sound of an explosion when the arrow hits a target
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
     compatible_with: # Not limited to ranged weapons
       - CROSSBOWS
       - BOWS
@@ -523,6 +701,11 @@ enchantment_configuration:
     drop_chance_lv: 0.2 # Additional chance to drop extra exp
     exp_base: 1 # Additional exp per mob killed
     exp_lv: 1 # Additional exp per level per mob killed
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
     compatible_with: # Limited to weapons
       - SWORDS
       - AXES
@@ -537,6 +720,11 @@ enchantment_configuration:
     max_level_table: 2
     healing_base: 2.0 # Base amount healed when killing an entity
     healing_lv: 2.0 # Additional amount healed when killing an entity
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
     compatible_with: # Limited to weapons
       - SWORDS
       - AXES
@@ -552,6 +740,11 @@ enchantment_configuration:
     beheading_base: 0.01 # Base chance for a killed enemy to drop a head
     beheading_lv: 0.01 # Additional chance per level for a killed enemy to drop a head
     axe_buff: 2.0 # Chance multiplier if using an axe
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
     compatible_with: # Limited to weapons
       - SWORDS
       - AXES
@@ -564,6 +757,9 @@ enchantment_configuration:
     weight: 40
     book_only: false
     single_use: true # Soulbound disappears off the item upon death
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 32
     compatible_with:
       - ALL
 
@@ -582,6 +778,11 @@ enchantment_configuration:
     cooldown: 20
     cooldown_message: '&cCooldown: {cooldown}s'
     explode: true # If true, plays an explosion sound effect and visual on usage
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
     compatible_with: # Limited to weapons
       - SWORDS
       - AXES
@@ -596,6 +797,11 @@ enchantment_configuration:
     max_level_table: 2
     durability_degeneration_base: 0.1 # base chance per movement packet to regenerate 1 durability at lv 1
     durability_degeneration_lv: 0.1 # additional chance to regenerate 1 durability per level
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
     compatible_with: # Limited to weapons
       - ALL
 
@@ -612,6 +818,11 @@ enchantment_configuration:
     amplifier_fatigue: 0 # base strength of mining fatigue debuff (an amplifier of 0 means the effect is applied at level I, 1 is II, etc.)
     amplifier_lv_fatigue: 1 # additional strength of mining fatigue per level
     duration: 100 # duration of slow and mining fatigue debuffs granted per movement packet (20 = 1 second)
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
     compatible_with: # Not limited to tools
       - ALL
 
@@ -624,6 +835,11 @@ enchantment_configuration:
     max_level: 2
     max_level_table: 2
     hunger_degeneration_lv: 0.1 # additional chance to remove 1 hunger per level
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
     compatible_with: # Not limited to armor
       - HELMETS
       - CHESTPLATES
@@ -644,6 +860,11 @@ enchantment_configuration:
     damage_taken_base: 1.3 # Base damage taken multiplier at level I
     damage_taken_lv: 0.2 # Additional damage multiplier at levels higher than I, added onto the base multiplier
     # Example: Curse of Rage level III will have a damage multiplier of 1.3 + 0.2 * 2 = 1.7, which means you take 70% more damage
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 16
+    trade_cost_lv_lower: 4
+    trade_cost_lv_upper: 8
     compatible_with: # Not limited to ranged weapons
       - ALL
 

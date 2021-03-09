@@ -20,7 +20,7 @@ public class Luck extends ConstantTriggerEnchantment{
     public Luck(){
         this.enchantType = CustomEnchantType.LUCKY;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
-        this.requiredPermission = "es.enchant.luck";
+        this.requiredPermission = "es.enchant.lucky";
         loadFunctionalItemStrings(Collections.singletonList("ALL"));
         loadConfig();
     }
@@ -54,6 +54,11 @@ public class Luck extends ConstantTriggerEnchantment{
         this.max_level_table = config.getInt("enchantment_configuration.luck.max_level_table");
         this.max_level = config.getInt("enchantment_configuration.luck.max_level");
         this.enchantDescription = config.getString("enchantment_configuration.luck.description");
+        this.tradeMinCostBase = config.getInt("enchantment_configuration.luck.trade_cost_base_lower");
+        this.tradeMaxCostBase = config.getInt("enchantment_configuration.luck.trade_cost_base_upper");
+        this.tradeMinCostLv = config.getInt("enchantment_configuration.luck.trade_cost_lv_lower");
+        this.tradeMaxCostLv = config.getInt("enchantment_configuration.luck.trade_cost_base_upper");
+        this.availableForTrade = config.getBoolean("enchantment_configuration.luck.trade_enabled");
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.luck.compatible_with");
         for (String s : compatibleItemStrings){

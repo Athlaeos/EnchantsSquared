@@ -48,6 +48,9 @@ public class Soulbound extends KillEnchantment{
         this.weight = config.getInt("enchantment_configuration.soulbound.weight");
         this.book_only = config.getBoolean("enchantment_configuration.soulbound.book_only");
         this.enchantDescription = config.getString("enchantment_configuration.soulbound.description");
+        this.tradeMinCostBase = config.getInt("enchantment_configuration.soulbound.trade_cost_base_lower");
+        this.tradeMaxCostBase = config.getInt("enchantment_configuration.soulbound.trade_cost_base_upper");
+        this.availableForTrade = config.getBoolean("enchantment_configuration.soulbound.trade_enabled");
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.soulbound.compatible_with");
         for (String s : compatibleItemStrings){

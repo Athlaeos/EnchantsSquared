@@ -11,6 +11,7 @@ import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
 import me.athlaeos.enchantssquared.utils.Utils;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
@@ -49,6 +50,7 @@ public class PlayerMoveListener implements Listener {
 
             for (ItemStack i : equipment){
                 if (i == null) continue;
+                if (i.getType() == Material.ENCHANTED_BOOK) continue;
 
                 Map<CustomEnchant, Integer> enchants = enchantManager.getItemsEnchantsFromPDC(i);
                 for (CustomEnchant enchant : enchants.keySet()){

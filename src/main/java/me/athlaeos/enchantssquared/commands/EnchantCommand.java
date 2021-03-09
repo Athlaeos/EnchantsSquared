@@ -53,11 +53,15 @@ public class EnchantCommand implements Command {
 
 		ItemStack inHandItem = ((Player) sender).getInventory().getItemInMainHand();
 		if (inHandItem.getType() != Material.AIR) {
-			CustomEnchantManager.getInstance().removeEnchant(inHandItem, chosenEnchant);
-			CustomEnchantManager.getInstance().addEnchant(inHandItem, chosenEnchant, chosenLevel);
-			sender.sendMessage(Utils.chat(enchant_success));
-			if (inHandItem.getType() == Material.BOOK){
-				inHandItem.setType(Material.ENCHANTED_BOOK);
+			try{
+				CustomEnchantManager.getInstance().removeEnchant(inHandItem, chosenEnchant);
+				CustomEnchantManager.getInstance().addEnchant(inHandItem, chosenEnchant, chosenLevel);
+				sender.sendMessage(Utils.chat(enchant_success));
+				if (inHandItem.getType() == Material.BOOK){
+					inHandItem.setType(Material.ENCHANTED_BOOK);
+				}
+			} catch (IllegalArgumentException e){
+				sender.sendMessage(Utils.chat(enchant_failed));
 			}
 		} else {
 			sender.sendMessage(Utils.chat(enchant_failed));
@@ -90,7 +94,7 @@ public class EnchantCommand implements Command {
 		if (args.length == 2){
 			List<String> returns = new ArrayList<>();
 			for (CustomEnchantType c : CustomEnchantType.values()){
-				if (c != CustomEnchantType.UNASSIGNED){
+				if (CustomEnchantManager.getInstance().getEnchant(c) != null){
 					returns.add(c.toString().toLowerCase());
 				}
 			}

@@ -22,7 +22,7 @@ public class CurseBrittle extends ConstantTriggerEnchantment{
     public CurseBrittle(){
         this.enchantType = CustomEnchantType.CURSE_DURABILITY;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
-        this.requiredPermission = "es.enchant.curse_brittle";
+        this.requiredPermission = "es.enchant.curse_durability";
         loadFunctionalItemStrings(Collections.singletonList("ALL"));
         loadConfig();
     }
@@ -61,6 +61,11 @@ public class CurseBrittle extends ConstantTriggerEnchantment{
         this.max_level_table = config.getInt("enchantment_configuration.curse_brittle.max_level_table");
         this.max_level = config.getInt("enchantment_configuration.curse_brittle.max_level");
         this.enchantDescription = config.getString("enchantment_configuration.curse_brittle.description");
+        this.tradeMinCostBase = config.getInt("enchantment_configuration.curse_brittle.trade_cost_base_lower");
+        this.tradeMaxCostBase = config.getInt("enchantment_configuration.curse_brittle.trade_cost_base_upper");
+        this.tradeMinCostLv = config.getInt("enchantment_configuration.curse_brittle.trade_cost_lv_lower");
+        this.tradeMaxCostLv = config.getInt("enchantment_configuration.curse_brittle.trade_cost_base_upper");
+        this.availableForTrade = config.getBoolean("enchantment_configuration.curse_brittle.trade_enabled");
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.curse_brittle.compatible_with");
         for (String s : compatibleItemStrings){

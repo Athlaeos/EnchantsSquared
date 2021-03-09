@@ -33,14 +33,16 @@ public class Vampiric extends KillEnchantment{
                 return;
             }
         }
-        double final_amount_healed = (level <= 1) ? this.healing_base : (this.healing_base + ((level - 1) * healing_lv));
-        double killer_max_health = killer.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-        EntityRegainHealthEvent event = new EntityRegainHealthEvent(killer, final_amount_healed, EntityRegainHealthEvent.RegainReason.CUSTOM);
-        EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
-        if (killer.getHealth() + event.getAmount() > killer_max_health){
-            killer.setHealth(killer_max_health);
-        } else {
-            killer.setHealth(killer.getHealth() + event.getAmount());
+        if (this.functionalItems.contains(stack.getType())){
+            double final_amount_healed = (level <= 1) ? this.healing_base : (this.healing_base + ((level - 1) * healing_lv));
+            double killer_max_health = killer.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+            EntityRegainHealthEvent event = new EntityRegainHealthEvent(killer, final_amount_healed, EntityRegainHealthEvent.RegainReason.CUSTOM);
+            EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
+            if (killer.getHealth() + event.getAmount() > killer_max_health){
+                killer.setHealth(killer_max_health);
+            } else {
+                killer.setHealth(killer.getHealth() + event.getAmount());
+            }
         }
     }
 
@@ -55,6 +57,11 @@ public class Vampiric extends KillEnchantment{
         this.max_level_table = config.getInt("enchantment_configuration.vampiric.max_level_table");
         this.max_level = config.getInt("enchantment_configuration.vampiric.max_level");
         this.enchantDescription = config.getString("enchantment_configuration.vampiric.description");
+        this.tradeMinCostBase = config.getInt("enchantment_configuration.vampiric.trade_cost_base_lower");
+        this.tradeMaxCostBase = config.getInt("enchantment_configuration.vampiric.trade_cost_base_upper");
+        this.tradeMinCostLv = config.getInt("enchantment_configuration.vampiric.trade_cost_lv_lower");
+        this.tradeMaxCostLv = config.getInt("enchantment_configuration.vampiric.trade_cost_base_upper");
+        this.availableForTrade = config.getBoolean("enchantment_configuration.vampiric.trade_enabled");
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.vampiric.compatible_with");
         for (String s : compatibleItemStrings){

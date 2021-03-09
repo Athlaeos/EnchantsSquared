@@ -3,9 +3,11 @@ package me.athlaeos.enchantssquared.enchantments.mineenchantments;
 import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
 import org.bukkit.Material;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -65,9 +67,13 @@ public class Kinship extends BreakBlockEnchantment{
                 }
 
                 if (item.getItemMeta() instanceof Damageable){
-                    Damageable toolMeta = (Damageable) item.getItemMeta();
-                    toolMeta.setDamage(toolMeta.getDamage() - durabilityToRepair);
-                    item.setItemMeta((ItemMeta) toolMeta);
+                    PlayerItemDamageEvent event = new PlayerItemDamageEvent(e.getPlayer(), item, -durabilityToRepair);
+                    EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
+                    if (!event.isCancelled()){
+                        Damageable toolMeta = (Damageable) item.getItemMeta();
+                        toolMeta.setDamage(toolMeta.getDamage() + event.getDamage());
+                        item.setItemMeta((ItemMeta) toolMeta);
+                    }
                 }
             }
         }
@@ -88,6 +94,13 @@ public class Kinship extends BreakBlockEnchantment{
         this.durability_iron = config.getInt("enchantment_configuration.kinship.durability_regen_iron");
         this.durability_stone = config.getInt("enchantment_configuration.kinship.durability_regen_stone");
         this.enchantDescription = config.getString("enchantment_configuration.kinship.description");
+        this.max_level_table = config.getInt("enchantment_configuration.kinship.max_level_table");
+        this.max_level = config.getInt("enchantment_configuration.kinship.max_level");
+        this.tradeMinCostBase = config.getInt("enchantment_configuration.kinship.trade_cost_base_lower");
+        this.tradeMaxCostBase = config.getInt("enchantment_configuration.kinship.trade_cost_base_upper");
+        this.tradeMinCostLv = config.getInt("enchantment_configuration.kinship.trade_cost_lv_lower");
+        this.tradeMaxCostLv = config.getInt("enchantment_configuration.kinship.trade_cost_base_upper");
+        this.availableForTrade = config.getBoolean("enchantment_configuration.kinship.trade_enabled");
 
         this.compatibleItems.addAll(ItemMaterialManager.getInstance().getPickaxes());
         this.compatibleItems.remove(Material.GOLDEN_PICKAXE);

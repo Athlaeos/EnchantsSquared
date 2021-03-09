@@ -21,7 +21,7 @@ public class Sapping extends KillEnchantment{
     public Sapping(){
         this.enchantType = CustomEnchantType.BONUS_EXP;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
-        this.requiredPermission = "es.enchant.sapping";
+        this.requiredPermission = "es.enchant.bonus_exp";
         loadFunctionalItemStrings(Arrays.asList("SWORDS", "AXES", "PICKAXES", "HOES", "SHOVELS", "SHEARS", "BOWS", "CROSSBOWS", "TRIDENTS"));
         loadConfig();
     }
@@ -33,11 +33,13 @@ public class Sapping extends KillEnchantment{
                 return;
             }
         }
-        double final_drop_chance = (level <= 1) ? this.drop_chance_base : (this.drop_chance_base + ((level - 1) * drop_chance_lv));
+        if (this.functionalItems.contains(stack.getType())){
+            double final_drop_chance = (level <= 1) ? this.drop_chance_base : (this.drop_chance_base + ((level - 1) * drop_chance_lv));
 
-        if (RandomNumberGenerator.getRandom().nextDouble() < final_drop_chance){
-            int final_exp_dropped = (level <= 1) ? this.exp_base : (this.exp_base + ((level - 1) * exp_lv));
-            e.setDroppedExp(e.getDroppedExp() + final_exp_dropped);
+            if (RandomNumberGenerator.getRandom().nextDouble() < final_drop_chance){
+                int final_exp_dropped = (level <= 1) ? this.exp_base : (this.exp_base + ((level - 1) * exp_lv));
+                e.setDroppedExp(e.getDroppedExp() + final_exp_dropped);
+            }
         }
     }
 
@@ -54,6 +56,11 @@ public class Sapping extends KillEnchantment{
         this.max_level_table = config.getInt("enchantment_configuration.sapping.max_level_table");
         this.max_level = config.getInt("enchantment_configuration.sapping.max_level");
         this.enchantDescription = config.getString("enchantment_configuration.sapping.description");
+        this.tradeMinCostBase = config.getInt("enchantment_configuration.sapping.trade_cost_base_lower");
+        this.tradeMaxCostBase = config.getInt("enchantment_configuration.sapping.trade_cost_base_upper");
+        this.tradeMinCostLv = config.getInt("enchantment_configuration.sapping.trade_cost_lv_lower");
+        this.tradeMaxCostLv = config.getInt("enchantment_configuration.sapping.trade_cost_base_upper");
+        this.availableForTrade = config.getBoolean("enchantment_configuration.sapping.trade_enabled");
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.sapping.compatible_with");
         for (String s : compatibleItemStrings){

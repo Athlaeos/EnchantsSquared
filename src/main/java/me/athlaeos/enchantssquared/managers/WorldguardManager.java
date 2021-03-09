@@ -54,6 +54,7 @@ public class WorldguardManager {
     private StateFlag ENCHANTSSQUARED_DENY_POTION_POTENCY_BUFF;
     private StateFlag ENCHANTSSQUARED_DENY_CHEMICAL_SHIELD;
     private StateFlag ENCHANSTSQUARED_DENY_CURSE_BERSERK;
+    private StateFlag ENCHANSTSQUARED_DENY_ELYTRA_FIREWORK_BUFF;
 
     public WorldguardManager(){
     }
@@ -146,5 +147,6 @@ public class WorldguardManager {
         this.ENCHANTSSQUARED_DENY_POTION_POTENCY_BUFF = setFlag("es-deny-potion-potency-buff");
         this.ENCHANTSSQUARED_DENY_CHEMICAL_SHIELD = setFlag("es-deny-chemical-shield");
         this.ENCHANSTSQUARED_DENY_CURSE_BERSERK = setFlag("es-deny-curse-berserk");
+        this.ENCHANSTSQUARED_DENY_ELYTRA_FIREWORK_BUFF = setFlag("es-deny-elytra-firework-buff");
     }
 }

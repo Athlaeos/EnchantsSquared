@@ -73,6 +73,11 @@ public class Shielding extends DefendEnchantment {
         this.max_level_table = config.getInt("enchantment_configuration.shielding.max_level_table");
         this.max_level = config.getInt("enchantment_configuration.shielding.max_level");
         this.enchantDescription = config.getString("enchantment_configuration.shielding.description");
+        this.tradeMinCostBase = config.getInt("enchantment_configuration.shielding.trade_cost_base_lower");
+        this.tradeMaxCostBase = config.getInt("enchantment_configuration.shielding.trade_cost_base_upper");
+        this.tradeMinCostLv = config.getInt("enchantment_configuration.shielding.trade_cost_lv_lower");
+        this.tradeMaxCostLv = config.getInt("enchantment_configuration.shielding.trade_cost_base_upper");
+        this.availableForTrade = config.getBoolean("enchantment_configuration.shielding.trade_enabled");
 
         message = ConfigManager.getInstance().getConfig("translations.yml").get().getString("enchant_notifications.activation_deflect_projectile");
 

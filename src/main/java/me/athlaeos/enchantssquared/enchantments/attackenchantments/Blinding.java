@@ -74,6 +74,11 @@ public class Blinding extends AttackEnchantment{
         this.max_level_table = config.getInt("enchantment_configuration.blinding.max_level_table");
         this.max_level = config.getInt("enchantment_configuration.blinding.max_level");
         this.enchantDescription = config.getString("enchantment_configuration.blinding.description");
+        this.tradeMinCostBase = config.getInt("enchantment_configuration.blinding.trade_cost_base_lower");
+        this.tradeMaxCostBase = config.getInt("enchantment_configuration.blinding.trade_cost_base_upper");
+        this.tradeMinCostLv = config.getInt("enchantment_configuration.blinding.trade_cost_lv_lower");
+        this.tradeMaxCostLv = config.getInt("enchantment_configuration.blinding.trade_cost_base_upper");
+        this.availableForTrade = config.getBoolean("enchantment_configuration.blinding.trade_enabled");
 
         message = ConfigManager.getInstance().getConfig("translations.yml").get().getString("enchant_notifications.application_blinding");
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.blinding.compatible_with");

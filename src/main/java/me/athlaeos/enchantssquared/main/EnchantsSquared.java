@@ -1,5 +1,6 @@
 package me.athlaeos.enchantssquared.main;
 
+import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.Version;
 import me.athlaeos.enchantssquared.hooks.JobsHook;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
@@ -15,6 +16,7 @@ public final class EnchantsSquared extends JavaPlugin {
     private static EnchantsSquared plugin = null;
     private static AnvilListener anvilListener = null;
     private static EnchantListener enchantListener = null;
+    private static VillagerClickListener villagerListener = null;
 
     @Override
     public void onEnable() {
@@ -57,10 +59,18 @@ public final class EnchantsSquared extends JavaPlugin {
 
         anvilListener = new AnvilListener();
         enchantListener = new EnchantListener();
-        this.getServer().getPluginManager().registerEvents(anvilListener, this);
-        this.getServer().getPluginManager().registerEvents(enchantListener, this);
+        villagerListener = new VillagerClickListener();
+        if (!ConfigManager.getInstance().getConfig("config.yml").get().getBoolean("disable_anvil")){
+            this.getServer().getPluginManager().registerEvents(anvilListener, this);
+        }
+        if (!ConfigManager.getInstance().getConfig("config.yml").get().getBoolean("disable_enchanting")) {
+            this.getServer().getPluginManager().registerEvents(enchantListener, this);
+        }
+        if (!ConfigManager.getInstance().getConfig("config.yml").get().getBoolean("disable_trading")) {
+            this.getServer().getPluginManager().registerEvents(villagerListener, this);
+        }
         this.getServer().getPluginManager().registerEvents(new BlockBreakListener(), this);
-        this.getServer().getPluginManager().registerEvents(new BlockInteractListener(), this);
+        this.getServer().getPluginManager().registerEvents(new InteractListener(), this);
         this.getServer().getPluginManager().registerEvents(new PlayerMoveListener(), this);
         this.getServer().getPluginManager().registerEvents(new HealthRegenerationListener(), this);
         this.getServer().getPluginManager().registerEvents(new EntityAttackEntityListener(), this);
@@ -76,6 +86,10 @@ public final class EnchantsSquared extends JavaPlugin {
 
     public static EnchantListener getEnchantListener() {
         return enchantListener;
+    }
+
+    public static VillagerClickListener getVillagerListener() {
+        return villagerListener;
     }
 
     @Override

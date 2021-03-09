@@ -52,5 +52,9 @@ public class SplashPotionBlock extends PotionEffectEnchantment{
         this.weight = config.getInt("enchantment_configuration.chemical_shield.weight");
         this.book_only = config.getBoolean("enchantment_configuration.chemical_shield.book_only");
         this.enchantDescription = config.getString("enchantment_configuration.chemical_shield.description");
+        this.tradeMinCostBase = config.getInt("enchantment_configuration.chemical_shield.trade_cost_base_lower");
+        this.tradeMaxCostBase = config.getInt("enchantment_configuration.chemical_shield.trade_cost_base_upper");
+        this.availableForTrade = config.getBoolean("enchantment_configuration.chemical_shield.trade_enabled");
+
     }
 }

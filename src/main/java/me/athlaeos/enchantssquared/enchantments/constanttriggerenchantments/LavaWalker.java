@@ -27,7 +27,7 @@ public class LavaWalker extends ConstantTriggerEnchantment{
     public LavaWalker(){
         this.enchantType = CustomEnchantType.LAVA_WALKER;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
-        this.requiredPermission = "es.enchant.lavawalker";
+        this.requiredPermission = "es.enchant.lava_walker";
         loadFunctionalItemStrings(Collections.singletonList("ALL"));
         loadConfig();
     }
@@ -71,6 +71,12 @@ public class LavaWalker extends ConstantTriggerEnchantment{
         this.max_level_table = config.getInt("enchantment_configuration.lava_walker.max_level_table");
         this.max_level = config.getInt("enchantment_configuration.lava_walker.max_level");
         this.enchantDescription = config.getString("enchantment_configuration.lava_walker.description");
+        this.tradeMinCostBase = config.getInt("enchantment_configuration.lava_walker.trade_cost_base_lower");
+        this.tradeMaxCostBase = config.getInt("enchantment_configuration.lava_walker.trade_cost_base_upper");
+        this.tradeMinCostLv = config.getInt("enchantment_configuration.lava_walker.trade_cost_lv_lower");
+        this.tradeMaxCostLv = config.getInt("enchantment_configuration.lava_walker.trade_cost_base_upper");
+        this.availableForTrade = config.getBoolean("enchantment_configuration.lava_walker.trade_enabled");
+
         try{
             this.transform_into = Material.valueOf(config.getString("enchantment_configuration.lava_walker.transform_into"));
         } catch (IllegalArgumentException e){

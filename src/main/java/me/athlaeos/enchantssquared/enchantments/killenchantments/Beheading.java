@@ -20,7 +20,7 @@ public class Beheading extends KillEnchantment{
     private double axe_buff;
 
     public Beheading(){
-        this.enchantType = CustomEnchantType.DECAPITATION;
+        this.enchantType = CustomEnchantType.BEHEADING;
         this.config = ConfigManager.getInstance().getConfig("config.yml").get();
         this.requiredPermission = "es.enchant.beheading";
         loadFunctionalItemStrings(Arrays.asList("SWORDS", "AXES", "PICKAXES", "HOES", "SHOVELS", "SHEARS", "BOWS", "CROSSBOWS", "TRIDENTS"));
@@ -34,31 +34,33 @@ public class Beheading extends KillEnchantment{
                 return;
             }
         }
-        double final_beheading_chance =  (level <= 1) ? this.beheading_base : this.beheading_base + ((level - 1) * this.beheading_lv);
-        if (ItemMaterialManager.getInstance().getAxes().contains(stack.getType())){
-            final_beheading_chance *= axe_buff;
-        }
-
-        if (RandomNumberGenerator.getRandom().nextDouble() < final_beheading_chance){
-            ItemStack head = null;
-            if (e.getEntity() instanceof Zombie){
-                head = new ItemStack(Material.ZOMBIE_HEAD, 1);
-            } else if (e.getEntity() instanceof WitherSkeleton){
-                head = new ItemStack(Material.WITHER_SKELETON_SKULL, 1);
-            } else if (e.getEntity() instanceof Skeleton){
-                head = new ItemStack(Material.SKELETON_SKULL, 1);
-            } else if (e.getEntity() instanceof Creeper){
-                head = new ItemStack(Material.CREEPER_HEAD, 1);
-            } else if (e.getEntity() instanceof HumanEntity){
-                head = new ItemStack(Material.PLAYER_HEAD, 1);
-                SkullMeta meta = (SkullMeta) head.getItemMeta();
-                assert meta != null;
-                meta.setOwningPlayer((Player)e.getEntity());
-                head.setItemMeta(meta);
+        if (this.functionalItems.contains(stack.getType())){
+            double final_beheading_chance =  (level <= 1) ? this.beheading_base : this.beheading_base + ((level - 1) * this.beheading_lv);
+            if (ItemMaterialManager.getInstance().getAxes().contains(stack.getType())){
+                final_beheading_chance *= axe_buff;
             }
 
-            if (head != null){
-                e.getDrops().add(head);
+            if (RandomNumberGenerator.getRandom().nextDouble() < final_beheading_chance){
+                ItemStack head = null;
+                if (e.getEntity() instanceof Zombie){
+                    head = new ItemStack(Material.ZOMBIE_HEAD, 1);
+                } else if (e.getEntity() instanceof WitherSkeleton){
+                    head = new ItemStack(Material.WITHER_SKELETON_SKULL, 1);
+                } else if (e.getEntity() instanceof Skeleton){
+                    head = new ItemStack(Material.SKELETON_SKULL, 1);
+                } else if (e.getEntity() instanceof Creeper){
+                    head = new ItemStack(Material.CREEPER_HEAD, 1);
+                } else if (e.getEntity() instanceof HumanEntity){
+                    head = new ItemStack(Material.PLAYER_HEAD, 1);
+                    SkullMeta meta = (SkullMeta) head.getItemMeta();
+                    assert meta != null;
+                    meta.setOwningPlayer((Player)e.getEntity());
+                    head.setItemMeta(meta);
+                }
+
+                if (head != null){
+                    e.getDrops().add(head);
+                }
             }
         }
     }
@@ -75,6 +77,11 @@ public class Beheading extends KillEnchantment{
         this.max_level_table = config.getInt("enchantment_configuration.beheading.max_level_table");
         this.max_level = config.getInt("enchantment_configuration.beheading.max_level");
         this.enchantDescription = config.getString("enchantment_configuration.beheading.description");
+        this.tradeMinCostBase = config.getInt("enchantment_configuration.beheading.trade_cost_base_lower");
+        this.tradeMaxCostBase = config.getInt("enchantment_configuration.beheading.trade_cost_base_upper");
+        this.tradeMinCostLv = config.getInt("enchantment_configuration.beheading.trade_cost_lv_lower");
+        this.tradeMaxCostLv = config.getInt("enchantment_configuration.beheading.trade_cost_base_upper");
+        this.availableForTrade = config.getBoolean("enchantment_configuration.beheading.trade_enabled");
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.beheading.compatible_with");
         for (String s : compatibleItemStrings){

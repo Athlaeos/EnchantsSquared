@@ -74,6 +74,11 @@ public class AOEArrows extends AttackEnchantment{
         this.explosion = config.getBoolean("enchantment_configuration.aoe_arrows.explosion");
         this.enchantDescription = config.getString("enchantment_configuration.aoe_arrows.description");
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.aoe_arrows.compatible_with");
+        this.tradeMinCostBase = config.getInt("enchantment_configuration.aoe_arrows.trade_cost_base_lower");
+        this.tradeMaxCostBase = config.getInt("enchantment_configuration.aoe_arrows.trade_cost_base_upper");
+        this.tradeMinCostLv = config.getInt("enchantment_configuration.aoe_arrows.trade_cost_lv_lower");
+        this.tradeMaxCostLv = config.getInt("enchantment_configuration.aoe_arrows.trade_cost_base_upper");
+        this.availableForTrade = config.getBoolean("enchantment_configuration.aoe_arrows.trade_enabled");
 
         for (String s : compatibleItemStrings){
             try {

@@ -29,9 +29,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Excavation extends BreakBlockEnchantment{
     private double durability_decay;
@@ -42,6 +40,7 @@ public class Excavation extends BreakBlockEnchantment{
     private final List<Material> axeBreakables = new ArrayList<>();
     private final List<Material> shovelBreakables = new ArrayList<>();
     private final List<Material> hoeBreakables = new ArrayList<>();
+    private Map<Material, BlockExperience> blockExperienceValues = new HashMap<>();
 
     public Excavation(){
         this.enchantType = CustomEnchantType.EXCAVATION;
@@ -51,6 +50,18 @@ public class Excavation extends BreakBlockEnchantment{
         this.requiredPermission = "es.enchant.excavation";
         loadFunctionalItemStrings(Arrays.asList("HOES", "AXES", "PICKAXES", "SHOVELS"));
         loadConfig();
+
+        blockExperienceValues.put(Material.SPAWNER, new BlockExperience(15, 43));
+        blockExperienceValues.put(Material.COAL_ORE, new BlockExperience(0, 2));
+        blockExperienceValues.put(Material.DIAMOND_ORE, new BlockExperience(3, 7));
+        blockExperienceValues.put(Material.EMERALD_ORE, new BlockExperience(3, 7));
+        blockExperienceValues.put(Material.LAPIS_ORE, new BlockExperience(2, 5));
+        blockExperienceValues.put(Material.NETHER_QUARTZ_ORE, new BlockExperience(2, 5));
+        blockExperienceValues.put(Material.REDSTONE_ORE, new BlockExperience(1, 5));
+        try {
+            blockExperienceValues.put(Material.valueOf("NETHER_GOLD_ORE"), new BlockExperience(0, 1));
+        } catch (IllegalArgumentException ignored){
+        }
     }
 
     @Override
@@ -108,7 +119,7 @@ public class Excavation extends BreakBlockEnchantment{
                     blocksToBreak.addAll(Utils.getBlocksInArea(l1, l2));
                 }
 
-                int blocksSmelted = 0;
+                int expToDrop = 0;
                 if (e.getPlayer().getGameMode() == GameMode.CREATIVE){
                     for (Location l : blocksToBreak){
                         if (breakableBlocks.contains(blockBroken.getWorld().getBlockAt(l).getType())){
@@ -123,6 +134,12 @@ public class Excavation extends BreakBlockEnchantment{
                     for (Location l : blocksToBreak){
                         if (breakableBlocks.contains(blockBroken.getWorld().getBlockAt(l).getType())){
                             Block block = blockBroken.getWorld().getBlockAt(l);
+                            BlockBreakEvent blockBreakEvent = new BlockBreakEvent(block, e.getPlayer());
+                            if (blockExperienceValues.containsKey(blockBreakEvent.getBlock().getType())){
+                                blockBreakEvent.setExpToDrop(blockExperienceValues.get(blockBreakEvent.getBlock().getType()).getRandomExperience());
+                            }
+                            EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(blockBreakEvent);
+                            if (blockBreakEvent.isCancelled()) continue;
                             if (block.getDrops(item).isEmpty()) continue;
                             JobsHook.getJobsHook().performBlockBreakAction(e.getPlayer(), block);
                             EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(new BlockBreakEvent(block, e.getPlayer()));
@@ -136,12 +153,27 @@ public class Excavation extends BreakBlockEnchantment{
                                 for (ItemStack i : MineUtils.cookBlock(heldTool, block)){
                                     if (i != null){
                                         block.getWorld().dropItem(block.getLocation().add(0.5, 0.5, 0.5), i);
-                                        blocksSmelted++;
+                                    }
+                                }
+                                if (!MineUtils.cookBlock(heldTool, block).equals(block.getDrops(heldTool))){
+                                    if (Sunforged.doesDropEXP()) {
+                                        expToDrop++;
+                                    }
+                                } else {
+                                    if (heldTool.getItemMeta() != null){
+                                        if (!heldTool.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH)){
+                                            expToDrop += blockBreakEvent.getExpToDrop();
+                                        }
                                     }
                                 }
                                 block.setType(Material.AIR);
                             } else {
-                                block.breakNaturally(heldTool);
+                                if (heldTool.getItemMeta() != null){
+                                    if (!heldTool.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH)){
+                                        expToDrop += blockBreakEvent.getExpToDrop();
+                                        block.breakNaturally(heldTool);
+                                    }
+                                }
                             }
 
                             if (RandomNumberGenerator.getRandom().nextDouble() <= durability_decay){
@@ -149,12 +181,7 @@ public class Excavation extends BreakBlockEnchantment{
                             }
                         }
                     }
-                    if (smeltBlocks){
-                        if (Sunforged.isDrop_exp()){
-                            ExperienceOrb orb = (ExperienceOrb) e.getBlock().getWorld().spawnEntity(e.getBlock().getLocation().add(0.5, 0.5, 0.5), EntityType.EXPERIENCE_ORB);
-                            orb.setExperience(blocksSmelted);
-                        }
-                    }
+
                     if (nerf_excavation_speed){
                         if (e.getPlayer().hasPotionEffect(PotionEffectType.SLOW_DIGGING)){
                             if (e.getPlayer().getPotionEffect(PotionEffectType.SLOW_DIGGING).getAmplifier() <= fatigue_amplifier){
@@ -178,6 +205,10 @@ public class Excavation extends BreakBlockEnchantment{
                         }
                     }
                 }
+                if (expToDrop > 0){
+                    ExperienceOrb orb = (ExperienceOrb) e.getBlock().getWorld().spawnEntity(e.getBlock().getLocation().add(0.5, 0.5, 0.5), EntityType.EXPERIENCE_ORB);
+                    orb.setExperience(expToDrop);
+                }
             }
         }
     }
@@ -193,6 +224,9 @@ public class Excavation extends BreakBlockEnchantment{
         this.fatigue_amplifier = config.getInt("enchantment_configuration.excavation.fatigue_amplifier");
         this.fatigue_duration = config.getInt("enchantment_configuration.excavation.fatigue_duration");
         this.enchantDescription = config.getString("enchantment_configuration.excavation.description");
+        this.tradeMinCostBase = config.getInt("enchantment_configuration.excavation.trade_cost_base_lower");
+        this.tradeMaxCostBase = config.getInt("enchantment_configuration.excavation.trade_cost_base_upper");
+        this.availableForTrade = config.getBoolean("enchantment_configuration.excavation.trade_enabled");
 
         YamlConfiguration excavConfig = ConfigManager.getInstance().getConfig("excavationblocks.yml").get();
         for (String s : excavConfig.getStringList("excavation_pickaxe_blocks")){
@@ -228,6 +262,19 @@ public class Excavation extends BreakBlockEnchantment{
             } catch (IllegalArgumentException e){
                 System.out.println("Material category " + s + " in the config:excavation is not valid, please correct it");
             }
+        }
+    }
+
+    private static class BlockExperience{
+        private final int lowerBound;
+        private final int upperBound;
+        BlockExperience(int lowerBound, int upperBound){
+            this.lowerBound = lowerBound;
+            this.upperBound = upperBound;
+        }
+
+        public int getRandomExperience(){
+            return RandomNumberGenerator.getRandom().nextInt(((upperBound + 1) - lowerBound)) + lowerBound;
         }
     }
 }

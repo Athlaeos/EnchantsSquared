@@ -62,6 +62,11 @@ public class Rejuvenation extends ConstantTriggerEnchantment{
         this.max_level_table = config.getInt("enchantment_configuration.rejuvenation.max_level_table");
         this.max_level = config.getInt("enchantment_configuration.rejuvenation.max_level");
         this.enchantDescription = config.getString("enchantment_configuration.rejuvenation.description");
+        this.tradeMinCostBase = config.getInt("enchantment_configuration.rejuvenation.trade_cost_base_lower");
+        this.tradeMaxCostBase = config.getInt("enchantment_configuration.rejuvenation.trade_cost_base_upper");
+        this.tradeMinCostLv = config.getInt("enchantment_configuration.rejuvenation.trade_cost_lv_lower");
+        this.tradeMaxCostLv = config.getInt("enchantment_configuration.rejuvenation.trade_cost_base_upper");
+        this.availableForTrade = config.getBoolean("enchantment_configuration.rejuvenation.trade_enabled");
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.rejuvenation.compatible_with");
         for (String s : compatibleItemStrings){

@@ -34,7 +34,7 @@ public enum CustomEnchantType {
     TOXIC,
     VAMPIRIC,
     BONUS_EXP,
-    DECAPITATION,
+    BEHEADING,
     STRENGTH,
     VIGOROUS,
     SOULBOUND,
@@ -43,5 +43,6 @@ public enum CustomEnchantType {
     VEIN_MINER,
     CHEMICAL_SHIELD,
     POTION_POTENCY_BUFF,
+    ELYTRA_FIREWORK_BUFF,
     UNASSIGNED
 }

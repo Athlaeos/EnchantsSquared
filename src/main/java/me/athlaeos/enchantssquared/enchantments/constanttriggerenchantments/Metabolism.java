@@ -71,6 +71,11 @@ public class Metabolism extends ConstantTriggerEnchantment{
         this.max_level = config.getInt("enchantment_configuration.metabolism.max_level");
         this.saturation_limit = config.getInt("enchantment_configuration.metabolism.saturation_limit");
         this.enchantDescription = config.getString("enchantment_configuration.metabolism.description");
+        this.tradeMinCostBase = config.getInt("enchantment_configuration.metabolism.trade_cost_base_lower");
+        this.tradeMaxCostBase = config.getInt("enchantment_configuration.metabolism.trade_cost_base_upper");
+        this.tradeMinCostLv = config.getInt("enchantment_configuration.metabolism.trade_cost_lv_lower");
+        this.tradeMaxCostLv = config.getInt("enchantment_configuration.metabolism.trade_cost_base_upper");
+        this.availableForTrade = config.getBoolean("enchantment_configuration.metabolism.trade_enabled");
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.metabolism.compatible_with");
         for (String s : compatibleItemStrings){

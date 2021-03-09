@@ -54,6 +54,11 @@ public class JumpBoost extends ConstantTriggerEnchantment{
         this.max_level_table = config.getInt("enchantment_configuration.jump_boost.max_level_table");
         this.max_level = config.getInt("enchantment_configuration.jump_boost.max_level");
         this.enchantDescription = config.getString("enchantment_configuration.jump_boost.description");
+        this.tradeMinCostBase = config.getInt("enchantment_configuration.jump_boost.trade_cost_base_lower");
+        this.tradeMaxCostBase = config.getInt("enchantment_configuration.jump_boost.trade_cost_base_upper");
+        this.tradeMinCostLv = config.getInt("enchantment_configuration.jump_boost.trade_cost_lv_lower");
+        this.tradeMaxCostLv = config.getInt("enchantment_configuration.jump_boost.trade_cost_base_upper");
+        this.availableForTrade = config.getBoolean("enchantment_configuration.jump_boost.trade_enabled");
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.jump_boost.compatible_with");
         for (String s : compatibleItemStrings){

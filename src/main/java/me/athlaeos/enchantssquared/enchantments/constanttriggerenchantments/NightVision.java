@@ -43,6 +43,11 @@ public class NightVision extends ConstantTriggerEnchantment{
         this.weight = config.getInt("enchantment_configuration.night_vision.weight");
         this.book_only = config.getBoolean("enchantment_configuration.night_vision.book_only");
         this.enchantDescription = config.getString("enchantment_configuration.night_vision.description");
+        this.tradeMinCostBase = config.getInt("enchantment_configuration.night_vision.trade_cost_base_lower");
+        this.tradeMaxCostBase = config.getInt("enchantment_configuration.night_vision.trade_cost_base_upper");
+        this.tradeMinCostLv = config.getInt("enchantment_configuration.night_vision.trade_cost_lv_lower");
+        this.tradeMaxCostLv = config.getInt("enchantment_configuration.night_vision.trade_cost_base_upper");
+        this.availableForTrade = config.getBoolean("enchantment_configuration.night_vision.trade_enabled");
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.night_vision.compatible_with");
         for (String s : compatibleItemStrings){

@@ -1,10 +1,12 @@
 package me.athlaeos.enchantssquared.listeners;
 
 import me.athlaeos.enchantssquared.dom.CustomEnchant;
-import me.athlaeos.enchantssquared.enchantments.interactenchantments.InteractEnchantment;
+import me.athlaeos.enchantssquared.enchantments.interactenchantments.BlockInteractEnchantment;
+import me.athlaeos.enchantssquared.enchantments.interactenchantments.ItemInteractEnchantment;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.enchantmanagers.ExcavationBlockFaceManager;
+import me.athlaeos.enchantssquared.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
-public class BlockInteractListener implements Listener {
+public class InteractListener implements Listener {
 
     @EventHandler
     public void onBlockClick(PlayerInteractEvent e){
@@ -39,8 +41,19 @@ public class BlockInteractListener implements Listener {
 
                 Map<CustomEnchant, Integer> enchants = CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(clickedItem);
                 for (CustomEnchant en : enchants.keySet()){
-                    if (en instanceof InteractEnchantment){
-                        ((InteractEnchantment) en).execute(e, clickedItem, enchants.get(en));
+                    if (en instanceof BlockInteractEnchantment){
+                        ((BlockInteractEnchantment) en).execute(e, clickedItem, enchants.get(en));
+                    }
+                }
+            }
+        }
+        if (e.getAction() == Action.RIGHT_CLICK_AIR){
+            for (ItemStack i : Utils.getEntityEquipment(e.getPlayer(), true)){
+                if (i.getType() == Material.ENCHANTED_BOOK) continue;
+                Map<CustomEnchant, Integer> enchants = CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(i);
+                for (CustomEnchant en : enchants.keySet()){
+                    if (en instanceof ItemInteractEnchantment){
+                        ((ItemInteractEnchantment) en).execute(e, i, enchants.get(en));
                     }
                 }
             }

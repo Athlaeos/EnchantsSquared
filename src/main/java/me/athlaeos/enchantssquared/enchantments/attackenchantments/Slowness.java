@@ -79,6 +79,11 @@ public class Slowness extends AttackEnchantment{
         this.max_level_table = config.getInt("enchantment_configuration.slowness.max_level_table");
         this.max_level = config.getInt("enchantment_configuration.slowness.max_level");
         this.enchantDescription = config.getString("enchantment_configuration.slowness.description");
+        this.tradeMinCostBase = config.getInt("enchantment_configuration.slowness.trade_cost_base_lower");
+        this.tradeMaxCostBase = config.getInt("enchantment_configuration.slowness.trade_cost_base_upper");
+        this.tradeMinCostLv = config.getInt("enchantment_configuration.slowness.trade_cost_lv_lower");
+        this.tradeMaxCostLv = config.getInt("enchantment_configuration.slowness.trade_cost_base_upper");
+        this.availableForTrade = config.getBoolean("enchantment_configuration.slowness.trade_enabled");
 
         message = ConfigManager.getInstance().getConfig("translations.yml").get().getString("enchant_notifications.application_slowness");
 

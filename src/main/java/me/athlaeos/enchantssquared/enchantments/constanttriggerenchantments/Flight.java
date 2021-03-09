@@ -70,6 +70,9 @@ public class Flight extends ConstantTriggerEnchantment{
         this.weight = config.getInt("enchantment_configuration.flight.weight");
         this.book_only = config.getBoolean("enchantment_configuration.flight.book_only");
         this.enchantDescription = config.getString("enchantment_configuration.flight.description");
+        this.tradeMinCostBase = config.getInt("enchantment_configuration.flight.trade_cost_base_lower");
+        this.tradeMaxCostBase = config.getInt("enchantment_configuration.flight.trade_cost_base_upper");
+        this.availableForTrade = config.getBoolean("enchantment_configuration.flight.trade_enabled");
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.flight.compatible_with");
         for (String s : compatibleItemStrings){

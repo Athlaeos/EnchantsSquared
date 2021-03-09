@@ -23,6 +23,11 @@ public abstract class CustomEnchant {
     protected int max_level_table = 0;
     protected YamlConfiguration config;
     protected CustomEnchantType enchantType = CustomEnchantType.UNASSIGNED;
+    protected int tradeMinCostBase;
+    protected int tradeMaxCostBase;
+    protected int tradeMinCostLv = 0;
+    protected int tradeMaxCostLv = 0;
+    protected boolean availableForTrade;
 
     public CustomEnchant() {
     }
@@ -100,5 +105,25 @@ public abstract class CustomEnchant {
 
     public String getEnchantDescription() {
         return enchantDescription;
+    }
+
+    public int getTradeMaxCostBase() {
+        return tradeMaxCostBase;
+    }
+
+    public int getTradeMaxCostLv() {
+        return tradeMaxCostLv;
+    }
+
+    public int getTradeMinCostBase() {
+        return tradeMinCostBase;
+    }
+
+    public int getTradeMinCostLv() {
+        return tradeMinCostLv;
+    }
+
+    public boolean isAvailableForTrade() {
+        return availableForTrade;
     }
 }

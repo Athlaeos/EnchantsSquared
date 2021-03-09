@@ -1,5 +1,5 @@
 name: Enchantssquared
-version: 1.10-ALPHA
+version: 1.0
 main: me.athlaeos.enchantssquared.main.EnchantsSquared
 authors: [Athlaeos]
 description: Adds in a number of vanilla-like enchantments

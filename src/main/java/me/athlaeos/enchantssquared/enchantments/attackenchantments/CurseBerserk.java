@@ -64,6 +64,11 @@ public class CurseBerserk extends AttackEnchantment{
         this.max_level = config.getInt("enchantment_configuration.curse_berserk.max_level");
         this.enchantDescription = config.getString("enchantment_configuration.curse_berserk.description");
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.curse_berserk.compatible_with");
+        this.tradeMinCostBase = config.getInt("enchantment_configuration.curse_berserk.trade_cost_base_lower");
+        this.tradeMaxCostBase = config.getInt("enchantment_configuration.curse_berserk.trade_cost_base_upper");
+        this.tradeMinCostLv = config.getInt("enchantment_configuration.curse_berserk.trade_cost_lv_lower");
+        this.tradeMaxCostLv = config.getInt("enchantment_configuration.curse_berserk.trade_cost_base_upper");
+        this.availableForTrade = config.getBoolean("enchantment_configuration.curse_berserk.trade_enabled");
 
         for (String s : compatibleItemStrings){
             try {

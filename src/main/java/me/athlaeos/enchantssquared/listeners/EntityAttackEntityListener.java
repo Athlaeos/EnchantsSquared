@@ -8,6 +8,7 @@ import me.athlaeos.enchantssquared.enchantments.defendenchantments.Shielding;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.utils.Utils;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Projectile;
@@ -62,6 +63,7 @@ public class EntityAttackEntityListener implements Listener {
             CurseBerserk attackerCurseBerserk = null;
             int attackerCurseBerserkLevel = 0;
             for (ItemStack i : attackerEquipment){
+                if (i.getType() == Material.ENCHANTED_BOOK) continue;
                 Map<CustomEnchant, Integer> enchants = manager.getItemsEnchantsFromPDC(i);
                 for (CustomEnchant en : enchants.keySet()){
                     if (en instanceof CurseBerserk){
@@ -88,6 +90,7 @@ public class EntityAttackEntityListener implements Listener {
             CurseBerserk victimCurseBerserk = null;
             int victimCurseBerserkLevel = 0;
             for (ItemStack i : victimEquipment){
+                if (i.getType() == Material.ENCHANTED_BOOK) continue;
                 Map<CustomEnchant, Integer> enchants = manager.getItemsEnchantsFromPDC(i);
                 for (CustomEnchant en : enchants.keySet()){
                     if (en instanceof CurseBerserk){

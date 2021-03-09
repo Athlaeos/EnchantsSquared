@@ -8,6 +8,7 @@ import me.athlaeos.enchantssquared.hooks.WorldguardHook;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.enchantmanagers.ToxicHealingReductionManager;
 import me.athlaeos.enchantssquared.utils.Utils;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
@@ -42,6 +43,7 @@ public class HealthRegenerationListener implements Listener {
                 LivingEntity entity = (LivingEntity) e.getEntity();
                 List<ItemStack> equipment = Utils.getEntityEquipment(e.getEntity(), true);
                 for (ItemStack i : equipment){
+                    if (i.getType() == Material.ENCHANTED_BOOK) continue;
                     for (CustomEnchant en : CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(i).keySet()){
                         if (en instanceof HealthRegenerationEnchantment){
                             if (en instanceof Vitality){ //vitality is an exception enchantment that may only execute

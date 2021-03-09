@@ -31,7 +31,7 @@ public class BlockBreakListener implements Listener {
                 if (WorldguardHook.getWorldguardHook().isLocationInRegionWithFlag(e.getBlock().getLocation(), "es-deny-all")) return;
             }
             ItemStack mainHandItem = e.getPlayer().getInventory().getItemInMainHand();
-            if (mainHandItem.getType() != Material.AIR){
+            if (mainHandItem.getType() != Material.AIR || mainHandItem.getType() != Material.ENCHANTED_BOOK){
                 if (mainHandItem.hasItemMeta()){
                     Map<CustomEnchant, Integer> enchants = enchantManager.getItemsEnchantsFromPDC(mainHandItem);
                     for (CustomEnchant enchant : enchants.keySet()){

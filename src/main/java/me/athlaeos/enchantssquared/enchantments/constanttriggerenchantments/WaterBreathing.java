@@ -43,6 +43,11 @@ public class WaterBreathing extends ConstantTriggerEnchantment{
         this.weight = config.getInt("enchantment_configuration.water_breathing.weight");
         this.book_only = config.getBoolean("enchantment_configuration.water_breathing.book_only");
         this.enchantDescription = config.getString("enchantment_configuration.water_breathing.description");
+        this.tradeMinCostBase = config.getInt("enchantment_configuration.water_breathing.trade_cost_base_lower");
+        this.tradeMaxCostBase = config.getInt("enchantment_configuration.water_breathing.trade_cost_base_upper");
+        this.tradeMinCostLv = config.getInt("enchantment_configuration.water_breathing.trade_cost_lv_lower");
+        this.tradeMaxCostLv = config.getInt("enchantment_configuration.water_breathing.trade_cost_base_upper");
+        this.availableForTrade = config.getBoolean("enchantment_configuration.water_breathing.trade_enabled");
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.water_breathing.compatible_with");
         for (String s : compatibleItemStrings){
