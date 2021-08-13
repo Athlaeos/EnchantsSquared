@@ -54,6 +54,7 @@ public class Toxic extends AttackEnchantment{
         this.tradeMinCostLv = config.getInt("enchantment_configuration.toxic.trade_cost_lv_lower");
         this.tradeMaxCostLv = config.getInt("enchantment_configuration.toxic.trade_cost_base_upper");
         this.availableForTrade = config.getBoolean("enchantment_configuration.toxic.trade_enabled");
+        setIcon(config.getString("enchantment_configuration.toxic.icon"));
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.toxic.compatible_with");
         for (String s : compatibleItemStrings){

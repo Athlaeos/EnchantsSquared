@@ -82,6 +82,7 @@ public class Beheading extends KillEnchantment{
         this.tradeMinCostLv = config.getInt("enchantment_configuration.beheading.trade_cost_lv_lower");
         this.tradeMaxCostLv = config.getInt("enchantment_configuration.beheading.trade_cost_base_upper");
         this.availableForTrade = config.getBoolean("enchantment_configuration.beheading.trade_enabled");
+        setIcon(config.getString("enchantment_configuration.beheading.icon"));
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.beheading.compatible_with");
         for (String s : compatibleItemStrings){

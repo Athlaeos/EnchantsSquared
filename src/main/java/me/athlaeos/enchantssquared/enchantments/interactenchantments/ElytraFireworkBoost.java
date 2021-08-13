@@ -77,6 +77,7 @@ public class ElytraFireworkBoost extends ItemInteractEnchantment {
         this.max_level_table = config.getInt("enchantment_configuration.elytra_firework_buff.max_level_table");
         this.max_level = config.getInt("enchantment_configuration.elytra_firework_buff.max_level");
         this.enchantDescription = config.getString("enchantment_configuration.elytra_firework_buff.description");
+        setIcon(config.getString("enchantment_configuration.elytra_firework_buff.icon"));
 
         for (String s : compatibleItemStrings){
             try {

@@ -48,6 +48,7 @@ public class LavaWalker extends ConstantTriggerEnchantment{
 
                 if (RandomNumberGenerator.getRandom().nextDouble() < durability_degeneration){
                     if (stack.getItemMeta() instanceof Damageable){
+                        if (stack.getItemMeta().isUnbreakable()) return;
                         PlayerItemDamageEvent breakEvent = new PlayerItemDamageEvent(e.getPlayer(), stack, 1);
                         EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(breakEvent);
                         if (!breakEvent.isCancelled()){
@@ -76,6 +77,7 @@ public class LavaWalker extends ConstantTriggerEnchantment{
         this.tradeMinCostLv = config.getInt("enchantment_configuration.lava_walker.trade_cost_lv_lower");
         this.tradeMaxCostLv = config.getInt("enchantment_configuration.lava_walker.trade_cost_base_upper");
         this.availableForTrade = config.getBoolean("enchantment_configuration.lava_walker.trade_enabled");
+        setIcon(config.getString("enchantment_configuration.lava_walker.icon"));
 
         try{
             this.transform_into = Material.valueOf(config.getString("enchantment_configuration.lava_walker.transform_into"));

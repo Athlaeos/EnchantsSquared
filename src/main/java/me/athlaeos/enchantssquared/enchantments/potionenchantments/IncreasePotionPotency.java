@@ -72,6 +72,7 @@ public class IncreasePotionPotency extends PotionEffectEnchantment{
         this.tradeMinCostLv = config.getInt("enchantment_configuration.potion_potency_buff.trade_cost_lv_lower");
         this.tradeMaxCostLv = config.getInt("enchantment_configuration.potion_potency_buff.trade_cost_base_upper");
         this.availableForTrade = config.getBoolean("enchantment_configuration.potion_potency_buff.trade_enabled");
+        setIcon(config.getString("enchantment_configuration.potion_potency_buff.icon"));
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.potion_potency_buff.compatible_with");
         for (String s : compatibleItemStrings){

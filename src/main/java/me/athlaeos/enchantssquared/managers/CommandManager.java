@@ -31,6 +31,9 @@ public class CommandManager implements TabExecutor {
 		commands.put("enchant", new EnchantCommand());
 		commands.put("remove", new RemoveEnchantCommand());
 		commands.put("list", new GetEnchantListCommand());
+		commands.put("menu", new GetEnchantMenuCommand());
+		commands.put("give", new GetEnchantedItemCommand());
+		commands.put("debug", new DebugCommand());
 
 	    ((HelpCommand) commands.get("help")).giveCommandMap(commands);
 		

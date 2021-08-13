@@ -67,6 +67,7 @@ public class CurseHunger extends ConstantTriggerEnchantment{
         this.tradeMinCostLv = config.getInt("enchantment_configuration.curse_hunger.trade_cost_lv_lower");
         this.tradeMaxCostLv = config.getInt("enchantment_configuration.curse_hunger.trade_cost_base_upper");
         this.availableForTrade = config.getBoolean("enchantment_configuration.curse_hunger.trade_enabled");
+        setIcon(config.getString("enchantment_configuration.curse_hunger.icon"));
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.curse_hunger.compatible_with");
         for (String s : compatibleItemStrings){

@@ -57,7 +57,7 @@ public class Stunning extends AttackEnchantment{
             victim.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, final_duration, 9, true, false), true);
             victim.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, final_duration, 9, true, false), true);
             victim.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, final_duration, 9, true, false), true);
-            victim.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, final_duration, 128, true, false), true);
+//            victim.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, final_duration, 200, true, false), true);
             victim.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, final_duration, 9, true, false), true);
 
             if (damager instanceof Player){
@@ -87,6 +87,7 @@ public class Stunning extends AttackEnchantment{
         this.tradeMinCostLv = config.getInt("enchantment_configuration.stunning.trade_cost_lv_lower");
         this.tradeMaxCostLv = config.getInt("enchantment_configuration.stunning.trade_cost_base_upper");
         this.availableForTrade = config.getBoolean("enchantment_configuration.stunning.trade_enabled");
+        setIcon(config.getString("enchantment_configuration.stunning.icon"));
 
         message = ConfigManager.getInstance().getConfig("translations.yml").get().getString("enchant_notifications.application_stunning");
 

@@ -12,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class GetEnchantListCommand implements Command {
 	private String list_description;
@@ -43,7 +44,7 @@ public class GetEnchantListCommand implements Command {
 
 		for (CustomEnchant c : CustomEnchantManager.getInstance().getAllEnchants().values()) {
 			if (c.isEnabled()){
-				helpLines.add(Utils.chat("&7" + CustomEnchantManager.getInstance().extractEnchantString(c.getEnchantLore())));
+				helpLines.add(Utils.chat("&7" + CustomEnchantManager.getInstance().extractEnchantString(c.getDisplayName())));
 				helpLines.add(Utils.chat(c.getEnchantDescription()));
 				if (eslist_include_weight){
 					helpLines.add(Utils.chat(weight_translation + c.getWeight()));
@@ -90,30 +91,35 @@ public class GetEnchantListCommand implements Command {
 			} catch (NumberFormatException nfe) {
 				try {
 					CustomEnchantType type = CustomEnchantType.valueOf(args[1].toUpperCase());
-					CustomEnchant enchant = CustomEnchantManager.getInstance().getEnchant(type);
-					sender.sendMessage(Utils.chat("&8&m                                             "));
-					sender.sendMessage(Utils.chat("&7" + CustomEnchantManager.getInstance().extractEnchantString(enchant.getEnchantLore())));
-					sender.sendMessage(Utils.chat(enchant.getEnchantDescription()));
-					if (eslist_include_weight){
-						sender.sendMessage(Utils.chat(weight_translation + enchant.getWeight()));
+					if (CustomEnchantManager.getInstance().getAllEnchants().values().stream().map(CustomEnchant::getEnchantType).collect(Collectors
+							.toList()).contains(type)) {
+						CustomEnchant enchant = CustomEnchantManager.getInstance().getEnchant(type);
+						sender.sendMessage(Utils.chat("&8&m                                             "));
+						sender.sendMessage(Utils.chat("&7" + CustomEnchantManager.getInstance().extractEnchantString(enchant.getDisplayName())));
+						sender.sendMessage(Utils.chat(enchant.getEnchantDescription()));
+						if (eslist_include_weight){
+							sender.sendMessage(Utils.chat(weight_translation + enchant.getWeight()));
+						}
+						if (eslist_include_max_level){
+							sender.sendMessage(Utils.chat(max_level_translation
+									.replace("%lv_roman%", Utils.toRoman(enchant.getMax_level())
+											.replace("%lv_number%", "" + enchant.getMax_level()))));
+						}
+						if (eslist_include_compatible_items){
+							sender.sendMessage(Utils.chat(compatible_item_translation + String.join(", ", enchant.getCompatibleItemStrings()).toLowerCase()));
+						}
+						sender.sendMessage(Utils.chat("&8&m                                             "));
+						return true;
+					} else {
+						throw new IllegalArgumentException();
 					}
-					if (eslist_include_max_level){
-						sender.sendMessage(Utils.chat(max_level_translation
-								.replace("%lv_roman%", Utils.toRoman(enchant.getMax_level())
-										.replace("%lv_number%", "" + enchant.getMax_level()))));
-					}
-					if (eslist_include_compatible_items){
-						sender.sendMessage(Utils.chat(compatible_item_translation + String.join(", ", enchant.getCompatibleItemStrings()).toLowerCase()));
-					}
-					sender.sendMessage(Utils.chat("&8&m                                             "));
-					return true;
 				} catch (IllegalArgumentException ignored){
 					helpLines.clear();
 					pageNumber = 1;
 					for (CustomEnchant e : CustomEnchantManager.getInstance().getAllEnchants().values()){
 						if (e.isEnabled()){
-							if (e.getEnchantLore().toLowerCase().contains(args[1].toLowerCase())){
-								helpLines.add(Utils.chat("&7" + CustomEnchantManager.getInstance().extractEnchantString(e.getEnchantLore())));
+							if (e.getDisplayName().toLowerCase().contains(args[1].toLowerCase())){
+								helpLines.add(Utils.chat("&7" + CustomEnchantManager.getInstance().extractEnchantString(e.getDisplayName())));
 								helpLines.add(Utils.chat(e.getEnchantDescription()));
 								if (eslist_include_weight){
 									helpLines.add(Utils.chat(weight_translation + e.getWeight()));
@@ -140,7 +146,7 @@ public class GetEnchantListCommand implements Command {
 							if (pageNumber > enchantPagesMap.size()) {
 								pageNumber = enchantPagesMap.size();
 							}
-						} catch (NumberFormatException ex) {
+						} catch (NumberFormatException ignored1) {
 						}
 					}
 					enchantPagesMap = Utils.paginateTextList(9 + (extraAdditionalLines * 3), helpLines);
@@ -189,13 +195,12 @@ public class GetEnchantListCommand implements Command {
 	@Override
 	public List<String> getSubcommandArgs(CommandSender sender, String[] args) {
 		if (args.length == 2) {
-			List<String> subargs = new ArrayList<String>();
-			for (CustomEnchantType e : CustomEnchantType.values()){
-				if (e != CustomEnchantType.UNASSIGNED){
-					subargs.add(e.toString().toLowerCase());
-				}
+			List<String> returns = new ArrayList<>();
+			for (CustomEnchantType c : CustomEnchantManager.getInstance().getAllEnchants().values().stream().map(CustomEnchant::getEnchantType).collect(Collectors
+					.toList())){
+				returns.add(c.toString().toLowerCase());
 			}
-			return subargs;
+			return returns;
 		}
 		List<String> subargs = new ArrayList<String>();
 		subargs.add(" ");

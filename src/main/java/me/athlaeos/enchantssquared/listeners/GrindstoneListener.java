@@ -40,11 +40,10 @@ public class GrindstoneListener implements Listener {
             if (e.getSlotType() == InventoryType.SlotType.RESULT){
                 ItemStack item = e.getCurrentItem();
                 if (item != null){
-                    CustomEnchantManager.getInstance().setItemEnchants(item, new HashMap<>());
-//                    ItemMeta itemMeta = item.getItemMeta();
-//                    assert itemMeta != null;
-//                    itemMeta.setLore(null);
-//                    item.setItemMeta(itemMeta);
+                    ItemStack result = CustomEnchantManager.getInstance().removeAllEnchants(item);
+                    if (result != null) {
+                        e.setCurrentItem(result);
+                    }
                 }
             }
         }

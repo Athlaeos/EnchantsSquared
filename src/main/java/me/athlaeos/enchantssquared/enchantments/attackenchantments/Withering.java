@@ -84,6 +84,7 @@ public class Withering extends AttackEnchantment{
         this.tradeMinCostLv = config.getInt("enchantment_configuration.withering.trade_cost_lv_lower");
         this.tradeMaxCostLv = config.getInt("enchantment_configuration.withering.trade_cost_base_upper");
         this.availableForTrade = config.getBoolean("enchantment_configuration.withering.trade_enabled");
+        setIcon(config.getString("enchantment_configuration.withering.icon"));
 
         message = ConfigManager.getInstance().getConfig("translations.yml").get().getString("enchant_notifications.application_withering");
 

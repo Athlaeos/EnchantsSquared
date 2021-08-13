@@ -51,10 +51,10 @@ public class Metabolism extends ConstantTriggerEnchantment{
             if (!event.isCancelled()){
                 if (e.getPlayer().getFoodLevel() == 20){
                     if (e.getPlayer().getSaturation() < saturation_limit && e.getPlayer().getSaturation() <= 19F){
-                        e.getPlayer().setSaturation(e.getPlayer().getSaturation() + event.getFoodLevel());
+                        e.getPlayer().setSaturation(e.getPlayer().getSaturation() + Math.max(1, event.getFoodLevel()));
                     }
                 } else {
-                    e.getPlayer().setFoodLevel(e.getPlayer().getFoodLevel() + event.getFoodLevel());
+                    e.getPlayer().setFoodLevel(e.getPlayer().getFoodLevel() + Math.max(1, event.getFoodLevel()));
                 }
             }
         }
@@ -76,6 +76,7 @@ public class Metabolism extends ConstantTriggerEnchantment{
         this.tradeMinCostLv = config.getInt("enchantment_configuration.metabolism.trade_cost_lv_lower");
         this.tradeMaxCostLv = config.getInt("enchantment_configuration.metabolism.trade_cost_base_upper");
         this.availableForTrade = config.getBoolean("enchantment_configuration.metabolism.trade_enabled");
+        setIcon(config.getString("enchantment_configuration.metabolism.icon"));
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.metabolism.compatible_with");
         for (String s : compatibleItemStrings){

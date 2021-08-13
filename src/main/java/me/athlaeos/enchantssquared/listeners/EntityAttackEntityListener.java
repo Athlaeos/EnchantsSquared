@@ -5,13 +5,14 @@ import me.athlaeos.enchantssquared.enchantments.attackenchantments.AttackEnchant
 import me.athlaeos.enchantssquared.enchantments.attackenchantments.CurseBerserk;
 import me.athlaeos.enchantssquared.enchantments.defendenchantments.DefendEnchantment;
 import me.athlaeos.enchantssquared.enchantments.defendenchantments.Shielding;
+import me.athlaeos.enchantssquared.events.AttackEnchantmentTriggerEvent;
+import me.athlaeos.enchantssquared.events.DefendEnchantmentTriggerEvent;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.utils.Utils;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -66,11 +67,15 @@ public class EntityAttackEntityListener implements Listener {
                 if (i.getType() == Material.ENCHANTED_BOOK) continue;
                 Map<CustomEnchant, Integer> enchants = manager.getItemsEnchantsFromPDC(i);
                 for (CustomEnchant en : enchants.keySet()){
-                    if (en instanceof CurseBerserk){
-                        attackerCurseBerserk = (CurseBerserk) en;
-                        attackerCurseBerserkLevel = enchants.get(en);
-                    } else if (en instanceof AttackEnchantment){
-                        ((AttackEnchantment) en).execute(e, i, enchants.get(en), attacker, victim);
+                    AttackEnchantmentTriggerEvent event = new AttackEnchantmentTriggerEvent(i, enchants.get(en), en, attacker, victim);
+                    EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
+                    if (!event.isCancelled()){
+                        if (en instanceof CurseBerserk){
+                            attackerCurseBerserk = (CurseBerserk) en;
+                            attackerCurseBerserkLevel = enchants.get(en);
+                        } else if (en instanceof AttackEnchantment){
+                            ((AttackEnchantment) en).execute(e, i, event.getLevel(), attacker, victim);
+                        }
                     }
                 }
             }
@@ -94,12 +99,24 @@ public class EntityAttackEntityListener implements Listener {
                 Map<CustomEnchant, Integer> enchants = manager.getItemsEnchantsFromPDC(i);
                 for (CustomEnchant en : enchants.keySet()){
                     if (en instanceof CurseBerserk){
-                        victimCurseBerserk = (CurseBerserk) en;
-                        victimCurseBerserkLevel = enchants.get(en);
+                        DefendEnchantmentTriggerEvent event = new DefendEnchantmentTriggerEvent(i, enchants.get(en), en, attacker, victim);
+                        EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
+                        if (!event.isCancelled()){
+                            victimCurseBerserk = (CurseBerserk) en;
+                            victimCurseBerserkLevel += event.getLevel();
+                        }
                     } else if (en instanceof Shielding){
-                        s = (Shielding) en;
+                        DefendEnchantmentTriggerEvent event = new DefendEnchantmentTriggerEvent(i, enchants.get(en), en, attacker, victim);
+                        EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
+                        if (!event.isCancelled()){
+                            s = (Shielding) en;
+                        }
                     } else if (en instanceof DefendEnchantment){
-                        ((DefendEnchantment) en).execute(e, i, enchants.get(en), attacker, victim);
+                        DefendEnchantmentTriggerEvent event = new DefendEnchantmentTriggerEvent(i, enchants.get(en), en, attacker, victim);
+                        EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
+                        if (!event.isCancelled()){
+                            ((DefendEnchantment) en).execute(e, i, event.getLevel(), attacker, victim);
+                        }
                     }
                 }
             }

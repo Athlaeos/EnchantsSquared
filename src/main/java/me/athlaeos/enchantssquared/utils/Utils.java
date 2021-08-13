@@ -1,5 +1,6 @@
 package me.athlaeos.enchantssquared.utils;
 
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -8,12 +9,18 @@ import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
 
 import java.io.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 public class Utils {
@@ -47,6 +54,63 @@ public class Utils {
 			case 20: return "XX";
 			default: return "es.level." + i;
 		}
+	}
+
+	public static List<String> seperateStringIntoLines(String string, int maxLength){
+		List<String> lines = new ArrayList<>();
+		String[] words = string.split(" ");
+		if (words.length == 0) return lines;
+		StringBuilder sentence = new StringBuilder();
+		for (String s : words){
+			if (sentence.length() + s.length() > maxLength || s.contains("\n")){
+				lines.add(sentence.toString());
+				String previousSentence = sentence.toString();
+				sentence = new StringBuilder();
+				sentence.append(Utils.chat(ChatColor.getLastColors(Utils.chat(previousSentence)))).append(s);
+			} else if (words[0].equals(s)){
+				sentence.append(s);
+			} else {
+				sentence.append(" ").append(s);
+			}
+			if (words[words.length - 1].equals(s)){
+				lines.add(sentence.toString());
+			}
+		}
+		return lines;
+	}
+
+	public static Map<Integer, ArrayList<ItemStack>> paginateItemStackList(int pageSize, List<ItemStack> allEntries) {
+		Map<Integer, ArrayList<ItemStack>> pages = new HashMap<>();
+		int stepper = 0;
+
+		for (int pageNumber = 0; pageNumber < Math.ceil((double)allEntries.size()/(double)pageSize); pageNumber++) {
+			ArrayList<ItemStack> pageEntries = new ArrayList<>();
+			for (int pageEntry = 0; pageEntry < pageSize && stepper < allEntries.size(); pageEntry++, stepper++) {
+				pageEntries.add(allEntries.get(stepper));
+			}
+			pages.put(pageNumber, pageEntries);
+		}
+		return pages;
+	}
+
+	public static ChatColor getLastColor(String str) {
+		//let say str = "§ahello"  which is green color, but the § sign is invisible
+
+		ChatColor lastColor = null;
+		String str1 =  str.replace(ChatColor.COLOR_CHAR, '&');
+
+		//then str1 = "&ahello", now the & sign is visible which would be easier for you to debug
+
+
+		//loop through the text
+		for(int i = 0 ; i < str1.length() ; i++) {
+			char c = str1.charAt(i);
+			if(c==ChatColor.COLOR_CHAR) {
+				char id = str1.charAt(i+1);//getting the color code id, &a is green, &b is aqua ....
+				lastColor = ChatColor.getByChar(id);
+			}
+		}
+		return lastColor;
 	}
 
 	public static int translateRomanToLevel(String i){
@@ -167,6 +231,14 @@ public class Utils {
 		}
 	}
 
+	public static double round(double value, int places) {
+		if (places < 0) places = 2;
+
+		BigDecimal bd = BigDecimal.valueOf(value);
+		bd = bd.setScale(places, RoundingMode.HALF_UP);
+		return bd.doubleValue();
+	}
+
 	public static double removeNaturalDamageMitigations(Entity damagee, double mitigatedDamage, EntityDamageEvent.DamageCause cause){
 		if (damagee instanceof LivingEntity){
 			double armor = ((LivingEntity) damagee).getAttribute(Attribute.GENERIC_ARMOR).getValue();
@@ -260,5 +332,18 @@ public class Utils {
 					point1.getZ() - zStep * i));
 		}
 		return points;
+	}
+
+	public static void damageItem(Player damager, ItemStack i, int damage){
+		assert i.getItemMeta() != null;
+		if (i.getItemMeta().isUnbreakable()) return;
+		Damageable toolMeta = (Damageable) i.getItemMeta();
+		PlayerItemDamageEvent event = new PlayerItemDamageEvent(damager, i, damage);
+		EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
+		if (!event.isCancelled()){
+			assert toolMeta != null;
+			toolMeta.setDamage(toolMeta.getDamage() + event.getDamage());
+			i.setItemMeta((ItemMeta) toolMeta);
+		}
 	}
 }

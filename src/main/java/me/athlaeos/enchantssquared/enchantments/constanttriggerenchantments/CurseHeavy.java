@@ -73,6 +73,7 @@ public class CurseHeavy extends ConstantTriggerEnchantment{
         this.tradeMinCostLv = config.getInt("enchantment_configuration.curse_heavy.trade_cost_lv_lower");
         this.tradeMaxCostLv = config.getInt("enchantment_configuration.curse_heavy.trade_cost_base_upper");
         this.availableForTrade = config.getBoolean("enchantment_configuration.curse_heavy.trade_enabled");
+        setIcon(config.getString("enchantment_configuration.curse_heavy.icon"));
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.curse_heavy.compatible_with");
         for (String s : compatibleItemStrings){

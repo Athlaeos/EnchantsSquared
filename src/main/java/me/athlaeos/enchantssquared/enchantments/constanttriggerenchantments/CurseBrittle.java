@@ -36,6 +36,8 @@ public class CurseBrittle extends ConstantTriggerEnchantment{
         }
         if (functionalItems.contains(stack.getType())){
             double durability_degen_chance = (level <= 1) ? durability_degeneration_base : (durability_degeneration_base + ((level - 1) * durability_degeneration_lv));
+            assert stack.getItemMeta() != null;
+            if (stack.getItemMeta().isUnbreakable()) return;
             if (RandomNumberGenerator.getRandom().nextDouble() < durability_degen_chance){
                 if (stack.getItemMeta() instanceof Damageable){
                     PlayerItemDamageEvent event = new PlayerItemDamageEvent(e.getPlayer(), stack, 1);
@@ -66,6 +68,7 @@ public class CurseBrittle extends ConstantTriggerEnchantment{
         this.tradeMinCostLv = config.getInt("enchantment_configuration.curse_brittle.trade_cost_lv_lower");
         this.tradeMaxCostLv = config.getInt("enchantment_configuration.curse_brittle.trade_cost_base_upper");
         this.availableForTrade = config.getBoolean("enchantment_configuration.curse_brittle.trade_enabled");
+        setIcon(config.getString("enchantment_configuration.curse_brittle.icon"));
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.curse_brittle.compatible_with");
         for (String s : compatibleItemStrings){

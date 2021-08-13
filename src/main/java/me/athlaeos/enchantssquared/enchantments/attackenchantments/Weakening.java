@@ -84,6 +84,7 @@ public class Weakening extends AttackEnchantment{
         this.tradeMinCostLv = config.getInt("enchantment_configuration.weakening.trade_cost_lv_lower");
         this.tradeMaxCostLv = config.getInt("enchantment_configuration.weakening.trade_cost_base_upper");
         this.availableForTrade = config.getBoolean("enchantment_configuration.weakening.trade_enabled");
+        setIcon(config.getString("enchantment_configuration.weakening.icon"));
 
         message = ConfigManager.getInstance().getConfig("translations.yml").get().getString("enchant_notifications.application_weakness");
 

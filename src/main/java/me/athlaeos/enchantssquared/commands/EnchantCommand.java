@@ -2,17 +2,22 @@ package me.athlaeos.enchantssquared.commands;
 
 import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.Command;
+import me.athlaeos.enchantssquared.dom.CustomEnchant;
 import me.athlaeos.enchantssquared.dom.CustomEnchantType;
+import me.athlaeos.enchantssquared.enchantments.StandardGlintEnchantment;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.utils.Utils;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EnchantCommand implements Command {
 	private String enchant_success;
@@ -53,15 +58,20 @@ public class EnchantCommand implements Command {
 
 		ItemStack inHandItem = ((Player) sender).getInventory().getItemInMainHand();
 		if (inHandItem.getType() != Material.AIR) {
-			try{
-				CustomEnchantManager.getInstance().removeEnchant(inHandItem, chosenEnchant);
-				CustomEnchantManager.getInstance().addEnchant(inHandItem, chosenEnchant, chosenLevel);
-				sender.sendMessage(Utils.chat(enchant_success));
-				if (inHandItem.getType() == Material.BOOK){
-					inHandItem.setType(Material.ENCHANTED_BOOK);
+			CustomEnchantManager.getInstance().removeEnchant(inHandItem, chosenEnchant);
+			CustomEnchantManager.getInstance().addEnchant(inHandItem, chosenEnchant, chosenLevel);
+			sender.sendMessage(Utils.chat(enchant_success));
+			if (inHandItem.getType() == Material.BOOK){
+				inHandItem.setType(Material.ENCHANTED_BOOK);
+			}
+			if (inHandItem.getType() == Material.ENCHANTED_BOOK){
+				if (inHandItem.getItemMeta() instanceof EnchantmentStorageMeta){
+					EnchantmentStorageMeta storageMeta = (EnchantmentStorageMeta) inHandItem.getItemMeta();
+					storageMeta.addStoredEnchant(StandardGlintEnchantment.getEnsquaredGlint(), 1, true);
+					inHandItem.setItemMeta(storageMeta);
 				}
-			} catch (IllegalArgumentException e){
-				sender.sendMessage(Utils.chat(enchant_failed));
+			} else {
+				inHandItem.addUnsafeEnchantment(StandardGlintEnchantment.getEnsquaredGlint(), 1);
 			}
 		} else {
 			sender.sendMessage(Utils.chat(enchant_failed));
@@ -93,10 +103,9 @@ public class EnchantCommand implements Command {
 	public List<String> getSubcommandArgs(CommandSender sender, String[] args) {
 		if (args.length == 2){
 			List<String> returns = new ArrayList<>();
-			for (CustomEnchantType c : CustomEnchantType.values()){
-				if (CustomEnchantManager.getInstance().getEnchant(c) != null){
-					returns.add(c.toString().toLowerCase());
-				}
+			for (CustomEnchantType c : CustomEnchantManager.getInstance().getAllEnchants().values().stream().map(CustomEnchant::getEnchantType).collect(Collectors
+					.toList())){
+				returns.add(c.toString().toLowerCase());
 			}
 			return returns;
 		}

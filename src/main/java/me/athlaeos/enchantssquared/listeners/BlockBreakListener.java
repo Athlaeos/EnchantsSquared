@@ -2,7 +2,10 @@ package me.athlaeos.enchantssquared.listeners;
 
 import me.athlaeos.enchantssquared.dom.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.mineenchantments.BreakBlockEnchantment;
+import me.athlaeos.enchantssquared.events.DefendEnchantmentTriggerEvent;
+import me.athlaeos.enchantssquared.events.MineEnchantmentTriggerEvent;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.enchantmanagers.ExcavationBlockFaceManager;
 import org.bukkit.Material;
@@ -36,7 +39,11 @@ public class BlockBreakListener implements Listener {
                     Map<CustomEnchant, Integer> enchants = enchantManager.getItemsEnchantsFromPDC(mainHandItem);
                     for (CustomEnchant enchant : enchants.keySet()){
                         if (enchant instanceof BreakBlockEnchantment){
-                            ((BreakBlockEnchantment) enchant).execute(e, mainHandItem, enchants.get(enchant));
+                            MineEnchantmentTriggerEvent event = new MineEnchantmentTriggerEvent(mainHandItem, enchants.get(enchant), enchant, e.getPlayer(), e.getBlock());
+                            EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
+                            if (!event.isCancelled()){
+                                ((BreakBlockEnchantment) enchant).execute(e, mainHandItem, event.getLevel());
+                            }
                         }
                     }
                 }

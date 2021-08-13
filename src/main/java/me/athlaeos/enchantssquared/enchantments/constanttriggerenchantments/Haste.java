@@ -59,6 +59,7 @@ public class Haste extends ConstantTriggerEnchantment{
         this.tradeMinCostLv = config.getInt("enchantment_configuration.haste.trade_cost_lv_lower");
         this.tradeMaxCostLv = config.getInt("enchantment_configuration.haste.trade_cost_base_upper");
         this.availableForTrade = config.getBoolean("enchantment_configuration.haste.trade_enabled");
+        setIcon(config.getString("enchantment_configuration.haste.icon"));
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.haste.compatible_with");
         for (String s : compatibleItemStrings){

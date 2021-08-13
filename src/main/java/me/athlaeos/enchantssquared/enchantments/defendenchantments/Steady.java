@@ -68,6 +68,7 @@ public class Steady extends DefendEnchantment {
         this.tradeMinCostLv = config.getInt("enchantment_configuration.steady.trade_cost_lv_lower");
         this.tradeMaxCostLv = config.getInt("enchantment_configuration.steady.trade_cost_base_upper");
         this.availableForTrade = config.getBoolean("enchantment_configuration.steady.trade_enabled");
+        setIcon(config.getString("enchantment_configuration.steady.icon"));
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.steady.compatible_with");
         for (String s : compatibleItemStrings){

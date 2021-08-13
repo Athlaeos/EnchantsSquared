@@ -1,3 +1,5 @@
+baguette: true
+
 # Level minimum in the enchantment table before custom enchants start appearing
 level_minimum: 30
 
@@ -12,16 +14,30 @@ enchantment_extra_cost: 2
 disable_anvil: false # Disables custom enchantments from being able to be combined in an anvil
 disable_enchanting: false # Disables custom enchantments from appearing in the enchantment table
 disable_trading: false # Disables villagers from trading custom enchantments
+disable_fishing: false # Disables enchanted books obtained by fishing from receiving custom enchants
+# disable_dungeonlootgen: false  # Disables enchanted books obtained from dungeon generated chests from receiving custom enchants
 
 # The maximum amount of enchantments you're allowed to put on a tool
 max_enchants: 5
 
 # The chance for custom enchantments to appear on an item while enchanting, in %
 custom_enchant_rate: 50
-# The chance for an enchanted book in a villager trade to instead be of a random custom enchantment, in %
+# The chance for an enchanted book in a librarian trade to instead be of a random custom enchantment, in %
 # The enchantments appearing will appear at the same rate they would when enchanting a normal enchanted book, except
 # there will always be just 1 enchantment.
-custom_enchant_trade_rate: 33
+custom_enchant_trade_rate_book: 33
+# The same as for librarians, but for armorers, toolsmiths, or weaponsmiths. Since these villagers sell items that
+# can contain several enchantments here you can configure the chance and how many custom enchants they may get.
+custom_enchant_trade_rate_other: 33 # Chance for a trade to contain custom enchants in %
+custom_enchant_trade_rolls_other: 2 # Max amount of times it will roll for enchants, will be at least 1.
+
+# You get the deal, when you fish up an enchanted book it may have enchants. Here you can decide if they should also have
+# custom enchants.
+custom_enchant_fish_rate: 33 # Chance for a fished up enchanted book to contain custom enchants
+custom_enchant_fish_rolls: 2 # Max amount of times it will roll for enchants, will be at least 1
+# Same deal but with dungeon generated enchanted books, DOES NOT WORK YET!
+# custom_enchant_dungeon_rate: 33 # Chance for a dungeon-generated enchanted book to also contain custom enchants
+# custom_enchant_dungeon_rolls: 3 # Max amount of times it will roll for enchants, will be at least 1
 
 # If true, players require permissions for each individual enchant to be able to obtain them while enchanting.
 # The permission for each of these will be es.enchant.(enchantment name)
@@ -60,6 +76,7 @@ enchantment_configuration:
       # trade_cost_base_upper: 16
       # trade_cost_lv_lower: 4
       # trade_cost_lv_upper: 8
+    icon: TNT
     # A level 1 enchant of this type would cost between 8-16 emeralds, a level 2 would cost 12-24, level 3 16-32, etc.
     compatible_with: # Limited to AXES, PICKAXES, SHOVELS, and HOES
       - AXES
@@ -83,6 +100,7 @@ enchantment_configuration:
     trade_cost_base_upper: 24
     trade_cost_lv_lower: 6 # Additional emerald cost per extra level added to the lower base cost of an enchant
     trade_cost_lv_upper: 12 # Additional emerald cost per extra level added to the upper base cost of an enchant
+    icon: ANVIL
     compatible_with:
       - ALL
 
@@ -102,6 +120,7 @@ enchantment_configuration:
     trade_cost_base_upper: 32
     trade_cost_lv_lower: 8
     trade_cost_lv_upper: 16
+    icon: LAVA_BUCKET
     compatible_with:
       - BOOTS
 
@@ -119,6 +138,7 @@ enchantment_configuration:
     trade_cost_base_upper: 32
     trade_cost_lv_lower: 8
     trade_cost_lv_upper: 16
+    icon: SHIELD
     compatible_with:
       - CHESTPLATES
 
@@ -131,6 +151,7 @@ enchantment_configuration:
     trade_enabled: true
     trade_cost_base_lower: 16
     trade_cost_base_upper: 32
+    icon: MILK_BUCKET
 
   potion_potency_buff:
     description: '&8> Any potion you drink will have their duration reduced by &e20&8-&e40%&8, but have their amplifiers increased by &eI&8-&eII'
@@ -157,6 +178,7 @@ enchantment_configuration:
     trade_cost_base_upper: 32
     trade_cost_lv_lower: 16
     trade_cost_lv_upper: 32
+    icon: GLOWSTONE_DUST
     compatible_with:
       - CHESTPLATES
       - SHIELDS
@@ -176,6 +198,7 @@ enchantment_configuration:
     trade_cost_base_upper: 24
     trade_cost_lv_lower: 6
     trade_cost_lv_upper: 12
+    icon: IRON_BOOTS
     compatible_with:
       - LEGGINGS
 
@@ -193,6 +216,7 @@ enchantment_configuration:
     trade_enabled: true
     trade_cost_base_lower: 16
     trade_cost_base_upper: 32
+    icon: TORCH
 
   auto_replant:
     description: '&8> Right click with a hoe on a fully grown crop to instantly harvest and replant it'
@@ -203,6 +227,7 @@ enchantment_configuration:
     trade_enabled: true
     trade_cost_base_lower: 16
     trade_cost_base_upper: 48
+    icon: DIAMOND_HOE
 
   kinship:
     description: '&8> If the pickaxe matches the material of the ore you''re mining, some durability is restored. &estone:0-0-0&8, &eiron:1-2-3&8, &ediamond:10-20-30&8, &enetherite:50-100-150'
@@ -221,6 +246,7 @@ enchantment_configuration:
     trade_cost_base_upper: 16
     trade_cost_lv_lower: 4
     trade_cost_lv_upper: 8
+    icon: DIAMOND_PICKAXE
 
   metabolism:
     description: '&8> Slowly regenerates hunger points while moving'
@@ -237,6 +263,7 @@ enchantment_configuration:
     trade_cost_base_upper: 32
     trade_cost_lv_lower: 8
     trade_cost_lv_upper: 16
+    icon: GOLDEN_CARROT
     compatible_with:
       - HELMETS
       - CHESTPLATES
@@ -244,6 +271,12 @@ enchantment_configuration:
       - BOOTS
 
   vigorous:
+    reset_health: false # Vigorous recently went through a significant technical change, meaning the extra health it
+    # provides no longer comes in the form of changing your max health attribute and now in the form of item attributes.
+    # This means players who still have their max hp altered will continue to have this max hp altered after the plugin
+    # updated, so they'll have more health than they're supposed to. This makes sure their health is reset to 20 while
+    # it's set to "true", after all players have their health reset it may be set back to false so you can do custom
+    # things with the player's health once more.
     description: '&8> Adds &e1&8 per level extra max health to the wearer'
     enchant_name: '&7Vigorous %lv_roman%'
     enabled: true
@@ -257,11 +290,30 @@ enchantment_configuration:
     trade_cost_base_upper: 16
     trade_cost_lv_lower: 6
     trade_cost_lv_upper: 12
+    icon: GOLDEN_APPLE
     compatible_with:
       - HELMETS
       - CHESTPLATES
       - LEGGINGS
       - BOOTS
+
+  reinforced_plating:
+    description: '&8> Adds &e2&8 per level extra armor to the item'
+    enchant_name: '&7Plating %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 3
+    max_level_table: 3
+    armor_lv: 2 # Extra armor added to the item per level
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 32
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 16
+    icon: IRON_INGOT
+    compatible_with:
+      - ELYTRA
 
   sunforged:
     description: '&8> Smelts blocks mined'
@@ -274,6 +326,7 @@ enchantment_configuration:
     trade_enabled: true
     trade_cost_base_lower: 32
     trade_cost_base_upper: 48
+    icon: FURNACE
     compatible_with:
       - AXES
       - PICKAXES
@@ -281,15 +334,31 @@ enchantment_configuration:
       - HOES
 
   flight:
-    description: '&8> Allows the wearer flight at the cost of durability'
-    enchant_name: '&7Wings'
+    description: '&8> Allows the wearer temporary flight at the cost of durability. Recharge your flight by standing on the ground'
+    enchant_name: '&7Wings %lv_roman%'
     enabled: true
+    max_level: 3
+    max_level_table: 2
+    # If max_level is set to 0, flight will not run out (as long as they have durability, of course)
+    # If it's higher than 0, the next 5 options determine how long a player can fly for before they have to
+    # go back to the ground to recharge and if they gain slow fall if it expires. Or if they have a fuel bar displayed.
+    flight_duration_base: 20000 # Base duration a player can fly in milliseconds
+    flight_duration_lv: 10000 # Additional duration per level a player will be able to fly
+    regeneration_base: 1000 # Base speed at which your flight duration or "fuel" regenerates when on ground, in milliseconds per 0.5 seconds
+    regeneration_lv: 500 # Additional speed at which your flight duration or "fuel" regenerates when on ground
+    slowfall_duration: 200 # The duration of the slow falling buff in ticks (20 = 1 second)
+    flight_bar: true # If true, while in flight a small "fuel" bar will appear above your hotbar displaying
+    # how much flight you have left.
+    flight_bar_display: '&c%fuel%'
+    flight_bar_present: '&e' # Color used for present fuel
+    flight_bar_absent: '&c' # Color used for absent fuel
     weight: 10
     book_only: false
     durability_decay: 1.0 # Chance per movement packet to decay 1 durability (1.0 = 100%)
     trade_enabled: true
     trade_cost_base_lower: 48
     trade_cost_base_upper: 64
+    icon: FEATHER
     compatible_with:
       - BOOTS
 
@@ -309,8 +378,26 @@ enchantment_configuration:
     trade_cost_base_upper: 32
     trade_cost_lv_lower: 16
     trade_cost_lv_upper: 32
+    icon: SUGAR
     compatible_with:
       - BOOTS
+
+  fire_resistance:
+    description: '&8> Grants the wearer fire resistance while wearing, but also slows them down'
+    enchant_name: '&7Basalt Skin'
+    enabled: true
+    weight: 10
+    book_only: false
+    duration: 100 # Duration of fire resistance buff granted per movement packet (20 = 1 second)
+    slow_nerf: true # Slows the user while fire resistance is active
+    trade_enabled: true
+    trade_cost_base_lower: 16
+    trade_cost_base_upper: 64
+    trade_cost_lv_lower: 0
+    trade_cost_lv_upper: 0
+    icon: MAGMA_CREAM
+    compatible_with:
+      - CHESTPLATES
 
   jump_boost:
     description: '&8> Grants the wearer jump boost &eI&8-&eII&8 while wearing'
@@ -328,6 +415,7 @@ enchantment_configuration:
     trade_cost_base_upper: 16
     trade_cost_lv_lower: 8
     trade_cost_lv_upper: 16
+    icon: RABBIT_FOOT
     compatible_with:
       - BOOTS
 
@@ -347,8 +435,46 @@ enchantment_configuration:
     trade_cost_base_upper: 32
     trade_cost_lv_lower: 8
     trade_cost_lv_upper: 16
+    icon: GOLD_INGOT
     compatible_with:
       - CHESTPLATES
+
+  trident_sharpness:
+    description: '&8> Tridents do &e0.75&8-&e1.5&8-&e2.25&8-&e3.0&8-&e3.75&8 more damage'
+    enchant_name: '&7Piercing %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    max_level: 5
+    max_level_table: 4
+    damage_base: 0.75 # Base strength of jump boost buff (an amplifier of 0 means the effect is applied at level I, 1 is II, etc.)
+    damage_lv: 0.75 # Additional strength of jump buff per level
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 12
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 12
+    icon: DIAMOND_SWORD
+
+  grappling:
+    description: '&8> Turns fishing rods into grappling hooks'
+    enchant_name: '&7Grappling %lv_roman%'
+    enabled: true
+    weight: 40
+    book_only: false
+    cooldown: 60 # Cooldown, in ticks
+    cooldown_message: '&cCooldown: %cooldown%s'
+    require_hooking: true # Hook needs to be stuck on a top surface for you to be able to grapple off it
+    max_level: 2
+    max_level_table: 1
+    force_base: 0.07 # Base strength of jump boost buff (an amplifier of 0 means the effect is applied at level I, 1 is II, etc.)
+    force_lv: 0.05 # Additional strength of jump buff per level
+    trade_enabled: true
+    trade_cost_base_lower: 8
+    trade_cost_base_upper: 12
+    trade_cost_lv_lower: 8
+    trade_cost_lv_upper: 12
+    icon: FISHING_ROD
 
   night_vision:
     description: '&8> Grants the player night vision while wearing'
@@ -360,6 +486,7 @@ enchantment_configuration:
     trade_enabled: true
     trade_cost_base_lower: 16
     trade_cost_base_upper: 48
+    icon: GOLDEN_CARROT
     compatible_with:
       - HELMETS
 
@@ -373,6 +500,7 @@ enchantment_configuration:
     trade_enabled: true
     trade_cost_base_lower: 16
     trade_cost_base_upper: 48
+    icon: PUFFERFISH
     compatible_with:
       - HELMETS
 
@@ -392,6 +520,7 @@ enchantment_configuration:
     trade_cost_base_upper: 32
     trade_cost_lv_lower: 16
     trade_cost_lv_upper: 32
+    icon: GOLDEN_PICKAXE
     compatible_with:
       - SWORDS
       - PICKAXES
@@ -415,6 +544,7 @@ enchantment_configuration:
     trade_cost_base_upper: 32
     trade_cost_lv_lower: 8
     trade_cost_lv_upper: 16
+    icon: BLAZE_POWDER
     compatible_with:
       - AXES
 
@@ -435,6 +565,7 @@ enchantment_configuration:
     trade_cost_base_upper: 16
     trade_cost_lv_lower: 6
     trade_cost_lv_upper: 12
+    icon: ENCHANTED_GOLDEN_APPLE
     compatible_with:
       - HELMETS
       - CHESTPLATES
@@ -460,6 +591,7 @@ enchantment_configuration:
     trade_cost_base_upper: 16
     trade_cost_lv_lower: 4
     trade_cost_lv_upper: 8
+    icon: WITHER_SKELETON_SKULL
     compatible_with:
       - SWORDS
       - BOWS
@@ -484,6 +616,7 @@ enchantment_configuration:
     trade_cost_base_upper: 16
     trade_cost_lv_lower: 4
     trade_cost_lv_upper: 8
+    icon: SPIDER_EYE
     compatible_with:
       - SWORDS
       - BOWS
@@ -508,6 +641,7 @@ enchantment_configuration:
     trade_cost_base_upper: 16
     trade_cost_lv_lower: 4
     trade_cost_lv_upper: 8
+    icon: FERMENTED_SPIDER_EYE
     compatible_with:
       - SWORDS
       - BOWS
@@ -532,6 +666,7 @@ enchantment_configuration:
     trade_cost_base_upper: 24
     trade_cost_lv_lower: 6
     trade_cost_lv_upper: 12
+    icon: IRON_BLOCK
     compatible_with:
       - SWORDS
       - BOWS
@@ -558,6 +693,7 @@ enchantment_configuration:
     trade_cost_base_upper: 16
     trade_cost_lv_lower: 4
     trade_cost_lv_upper: 8
+    icon: ICE
     compatible_with:
       - SWORDS
       - BOWS
@@ -580,6 +716,7 @@ enchantment_configuration:
     trade_cost_base_upper: 16
     trade_cost_lv_lower: 4
     trade_cost_lv_upper: 8
+    icon: OBSIDIAN
     compatible_with: # Limited to weapons
       - SWORDS
       - BOWS
@@ -601,9 +738,10 @@ enchantment_configuration:
     trade_cost_base_upper: 16
     trade_cost_lv_lower: 4
     trade_cost_lv_upper: 8
+    icon: FIREWORK_ROCKET
 
   nausea:
-    description: '&8> Has a &e3&8-&e5% chance to inflict the entity you''re damaging with Nausea'
+    description: '&8> Has a &e3&8-&e5%&8 chance to inflict the entity you''re damaging with Nausea'
     enchant_name: '&7Concussion %lv_roman%'
     enabled: true
     weight: 80
@@ -619,6 +757,7 @@ enchantment_configuration:
     trade_cost_base_upper: 16
     trade_cost_lv_lower: 4
     trade_cost_lv_upper: 8
+    icon: IRON_SHOVEL
     compatible_with: # Limited to weapons
       - SWORDS
       - BOWS
@@ -642,13 +781,14 @@ enchantment_configuration:
     trade_cost_base_upper: 16
     trade_cost_lv_lower: 4
     trade_cost_lv_upper: 8
+    icon: BARRIER
     compatible_with: # Limited to weapons
       - CROSSBOWS
       - BOWS
       - SWORDS
 
   crushing:
-    description: '&8> For each piece of diamond/netherite armor the enemy is wearing, you deal &e2.5&8-&e3.75&8-&e5% more damage'
+    description: '&8> For each piece of diamond/netherite armor the enemy is wearing, you deal &e2.5&8-&e3.75&8-&e5%&8 more damage'
     enchant_name: '&7Crushing %lv_roman%'
     enabled: true
     weight: 20
@@ -662,6 +802,7 @@ enchantment_configuration:
     trade_cost_base_upper: 24
     trade_cost_lv_lower: 8
     trade_cost_lv_upper: 12
+    icon: DIAMOND_CHESTPLATE
     compatible_with:
       - CROSSBOWS
       - AXES
@@ -685,6 +826,7 @@ enchantment_configuration:
     trade_cost_base_upper: 16
     trade_cost_lv_lower: 4
     trade_cost_lv_upper: 8
+    icon: TIPPED_ARROW
     compatible_with: # Not limited to ranged weapons
       - CROSSBOWS
       - BOWS
@@ -706,6 +848,7 @@ enchantment_configuration:
     trade_cost_base_upper: 32
     trade_cost_lv_lower: 8
     trade_cost_lv_upper: 16
+    icon: EXPERIENCE_BOTTLE
     compatible_with: # Limited to weapons
       - SWORDS
       - AXES
@@ -725,6 +868,7 @@ enchantment_configuration:
     trade_cost_base_upper: 16
     trade_cost_lv_lower: 8
     trade_cost_lv_upper: 16
+    icon: ENDER_EYE
     compatible_with: # Limited to weapons
       - SWORDS
       - AXES
@@ -745,6 +889,7 @@ enchantment_configuration:
     trade_cost_base_upper: 16
     trade_cost_lv_lower: 8
     trade_cost_lv_upper: 16
+    icon: IRON_AXE
     compatible_with: # Limited to weapons
       - SWORDS
       - AXES
@@ -760,6 +905,7 @@ enchantment_configuration:
     trade_enabled: true
     trade_cost_base_lower: 8
     trade_cost_base_upper: 32
+    icon: NETHER_STAR
     compatible_with:
       - ALL
 
@@ -783,6 +929,7 @@ enchantment_configuration:
     trade_cost_base_upper: 32
     trade_cost_lv_lower: 8
     trade_cost_lv_upper: 16
+    icon: GUNPOWDER
     compatible_with: # Limited to weapons
       - SWORDS
       - AXES
@@ -802,6 +949,7 @@ enchantment_configuration:
     trade_cost_base_upper: 16
     trade_cost_lv_lower: 4
     trade_cost_lv_upper: 8
+    icon: WOODEN_SWORD
     compatible_with: # Limited to weapons
       - ALL
 
@@ -823,6 +971,7 @@ enchantment_configuration:
     trade_cost_base_upper: 16
     trade_cost_lv_lower: 4
     trade_cost_lv_upper: 8
+    icon: PACKED_ICE
     compatible_with: # Not limited to tools
       - ALL
 
@@ -840,6 +989,7 @@ enchantment_configuration:
     trade_cost_base_upper: 16
     trade_cost_lv_lower: 4
     trade_cost_lv_upper: 8
+    icon: POISONOUS_POTATO
     compatible_with: # Not limited to armor
       - HELMETS
       - CHESTPLATES
@@ -865,6 +1015,7 @@ enchantment_configuration:
     trade_cost_base_upper: 16
     trade_cost_lv_lower: 4
     trade_cost_lv_upper: 8
+    icon: BLAZE_ROD
     compatible_with: # Not limited to ranged weapons
       - ALL
 

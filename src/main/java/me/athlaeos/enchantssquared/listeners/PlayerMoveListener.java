@@ -4,8 +4,10 @@ import me.athlaeos.enchantssquared.dom.CustomEnchant;
 import me.athlaeos.enchantssquared.dom.CustomEnchantType;
 import me.athlaeos.enchantssquared.enchantments.constanttriggerenchantments.ConstantTriggerEnchantment;
 import me.athlaeos.enchantssquared.enchantments.constanttriggerenchantments.Metabolism;
-import me.athlaeos.enchantssquared.enchantments.constanttriggerenchantments.Vigorous;
+import me.athlaeos.enchantssquared.enchantments.singletriggerenchantments.Vigorous;
+import me.athlaeos.enchantssquared.events.ConstantEnchantmentTriggerEvent;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.managers.CooldownManager;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.ItemMaterialManager;
@@ -24,16 +26,19 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PlayerMoveListener implements Listener {
     private final CustomEnchantManager enchantManager;
     private final boolean isVigorEnabled;
+    private final boolean reset_health;
     private Set<UUID> playersWhoHadFlight = new HashSet<>();
 
     public PlayerMoveListener(){
         this.enchantManager = CustomEnchantManager.getInstance();
         Vigorous v = new Vigorous();
         isVigorEnabled = v.isEnabled();
+        reset_health = v.reset_health();
     }
 
     @EventHandler
@@ -44,8 +49,7 @@ public class PlayerMoveListener implements Listener {
                 if (WorldguardHook.getWorldguardHook().isLocationInRegionWithFlag(e.getPlayer().getLocation(), "es-deny-all")) return;
             }
             Metabolism m = null;
-            Vigorous v = null;
-
+            boolean hasVigor = false;
             List<ItemStack> equipment = Utils.getEntityEquipment(e.getPlayer(), true);
 
             for (ItemStack i : equipment){
@@ -55,21 +59,26 @@ public class PlayerMoveListener implements Listener {
                 Map<CustomEnchant, Integer> enchants = enchantManager.getItemsEnchantsFromPDC(i);
                 for (CustomEnchant enchant : enchants.keySet()){
                     if (enchant instanceof Metabolism){
-                        m = (Metabolism) enchant;
-                    } else if (enchant instanceof Vigorous) {
-                        v = (Vigorous) enchant;
+                        ConstantEnchantmentTriggerEvent event = new ConstantEnchantmentTriggerEvent(i, enchants.get(enchant), enchant, e.getPlayer());
+                        EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
+                        if (!event.isCancelled()){
+                            m = (Metabolism) enchant;
+                        }
                     } else if (enchant instanceof ConstantTriggerEnchantment){
-                        ((ConstantTriggerEnchantment) enchant).execute(e, i, enchants.get(enchant));
+                        ConstantEnchantmentTriggerEvent event = new ConstantEnchantmentTriggerEvent(i, enchants.get(enchant), enchant, e.getPlayer());
+                        EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
+                        if (!event.isCancelled()){
+                            ((ConstantTriggerEnchantment) enchant).execute(e, i, event.getLevel());
+                        }
+                    }
+                    if (enchant instanceof Vigorous){
+                        hasVigor = true;
                     }
                 }
             }
             if (m != null) m.execute(e, null, 0);
-            if (v != null) {
-                v.execute(e, null, 0);
-            } else {
-                if (isVigorEnabled){
-                    resetPlayerHealth(e);
-                }
+            if (!hasVigor && isVigorEnabled && reset_health){
+                resetPlayerHealth(e);
             }
             checkFlightConditions(e);
             checkBreakConditions(e);
@@ -163,7 +172,7 @@ public class PlayerMoveListener implements Listener {
             return;
         }
         List<ItemStack> equipment = Utils.getEntityEquipment(e.getPlayer(), true);
-        for (ItemStack item : equipment){
+        for (ItemStack item : equipment.stream().filter(Objects::nonNull).collect(Collectors.toList())){
             if (CustomEnchantManager.getInstance().doesItemHaveEnchant(item, CustomEnchantType.FLIGHT)) {
                 playersWhoHadFlight.add(e.getPlayer().getUniqueId());
                 return;

@@ -3,7 +3,10 @@ package me.athlaeos.enchantssquared.listeners;
 import me.athlaeos.enchantssquared.dom.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.interactenchantments.BlockInteractEnchantment;
 import me.athlaeos.enchantssquared.enchantments.interactenchantments.ItemInteractEnchantment;
+import me.athlaeos.enchantssquared.events.BlockInteractEnchantmentTriggerEvent;
+import me.athlaeos.enchantssquared.events.ItemInteractEnchantmentTriggerEvent;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.enchantmanagers.ExcavationBlockFaceManager;
 import me.athlaeos.enchantssquared.utils.Utils;
@@ -42,7 +45,11 @@ public class InteractListener implements Listener {
                 Map<CustomEnchant, Integer> enchants = CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(clickedItem);
                 for (CustomEnchant en : enchants.keySet()){
                     if (en instanceof BlockInteractEnchantment){
-                        ((BlockInteractEnchantment) en).execute(e, clickedItem, enchants.get(en));
+                        BlockInteractEnchantmentTriggerEvent event = new BlockInteractEnchantmentTriggerEvent(clickedItem, enchants.get(en), en, e.getPlayer(), e.getClickedBlock());
+                        EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
+                        if (!event.isCancelled()){
+                            ((BlockInteractEnchantment) en).execute(e, clickedItem, event.getLevel());
+                        }
                     }
                 }
             }
@@ -53,7 +60,11 @@ public class InteractListener implements Listener {
                 Map<CustomEnchant, Integer> enchants = CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(i);
                 for (CustomEnchant en : enchants.keySet()){
                     if (en instanceof ItemInteractEnchantment){
-                        ((ItemInteractEnchantment) en).execute(e, i, enchants.get(en));
+                        ItemInteractEnchantmentTriggerEvent event = new ItemInteractEnchantmentTriggerEvent(i, enchants.get(en), en, e.getPlayer());
+                        EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
+                        if (!event.isCancelled()){
+                            ((ItemInteractEnchantment) en).execute(e, i, enchants.get(en));
+                        }
                     }
                 }
             }

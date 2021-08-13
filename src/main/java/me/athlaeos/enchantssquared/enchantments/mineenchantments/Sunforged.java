@@ -85,6 +85,7 @@ public class Sunforged extends BreakBlockEnchantment{
                     e.getBlock().setType(Material.AIR);
                     if (item.getItemMeta() instanceof Damageable){
                         Damageable toolMeta = (Damageable) item.getItemMeta();
+                        if (item.getItemMeta().isUnbreakable()) return;
                         int unBreakingLevel = item.getEnchantmentLevel(Enchantment.DURABILITY);
                         double breakChance = 1D/(unBreakingLevel + 1D) * 100;
                         if ((RandomNumberGenerator.getRandom().nextInt(100) + 1) < breakChance){
@@ -114,6 +115,7 @@ public class Sunforged extends BreakBlockEnchantment{
         this.tradeMaxCostLv = config.getInt("enchantment_configuration.sunforged.trade_cost_base_upper");
         drop_exp_chance = config.getDouble("enchantment_configuration.sunforged.drop_exp_chance");
         this.availableForTrade = config.getBoolean("enchantment_configuration.sunforged.trade_enabled");
+        setIcon(config.getString("enchantment_configuration.sunforged.icon"));
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.sunforged.compatible_with");
         for (String s : compatibleItemStrings){

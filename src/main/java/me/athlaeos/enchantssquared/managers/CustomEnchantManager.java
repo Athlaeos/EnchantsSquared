@@ -2,15 +2,16 @@ package me.athlaeos.enchantssquared.managers;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import me.athlaeos.enchantssquared.Debug;
 import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.*;
+import me.athlaeos.enchantssquared.enchantments.StandardGlintEnchantment;
 import me.athlaeos.enchantssquared.enchantments.attackenchantments.*;
 import me.athlaeos.enchantssquared.enchantments.constanttriggerenchantments.*;
 import me.athlaeos.enchantssquared.enchantments.defendenchantments.Shielding;
-import me.athlaeos.enchantssquared.enchantments.defendenchantments.Steady;
+import me.athlaeos.enchantssquared.enchantments.fishenchantments.Grappling;
 import me.athlaeos.enchantssquared.enchantments.healthregenerationenchantments.Vitality;
 import me.athlaeos.enchantssquared.enchantments.interactenchantments.AutoReplant;
-import me.athlaeos.enchantssquared.enchantments.interactenchantments.ElytraFireworkBoost;
 import me.athlaeos.enchantssquared.enchantments.interactenchantments.PlaceTorch;
 import me.athlaeos.enchantssquared.enchantments.interactenchantments.Shockwave;
 import me.athlaeos.enchantssquared.enchantments.killenchantments.*;
@@ -19,6 +20,9 @@ import me.athlaeos.enchantssquared.enchantments.mineenchantments.Kinship;
 import me.athlaeos.enchantssquared.enchantments.mineenchantments.Sunforged;
 import me.athlaeos.enchantssquared.enchantments.potionenchantments.IncreasePotionPotency;
 import me.athlaeos.enchantssquared.enchantments.potionenchantments.SplashPotionBlock;
+import me.athlaeos.enchantssquared.enchantments.singletriggerenchantments.*;
+import me.athlaeos.enchantssquared.enchantments.singletriggerenchantments.Vigorous;
+import me.athlaeos.enchantssquared.events.EnchantingEnchantmentTriggerEvent;
 import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.utils.Utils;
 import org.bukkit.ChatColor;
@@ -28,12 +32,12 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class CustomEnchantManager {
@@ -77,7 +81,7 @@ public class CustomEnchantManager {
         List<Entry> entries = new ArrayList<>();
         Map<CustomEnchant, Integer> obtainedEnchantments = getItemsEnchantsFromPDC(item);
         double accumulatedWeight = 0.0;
-
+        Debug.log(p, "&denchantForPlayer() &fpossible/compatible enchantments size: " + possibleEnchants.size());
         for (CustomEnchant c : possibleEnchants){
             if (requirePermissions){
                 if (!p.hasPermission(c.getRequiredPermission())){
@@ -107,7 +111,7 @@ public class CustomEnchantManager {
                     int designatedLevel;
                     if (entry.object.getMax_level() < entry.object.getMax_level_table()){
                         System.out.println("[EnchantsSquared] A player attempted to enchant something, but max_enchants_table for" +
-                                "the enchant " + entry.object.getEnchantLore() + " is higher than max_enchants." +
+                                "the enchant " + entry.object.getDisplayName() + " is higher than max_enchants." +
                                 "This cannot be the case, so for this instance the value of max_enchants_table was set to the same " +
                                 "value as max_enchants. Be sure to correct this mistake");
                         entry.object.setMax_level_table(entry.object.getMax_level());
@@ -148,7 +152,7 @@ public class CustomEnchantManager {
                 int designatedLevel;
                 if (entry.object.getMax_level() < entry.object.getMax_level_table()){
                     System.out.println("[EnchantsSquared] An enchanted book was attempted to be made, but max_enchants_table for" +
-                            "the enchant " + entry.object.getEnchantLore() + " is higher than max_enchants." +
+                            "the enchant " + entry.object.getDisplayName() + " is higher than max_enchants." +
                             "This cannot be the case, so for this instance the value of max_enchants_table was set to the same " +
                             "value as max_enchants. Be sure to correct this mistake");
                     entry.object.setMax_level_table(entry.object.getMax_level());
@@ -201,62 +205,111 @@ public class CustomEnchantManager {
     Returns false if the total amount of enchantments exceeds maxEnchants
      */
     public AnvilRecipeOutcome combineItems(ItemStack item1, ItemStack item2, ItemStack output){
+        ItemStack tempItem2;
         boolean combiningWithBook = false;
         if (item2 != null){
+            tempItem2 = item2.clone();
             if (item2.getType() == Material.ENCHANTED_BOOK){
-                combiningWithBook = true;
+                if (item2.getItemMeta() != null){
+                    if (output == null){
+                        combiningWithBook = true;
+                        if (item2.getItemMeta() instanceof EnchantmentStorageMeta){
+                            EnchantmentStorageMeta item2meta = (EnchantmentStorageMeta) tempItem2.getItemMeta();
+                            assert item2meta != null;
+                            item2meta.removeStoredEnchant(StandardGlintEnchantment.getEnsquaredGlint());
+                            tempItem2.setItemMeta(item2meta);
+                        }
+                    } else if (output.getType() == Material.AIR){
+                        combiningWithBook = true;
+                        output.setType(item1.getType());
+                        if (item2.getItemMeta() instanceof EnchantmentStorageMeta){
+                            EnchantmentStorageMeta item2meta = (EnchantmentStorageMeta) tempItem2.getItemMeta();
+                            assert item2meta != null;
+                            item2meta.removeStoredEnchant(StandardGlintEnchantment.getEnsquaredGlint());
+                            tempItem2.setItemMeta(item2meta);
+                        }
+                    }
+                }
             }
         }
-        if ((item2 == null || output == null) && !combiningWithBook) return new AnvilRecipeOutcome(null, AnvilRecipeOutcomeState.OUTPUT_NULL);
+        boolean outputNull = false;
+        boolean item2Null = false;
+        if (item2 == null){
+            item2Null = true;
+        } else {
+            if (item2.getType() == Material.AIR){
+                item2Null = true;
+            }
+        }
+        if (output == null){
+            outputNull = true;
+        } else {
+            if (output.getType() == Material.AIR){
+                outputNull = true;
+            }
+        }
+        if ((item2Null || outputNull) && !combiningWithBook) {
+            Debug.log(EnchantsSquared.getPlugin().getServer().getConsoleSender(), "&dcombineItems() &fitem2 = null = " + (item2 == null) + ", output = null = " + (output==null) + ", combiningWithBook = " + combiningWithBook);
+            return new AnvilRecipeOutcome(null, AnvilRecipeOutcomeState.OUTPUT_NULL);
+        }
         Map<CustomEnchant, Integer> item1enchants = getItemsEnchantsFromLore(item1, item1);
         Map<CustomEnchant, Integer> item2enchants = getItemsEnchantsFromLore(item2, item1);
         Map<CustomEnchant, Integer> resultEnchants = new HashMap<>();
-
-//        if (output.hasItemMeta()){
-//            if (Objects.requireNonNull(output.getItemMeta()).hasLore()){
-//                Objects.requireNonNull(output.getItemMeta().getLore()).clear();
-//            }
-//        } else {
-//            return true;
-//        }
-
-        for (CustomEnchant e1 : item1enchants.keySet()){
-            if (item2enchants.containsKey(e1)){
-                if (item1enchants.get(e1).equals(item2enchants.get(e1))){
-                    if (item1enchants.get(e1) >= e1.getMax_level()){
-                        resultEnchants.put(e1, item1enchants.get(e1));
+        if (item2enchants.size() == 0){
+            resultEnchants = item1enchants;
+        } else {
+            for (CustomEnchant e1 : item1enchants.keySet()){
+                if (item2enchants.containsKey(e1)){
+                    if (item1enchants.get(e1).equals(item2enchants.get(e1))){
+                        if (item1enchants.get(e1) >= e1.getMax_level()){
+                            resultEnchants.put(e1, item1enchants.get(e1));
+                        } else {
+                            resultEnchants.put(e1, item1enchants.get(e1) + 1);
+                        }
                     } else {
-                        resultEnchants.put(e1, item1enchants.get(e1) + 1);
+                        if (item1enchants.get(e1) > item2enchants.get(e1)){
+                            resultEnchants.put(e1, item1enchants.get(e1));
+                        } else {
+                            resultEnchants.put(e1, item2enchants.get(e1));
+                        }
                     }
                 } else {
-                    if (item1enchants.get(e1) > item2enchants.get(e1)){
-                        resultEnchants.put(e1, item1enchants.get(e1));
-                    } else {
-                        resultEnchants.put(e1, item2enchants.get(e1));
-                    }
+                    resultEnchants.put(e1, item1enchants.get(e1));
                 }
-            } else {
-                resultEnchants.put(e1, item1enchants.get(e1));
             }
-        }
 
-        for (CustomEnchant e2 : item2enchants.keySet()){
-            if (!item1enchants.containsKey(e2)){
-                resultEnchants.put(e2, item2enchants.get(e2));
+            for (CustomEnchant e2 : item2enchants.keySet()){
+                if (!item1enchants.containsKey(e2)){
+                    resultEnchants.put(e2, item2enchants.get(e2));
+                }
             }
         }
 
         if (combiningWithBook){
-            output = item1.clone();
+            if (item1 != null){
+                output = item1.clone();
+            }
         }
 
-        if (output.getType() != Material.ENCHANTED_BOOK && resultEnchants.size() > maxEnchants){
-            return new AnvilRecipeOutcome(null, AnvilRecipeOutcomeState.MAX_ENCHANTS_EXCEEDED);
+        if (output != null){
+            if (output.getType() == Material.AIR){
+                Debug.log(EnchantsSquared.getPlugin().getServer().getConsoleSender(), "&dcomebineItems() &foutput is null despite all processes");
+                return new AnvilRecipeOutcome(null, AnvilRecipeOutcomeState.OUTPUT_NULL);
+            } else {
+                if (output.getType() != Material.ENCHANTED_BOOK && resultEnchants.size() > maxEnchants){
+                    return new AnvilRecipeOutcome(null, AnvilRecipeOutcomeState.MAX_ENCHANTS_EXCEEDED);
+                }
+            }
+        } else {
+            Debug.log(EnchantsSquared.getPlugin().getServer().getConsoleSender(), "&dcomebineItems() &foutput is null despite all processes");
+            return new AnvilRecipeOutcome(null, AnvilRecipeOutcomeState.OUTPUT_NULL);
         }
         setItemEnchants(output, resultEnchants);
         if (resultEnchants.size() == 0){
+            Debug.log(EnchantsSquared.getPlugin().getServer().getConsoleSender(), "&dcomebineItems() &foutput has no custom enchantments, ");
             return new AnvilRecipeOutcome(output, AnvilRecipeOutcomeState.ITEM_NO_CUSTOM_ENCHANTS);
         } else {
+            Debug.log(EnchantsSquared.getPlugin().getServer().getConsoleSender(), "&dcomebineItems() &fcombining successful, output has " + resultEnchants.size() + " enchantments");
             return new AnvilRecipeOutcome(output, AnvilRecipeOutcomeState.SUCCESSFUL);
         }
     }
@@ -316,13 +369,24 @@ public class CustomEnchantManager {
             if (meta.getPersistentDataContainer().has(enchantmentsKey, PersistentDataType.STRING)){
                 meta.getPersistentDataContainer().remove(enchantmentsKey);
                 item.setItemMeta(meta);
+                meta = item.getItemMeta();
             }
         } else {
             //updating PersistentDataContainer to be accurate with enchantments
             List<String> stringEnchants = new ArrayList<>();
             for (CustomEnchant e : enchantments.keySet()){
                 stringEnchants.add(allEnchants.inverse().get(e) + ":" + enchantments.get(e));
+                if (item.getType() != Material.ENCHANTED_BOOK){
+                    if (e instanceof SingleTriggerEnchantment){
+                        EnchantingEnchantmentTriggerEvent event = new EnchantingEnchantmentTriggerEvent(item, enchantments.get(e), e);
+                        EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
+                        if (!event.isCancelled()){
+                            ((SingleTriggerEnchantment) e).execute(item, enchantments.get(e));
+                        }
+                    }
+                }
             }
+            meta = item.getItemMeta();
             meta.getPersistentDataContainer().set(enchantmentsKey, PersistentDataType.STRING, String.join(";", stringEnchants));
         }
 
@@ -351,29 +415,42 @@ public class CustomEnchantManager {
         }
         if (finalLore.size() == 0){
             for (CustomEnchant e : enchantments.keySet()){
-                finalLore.add(Utils.chat(e.getEnchantLore().replace("%lv_number%", "" + enchantments.get(e))
+                finalLore.add(Utils.chat(e.getDisplayName().replace("%lv_number%", "" + enchantments.get(e))
                         .replace("%lv_roman%", Utils.toRoman(enchantments.get(e)))));
             }
         } else {
             if (firstEnchantIndex >= finalLore.size()){
                 for (CustomEnchant e : enchantments.keySet()){
-                    finalLore.add(Utils.chat(e.getEnchantLore().replace("%lv_number%", "" + enchantments.get(e))
+                    finalLore.add(Utils.chat(e.getDisplayName().replace("%lv_number%", "" + enchantments.get(e))
                             .replace("%lv_roman%", Utils.toRoman(enchantments.get(e)))));
                 }
             } else if (enchantAtLine0 || firstEnchantIndex != 0){
                 for (CustomEnchant e : enchantments.keySet()){
-                    finalLore.add(firstEnchantIndex, Utils.chat(e.getEnchantLore().replace("%lv_number%", "" + enchantments.get(e))
+                    finalLore.add(firstEnchantIndex, Utils.chat(e.getDisplayName().replace("%lv_number%", "" + enchantments.get(e))
                             .replace("%lv_roman%", Utils.toRoman(enchantments.get(e)))));
                 }
             } else {
                 for (CustomEnchant e : enchantments.keySet()){
-                    finalLore.add(Utils.chat(e.getEnchantLore().replace("%lv_number%", "" + enchantments.get(e))
+                    finalLore.add(Utils.chat(e.getDisplayName().replace("%lv_number%", "" + enchantments.get(e))
                             .replace("%lv_roman%", Utils.toRoman(enchantments.get(e)))));
                 }
             }
         }
-        meta.setLore(finalLore);
-        item.setItemMeta(meta);
+        if (!enchantments.isEmpty()){
+            if (meta instanceof EnchantmentStorageMeta){
+                EnchantmentStorageMeta storageMeta = (EnchantmentStorageMeta) meta;
+                storageMeta.addStoredEnchant(StandardGlintEnchantment.getEnsquaredGlint(), 1, true);
+                storageMeta.setLore(finalLore);
+                item.setItemMeta(storageMeta);
+            } else {
+                meta.setLore(finalLore);
+                item.setItemMeta(meta);
+                item.addUnsafeEnchantment(StandardGlintEnchantment.getEnsquaredGlint(), 1);
+            }
+        } else {
+            meta.setLore(finalLore);
+            item.setItemMeta(meta);
+        }
     }
 
 
@@ -400,17 +477,17 @@ public class CustomEnchantManager {
 
         for (CustomEnchant e : getCompatibleEnchants(filterItem)){
             for (String l : itemLore) {
-                if (l.contains(extractEnchantString(e.getEnchantLore()))) {
-                    if (e.getEnchantLore().contains("%lv_roman%")) {
+                if (l.contains(extractEnchantString(e.getDisplayName()))) {
+                    if (e.getDisplayName().contains("%lv_roman%")) {
                         String[] splitLine = l.split(" ");
                         int level = Utils.translateRomanToLevel(splitLine[splitLine.length - 1]);
                         itemEnchants.put(e, level);
-                    } else if (e.getEnchantLore().contains("%lv_number%")) {
+                    } else if (e.getDisplayName().contains("%lv_number%")) {
                         String[] splitLine = l.split(" ");
                         int level = Integer.parseInt(splitLine[splitLine.length - 1]);
                         itemEnchants.put(e, level);
                     } else {
-                        itemEnchants.put(e, 0);
+                        itemEnchants.put(e, 1);
                     }
                 }
             }
@@ -446,15 +523,52 @@ public class CustomEnchantManager {
         return null;
     }
 
-    /*
-    Removes an enchantment from ItemStack enchantedItem
+    /**
+     * Removes a given enchant from the given item
+     * @param enchantedItem the item to remove the enchantment from
+     * @param enchant the enchantment enum of the enchantment to remove
+     * @return true if the enchantment was removed from the item. False if the item is null, if the given enchant
+     * has no enchantment associated with it, or if the item didn't have the enchantment.
      */
     public boolean removeEnchant(ItemStack enchantedItem, CustomEnchantType enchant){
         if (enchantedItem == null) return false;
         Map<CustomEnchant, Integer> itemsEnchants = getItemsEnchantsFromPDC(enchantedItem);
-        if (itemsEnchants.remove(allEnchants.get(getEnchantID(enchant))) == null) return false;
+        int id;
+        try {
+            id = getEnchantID(enchant);
+        } catch (IllegalArgumentException ignored){
+            return false;
+        }
+        if (!allEnchants.containsKey(id)) {
+            return false;
+        }
+        CustomEnchant enchantToRemove = allEnchants.get(id);
+        if (itemsEnchants.containsKey(enchantToRemove)) {
+            if (enchantToRemove instanceof SingleTriggerEnchantment){
+                ((SingleTriggerEnchantment) enchantToRemove).reverse(enchantedItem, itemsEnchants.get(enchantToRemove));
+            }
+        }
+        if (itemsEnchants.remove(enchantToRemove) == null) {
+            return false;
+        }
+
         setItemEnchants(enchantedItem, itemsEnchants);
         return true;
+    }
+
+    public ItemStack removeAllEnchants(ItemStack enchantedItem){
+        if (enchantedItem == null) return null;
+        Map<CustomEnchant, Integer> itemsEnchants = getItemsEnchantsFromPDC(enchantedItem);
+        Map<CustomEnchant, Integer> itemsEnchantsCopy = new HashMap<>(itemsEnchants);
+        for (CustomEnchant enchant : itemsEnchantsCopy.keySet()){
+            if (enchant instanceof SingleTriggerEnchantment){
+                ((SingleTriggerEnchantment) enchant).reverse(enchantedItem, itemsEnchants.get(enchant));
+            }
+            itemsEnchants.remove(enchant);
+        }
+
+        setItemEnchants(enchantedItem, itemsEnchants);
+        return enchantedItem;
     }
 
     /*
@@ -487,61 +601,74 @@ public class CustomEnchantManager {
         getInstance();
     }
 
+    private void registerEnchant(int id, CustomEnchant enchant){
+        if (enchant.isEnabled()){
+            allEnchants.put(id, enchant);
+        }
+    }
+
     private void insertEnchants(){
-        allEnchants.put(1, new Excavation());
-        allEnchants.put(2, new Sunforged());
-        allEnchants.put(3, new Kinship());
+        registerEnchant(1, new Excavation());
+        registerEnchant(2, new Sunforged());
+        registerEnchant(3, new Kinship());
 
-        allEnchants.put(4, new Flight());
-        allEnchants.put(5, new Rejuvenation());
-        allEnchants.put(6, new LavaWalker());
-        allEnchants.put(7, new SpeedBoost());
-        allEnchants.put(8, new JumpBoost());
-        allEnchants.put(9, new NightVision());
-        allEnchants.put(10, new WaterBreathing());
-        allEnchants.put(11, new Haste());
-        allEnchants.put(12, new Metabolism());
-        allEnchants.put(13, new Strength());
-        allEnchants.put(14, new Vigorous());
-        allEnchants.put(15, new Luck());
-        allEnchants.put(16, new CurseBrittle());
-        allEnchants.put(17, new CurseHeavy());
-        allEnchants.put(18, new CurseHunger());
+        registerEnchant(4, new Flight());
+        registerEnchant(5, new Rejuvenation());
+        registerEnchant(6, new LavaWalker());
+        registerEnchant(7, new SpeedBoost());
+        registerEnchant(8, new JumpBoost());
+        registerEnchant(9, new NightVision());
+        registerEnchant(10, new WaterBreathing());
+        registerEnchant(11, new Haste());
+        registerEnchant(12, new Metabolism());
+        registerEnchant(13, new Strength());
+        registerEnchant(14, new Vigorous());
+        registerEnchant(15, new Luck());
+        registerEnchant(16, new CurseBrittle());
+        registerEnchant(17, new CurseHeavy());
+        registerEnchant(18, new CurseHunger());
 
-        allEnchants.put(19, new Withering());
-        allEnchants.put(20, new Stunning());
-        allEnchants.put(21, new Slowness());
-        allEnchants.put(22, new Nausea());
-        allEnchants.put(23, new Weakening());
-        allEnchants.put(24, new Poisoning());
-        allEnchants.put(25, new Blinding());
-        allEnchants.put(26, new Crushing());
-        allEnchants.put(27, new AOEArrows());
-        allEnchants.put(28, new Toxic());
+        registerEnchant(19, new Withering());
+        registerEnchant(20, new Stunning());
+        registerEnchant(21, new Slowness());
+        registerEnchant(22, new Nausea());
+        registerEnchant(23, new Weakening());
+        registerEnchant(24, new Poisoning());
+        registerEnchant(25, new Blinding());
+        registerEnchant(26, new Crushing());
+        registerEnchant(27, new AOEArrows());
+        registerEnchant(28, new Toxic());
 
-        allEnchants.put(29, new Shielding());
-        allEnchants.put(30, new Steady());
+        registerEnchant(29, new Shielding());
+        registerEnchant(30, new Steady());
 
-        allEnchants.put(31, new Vitality());
+        registerEnchant(31, new Vitality());
 
-        allEnchants.put(32, new PlaceTorch());
-        allEnchants.put(33, new AutoReplant());
-        allEnchants.put(34, new Shockwave());
+        registerEnchant(32, new PlaceTorch());
+        registerEnchant(33, new AutoReplant());
+        registerEnchant(34, new Shockwave());
 
-        allEnchants.put(35, new Sapping());
-        allEnchants.put(36, new Vampiric());
-        allEnchants.put(37, new Beheading());
-        allEnchants.put(38, new Soulbound());
+        registerEnchant(35, new Sapping());
+        registerEnchant(36, new Vampiric());
+        registerEnchant(37, new Beheading());
+        registerEnchant(38, new Soulbound());
 
-        allEnchants.put(39, new SplashPotionBlock());
-        allEnchants.put(40, new IncreasePotionPotency());
+        registerEnchant(39, new SplashPotionBlock());
+        registerEnchant(40, new IncreasePotionPotency());
 
-        allEnchants.put(41, new CurseBerserk());
+        registerEnchant(41, new CurseBerserk());
+
+        registerEnchant(42, new ReinforcedPlating());
+
+        registerEnchant(43, new TridentSharpness());
+        registerEnchant(44, new Grappling());
+
+        registerEnchant(45, new FireResistance());
 
 //        allEnchants.put(42, new ElytraFireworkBoost());
 
         for (CustomEnchant c : allEnchants.values()){
-            stringEnchantments.add(extractEnchantString(c.getEnchantLore()));
+            stringEnchantments.add(extractEnchantString(c.getDisplayName()));
         }
     }
 
@@ -567,12 +694,21 @@ public class CustomEnchantManager {
     Returns true if the item given has the enchant of the matching type, false otherwise
      */
     public boolean doesItemHaveEnchant(ItemStack item, CustomEnchantType enchant){
+        if (item == null) return false;
+        if (enchant == null) return false;
         for (CustomEnchant e : getItemsEnchantsFromPDC(item).keySet()){
             if (e.getEnchantType() == enchant){
                 return true;
             }
         }
         return false;
+    }
+
+    public boolean doesItemHaveEnchants(ItemStack item){
+        if (item == null) return false;
+        ItemMeta meta = item.getItemMeta();
+        if (meta == null) return false;
+        return meta.getPersistentDataContainer().has(enchantmentsKey, PersistentDataType.STRING);
     }
 
     private static class Entry{

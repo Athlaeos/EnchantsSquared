@@ -4,7 +4,10 @@ import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.healthregenerationenchantments.HealthRegenerationEnchantment;
 import me.athlaeos.enchantssquared.enchantments.healthregenerationenchantments.Vitality;
+import me.athlaeos.enchantssquared.events.DefendEnchantmentTriggerEvent;
+import me.athlaeos.enchantssquared.events.HealthRegenEnchantmentTriggerEvent;
 import me.athlaeos.enchantssquared.hooks.WorldguardHook;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.managers.enchantmanagers.ToxicHealingReductionManager;
 import me.athlaeos.enchantssquared.utils.Utils;
@@ -18,6 +21,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class HealthRegenerationListener implements Listener {
 
@@ -44,13 +48,18 @@ public class HealthRegenerationListener implements Listener {
                 List<ItemStack> equipment = Utils.getEntityEquipment(e.getEntity(), true);
                 for (ItemStack i : equipment){
                     if (i.getType() == Material.ENCHANTED_BOOK) continue;
-                    for (CustomEnchant en : CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(i).keySet()){
+                    Map<CustomEnchant, Integer> enchants = CustomEnchantManager.getInstance().getItemsEnchantsFromPDC(i);
+                    for (CustomEnchant en : enchants.keySet()){
                         if (en instanceof HealthRegenerationEnchantment){
-                            if (en instanceof Vitality){ //vitality is an exception enchantment that may only execute
-                                //once per event instead of once for each piece of armor
-                                v = (Vitality) en;
-                            } else {
-                                ((HealthRegenerationEnchantment) en).execute(e);
+                            HealthRegenEnchantmentTriggerEvent event = new HealthRegenEnchantmentTriggerEvent(i, enchants.get(en), en, entity);
+                            EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
+                            if (!event.isCancelled()){
+                                if (en instanceof Vitality){ //vitality is an exception enchantment that may only execute
+                                    //once per event instead of once for each piece of armor
+                                    v = (Vitality) en;
+                                } else {
+                                    ((HealthRegenerationEnchantment) en).execute(e);
+                                }
                             }
                         }
                     }

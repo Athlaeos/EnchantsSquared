@@ -18,6 +18,7 @@ import org.bukkit.block.data.Directional;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -136,13 +137,18 @@ public class PlaceTorch extends BlockInteractEnchantment {
                     CooldownManager.getInstance().setItemCooldown(e.getPlayer().getUniqueId(), cooldown * 50, "illuminated_cooldown");
                 }
                 if (tool.getItemMeta() instanceof Damageable){
+                    if (tool.getItemMeta().isUnbreakable()) return;
                     int unBreakingLevel = tool.getEnchantmentLevel(Enchantment.DURABILITY);
                     double breakChance = 1D/(unBreakingLevel + 1D);
                     if (use_unbreaking){
                         if (RandomNumberGenerator.getRandom().nextDouble() < breakChance){
                             Damageable toolMeta = (Damageable) tool.getItemMeta();
-                            toolMeta.setDamage(toolMeta.getDamage() + durability_cost);
-                            tool.setItemMeta((ItemMeta) toolMeta);
+                            PlayerItemDamageEvent event = new PlayerItemDamageEvent(e.getPlayer(), tool, durability_cost);
+                            EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
+                            if (!event.isCancelled()){
+                                toolMeta.setDamage(toolMeta.getDamage() + event.getDamage());
+                                tool.setItemMeta((ItemMeta) toolMeta);
+                            }
                         }
                     } else {
                         Damageable toolMeta = (Damageable) tool.getItemMeta();
@@ -168,6 +174,7 @@ public class PlaceTorch extends BlockInteractEnchantment {
         this.tradeMinCostBase = config.getInt("enchantment_configuration.illuminated.trade_cost_base_lower");
         this.tradeMaxCostBase = config.getInt("enchantment_configuration.illuminated.trade_cost_base_upper");
         this.availableForTrade = config.getBoolean("enchantment_configuration.illuminated.trade_enabled");
+        setIcon(config.getString("enchantment_configuration.illuminated.icon"));
 
         compatibleItems.addAll(ItemMaterialManager.getInstance().getPickaxes());
     }

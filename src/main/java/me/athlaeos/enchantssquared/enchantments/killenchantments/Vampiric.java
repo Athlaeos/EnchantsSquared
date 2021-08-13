@@ -62,6 +62,7 @@ public class Vampiric extends KillEnchantment{
         this.tradeMinCostLv = config.getInt("enchantment_configuration.vampiric.trade_cost_lv_lower");
         this.tradeMaxCostLv = config.getInt("enchantment_configuration.vampiric.trade_cost_base_upper");
         this.availableForTrade = config.getBoolean("enchantment_configuration.vampiric.trade_enabled");
+        setIcon(config.getString("enchantment_configuration.vampiric.icon"));
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.vampiric.compatible_with");
         for (String s : compatibleItemStrings){

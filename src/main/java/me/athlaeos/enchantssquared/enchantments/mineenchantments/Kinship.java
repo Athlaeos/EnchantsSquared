@@ -101,6 +101,7 @@ public class Kinship extends BreakBlockEnchantment{
         this.tradeMinCostLv = config.getInt("enchantment_configuration.kinship.trade_cost_lv_lower");
         this.tradeMaxCostLv = config.getInt("enchantment_configuration.kinship.trade_cost_base_upper");
         this.availableForTrade = config.getBoolean("enchantment_configuration.kinship.trade_enabled");
+        setIcon(config.getString("enchantment_configuration.kinship.icon"));
 
         this.compatibleItems.addAll(ItemMaterialManager.getInstance().getPickaxes());
         this.compatibleItems.remove(Material.GOLDEN_PICKAXE);

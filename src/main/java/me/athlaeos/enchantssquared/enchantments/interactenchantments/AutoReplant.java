@@ -85,6 +85,7 @@ public class AutoReplant extends BlockInteractEnchantment {
         this.tradeMinCostBase = config.getInt("enchantment_configuration.auto_replant.trade_cost_base_lower");
         this.tradeMaxCostBase = config.getInt("enchantment_configuration.auto_replant.trade_cost_base_upper");
         this.availableForTrade = config.getBoolean("enchantment_configuration.auto_replant.trade_enabled");
+        setIcon(config.getString("enchantment_configuration.auto_replant.icon"));
 
         compatibleItems.addAll(ItemMaterialManager.getInstance().getHoes());
     }

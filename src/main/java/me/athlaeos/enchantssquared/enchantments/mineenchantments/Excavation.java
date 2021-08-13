@@ -1,6 +1,7 @@
 package me.athlaeos.enchantssquared.enchantments.mineenchantments;
 
 import me.athlaeos.enchantssquared.hooks.JobsHook;
+import me.athlaeos.enchantssquared.hooks.McMMOHook;
 import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.configs.ConfigManager;
 import me.athlaeos.enchantssquared.dom.CustomEnchantType;
@@ -149,6 +150,9 @@ public class Excavation extends BreakBlockEnchantment{
                                     k.execute(e, heldTool, kinshipLevel);
                                 }
                             }
+                            if (McMMOHook.getMcMMOHook().useMcMMO()){
+                                McMMOHook.getMcMMOHook().rememberBlock(e.getPlayer(), block);
+                            }
                             if (smeltBlocks && smeltingAllowed){
                                 for (ItemStack i : MineUtils.cookBlock(heldTool, block)){
                                     if (i != null){
@@ -171,9 +175,9 @@ public class Excavation extends BreakBlockEnchantment{
                                 if (heldTool.getItemMeta() != null){
                                     if (!heldTool.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH)){
                                         expToDrop += blockBreakEvent.getExpToDrop();
-                                        block.breakNaturally(heldTool);
                                     }
                                 }
+                                block.breakNaturally(heldTool);
                             }
 
                             if (RandomNumberGenerator.getRandom().nextDouble() <= durability_decay){
@@ -192,6 +196,7 @@ public class Excavation extends BreakBlockEnchantment{
                         }
                     }
                     if (item.getItemMeta() instanceof Damageable){
+                        if (item.getItemMeta().isUnbreakable()) return;
                         Damageable toolMeta = (Damageable) item.getItemMeta();
                         int unBreakingLevel = item.getEnchantmentLevel(Enchantment.DURABILITY);
                         double breakChance = 1D/(unBreakingLevel + 1D) * 100;
@@ -199,7 +204,7 @@ public class Excavation extends BreakBlockEnchantment{
                             PlayerItemDamageEvent event = new PlayerItemDamageEvent(e.getPlayer(), item, durabilityDamage);
                             EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
                             if (!event.isCancelled()){
-                                toolMeta.setDamage(toolMeta.getDamage() + durabilityDamage);
+                                toolMeta.setDamage(toolMeta.getDamage() + event.getDamage());
                                 item.setItemMeta((ItemMeta) toolMeta);
                             }
                         }
@@ -227,6 +232,7 @@ public class Excavation extends BreakBlockEnchantment{
         this.tradeMinCostBase = config.getInt("enchantment_configuration.excavation.trade_cost_base_lower");
         this.tradeMaxCostBase = config.getInt("enchantment_configuration.excavation.trade_cost_base_upper");
         this.availableForTrade = config.getBoolean("enchantment_configuration.excavation.trade_enabled");
+        setIcon(config.getString("enchantment_configuration.excavation.icon"));
 
         YamlConfiguration excavConfig = ConfigManager.getInstance().getConfig("excavationblocks.yml").get();
         for (String s : excavConfig.getStringList("excavation_pickaxe_blocks")){

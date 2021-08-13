@@ -2,6 +2,9 @@ package me.athlaeos.enchantssquared.listeners;
 
 import me.athlaeos.enchantssquared.dom.CustomEnchant;
 import me.athlaeos.enchantssquared.enchantments.potionenchantments.PotionEffectEnchantment;
+import me.athlaeos.enchantssquared.events.MineEnchantmentTriggerEvent;
+import me.athlaeos.enchantssquared.events.PotionEnchantmentTriggerEvent;
+import me.athlaeos.enchantssquared.main.EnchantsSquared;
 import me.athlaeos.enchantssquared.managers.CustomEnchantManager;
 import me.athlaeos.enchantssquared.utils.Utils;
 import org.bukkit.Material;
@@ -23,7 +26,11 @@ public class PotionEffectListener implements Listener {
                 Map<CustomEnchant, Integer> enchants = manager.getItemsEnchantsFromPDC(i);
                 for (CustomEnchant enchant : enchants.keySet()){
                     if (enchant instanceof PotionEffectEnchantment){
-                        ((PotionEffectEnchantment) enchant).execute(e, i, enchants.get(enchant));
+                        PotionEnchantmentTriggerEvent event = new PotionEnchantmentTriggerEvent(i, enchants.get(enchant), enchant, e.getEntity());
+                        EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
+                        if (!event.isCancelled()){
+                            ((PotionEffectEnchantment) enchant).execute(e, i, enchants.get(enchant));
+                        }
                     }
                 }
             }

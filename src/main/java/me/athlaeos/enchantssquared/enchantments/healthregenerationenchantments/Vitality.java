@@ -63,6 +63,7 @@ public class Vitality extends HealthRegenerationEnchantment{
         this.tradeMinCostLv = config.getInt("enchantment_configuration.vitality.trade_cost_lv_lower");
         this.tradeMaxCostLv = config.getInt("enchantment_configuration.vitality.trade_cost_base_upper");
         this.availableForTrade = config.getBoolean("enchantment_configuration.vitality.trade_enabled");
+        setIcon(config.getString("enchantment_configuration.vitality.icon"));
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.vitality.compatible_with");
         for (String s : compatibleItemStrings){

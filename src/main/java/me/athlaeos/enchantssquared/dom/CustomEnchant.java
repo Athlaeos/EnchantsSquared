@@ -28,6 +28,7 @@ public abstract class CustomEnchant {
     protected int tradeMinCostLv = 0;
     protected int tradeMaxCostLv = 0;
     protected boolean availableForTrade;
+    protected Material icon = Material.ENCHANTED_BOOK;
 
     public CustomEnchant() {
     }
@@ -62,7 +63,7 @@ public abstract class CustomEnchant {
         this.max_level_table = max_level_table;
     }
 
-    public String getEnchantLore() {
+    public String getDisplayName() {
         return enchantLore;
     }
 
@@ -125,5 +126,17 @@ public abstract class CustomEnchant {
 
     public boolean isAvailableForTrade() {
         return availableForTrade;
+    }
+
+    public void setIcon(String icon){
+        try {
+            this.icon = Material.valueOf(icon);
+        } catch (IllegalArgumentException ignored){
+            this.icon = Material.ENCHANTED_BOOK;
+        }
+    }
+
+    public Material getIcon() {
+        return icon;
     }
 }

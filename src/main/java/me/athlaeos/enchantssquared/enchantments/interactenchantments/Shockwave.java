@@ -114,6 +114,7 @@ public class Shockwave extends BlockInteractEnchantment {
         this.tradeMinCostLv = config.getInt("enchantment_configuration.shockwave.trade_cost_lv_lower");
         this.tradeMaxCostLv = config.getInt("enchantment_configuration.shockwave.trade_cost_base_upper");
         this.availableForTrade = config.getBoolean("enchantment_configuration.shockwave.trade_enabled");
+        setIcon(config.getString("enchantment_configuration.shockwave.icon"));
 
         this.compatibleItemStrings = config.getStringList("enchantment_configuration.shockwave.compatible_with");
         for (String s : compatibleItemStrings){

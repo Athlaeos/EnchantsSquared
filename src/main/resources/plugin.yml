@@ -1,10 +1,10 @@
 name: Enchantssquared
-version: 1.0
+version: 1.6
 main: me.athlaeos.enchantssquared.main.EnchantsSquared
 authors: [Athlaeos]
 description: Adds in a number of vanilla-like enchantments
 website: https://discord.gg/dUwtmYV
-softdepend: [WorldGuard, Jobs]
+softdepend: [WorldGuard, Jobs, mcMMO]
 loadbefore: [WorldGuard]
 api-version: 1.14
 
@@ -26,6 +26,9 @@ permissions:
   es.list:
     default: op
     description: Permission to use the /es help command
+  es.menu:
+    default: op
+    description: Permission to use the /es menu command
   es.noregionrestrictions:
     default: op
     description: 'WORLDGUARD ONLY: When using an enchant within a WorldGuard flagged area against this enchant, it is not blocked'
@@ -35,3 +38,6 @@ permissions:
   es.enchant.insertenchantmenthere:
     default: op
     description: Requires a player to have a specific enchant permission to be able to obtain it through enchanting
+  es.debug:
+    default: op
+    description: Allows access to the /es debug command
