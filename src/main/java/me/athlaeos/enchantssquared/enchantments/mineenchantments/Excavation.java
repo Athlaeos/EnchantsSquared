@@ -63,6 +63,14 @@ public class Excavation extends BreakBlockEnchantment{
             blockExperienceValues.put(Material.valueOf("NETHER_GOLD_ORE"), new BlockExperience(0, 1));
         } catch (IllegalArgumentException ignored){
         }
+        try {
+            blockExperienceValues.put(Material.valueOf("DEEPSLATE_COAL_ORE"), new BlockExperience(0, 2));
+            blockExperienceValues.put(Material.valueOf("DEEPSLATE_DIAMOND_ORE"), new BlockExperience(3, 7));
+            blockExperienceValues.put(Material.valueOf("DEEPSLATE_EMERALD_ORE"), new BlockExperience(3, 7));
+            blockExperienceValues.put(Material.valueOf("DEEPSLATE_LAPIS_ORE"),new BlockExperience(2, 5));
+            blockExperienceValues.put(Material.valueOf("DEEPSLATE_REDSTONE_ORE"), new BlockExperience(1, 5));
+        } catch (IllegalArgumentException ignored){
+        }
     }
 
     @Override
@@ -102,7 +110,7 @@ public class Excavation extends BreakBlockEnchantment{
                 return;
             }
 
-            List<Location> blocksToBreak = new ArrayList<>();
+            List<Location>  blocksToBreak = new ArrayList<>();
             BlockFace face = ExcavationBlockFaceManager.getInstance().getBlockFaceMap().get(e.getPlayer().getUniqueId());
             if (face != null){
                 Location blockBroken = e.getBlock().getLocation();
@@ -196,16 +204,17 @@ public class Excavation extends BreakBlockEnchantment{
                         }
                     }
                     if (item.getItemMeta() instanceof Damageable){
-                        if (item.getItemMeta().isUnbreakable()) return;
-                        Damageable toolMeta = (Damageable) item.getItemMeta();
-                        int unBreakingLevel = item.getEnchantmentLevel(Enchantment.DURABILITY);
-                        double breakChance = 1D/(unBreakingLevel + 1D) * 100;
-                        if ((RandomNumberGenerator.getRandom().nextInt(100) + 1) < breakChance){
-                            PlayerItemDamageEvent event = new PlayerItemDamageEvent(e.getPlayer(), item, durabilityDamage);
-                            EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
-                            if (!event.isCancelled()){
-                                toolMeta.setDamage(toolMeta.getDamage() + event.getDamage());
-                                item.setItemMeta((ItemMeta) toolMeta);
+                        if (!item.getItemMeta().isUnbreakable()) {
+                            Damageable toolMeta = (Damageable) item.getItemMeta();
+                            int unBreakingLevel = item.getEnchantmentLevel(Enchantment.DURABILITY);
+                            double breakChance = 1D/(unBreakingLevel + 1D) * 100;
+                            if ((RandomNumberGenerator.getRandom().nextInt(100) + 1) < breakChance){
+                                PlayerItemDamageEvent event = new PlayerItemDamageEvent(e.getPlayer(), item, durabilityDamage);
+                                EnchantsSquared.getPlugin().getServer().getPluginManager().callEvent(event);
+                                if (!event.isCancelled()){
+                                    toolMeta.setDamage(toolMeta.getDamage() + event.getDamage());
+                                    item.setItemMeta((ItemMeta) toolMeta);
+                                }
                             }
                         }
                     }
